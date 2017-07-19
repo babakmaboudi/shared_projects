@@ -4,7 +4,7 @@ function damped_integral()
 	p0 = 1;
 	alpha = 0.1;
 	dt = 0.01;
-	max_iter = 100;
+	max_iter = 1000;
 
 	[Q,P,f] = time_stepping(q0,p0,alpha,dt,max_iter);
 
@@ -39,17 +39,17 @@ function damped_integral()
 	ylim([0,1])
 	grid on
 
-	figure
-	for i=2:length(Q)
-		phi = find_phi(f(1:i),alpha,dt);
-		plot(phi);
-		hold on
-		plot(1,Q(i)/sqrt(2),'r*')
-		hold off
-		ylim([-1,1])
-		xlim([0,2000])
-		drawnow
-	end
+%	figure
+%	for i=2:length(Q)
+%		phi = find_phi(f(1:i),alpha,dt);
+%		plot(phi);
+%		hold on
+%		plot(1,Q(i)/sqrt(2),'r*')
+%		hold off
+%		ylim([-1,1])
+%		xlim([0,2000])
+%		drawnow
+%	end
 
 function [Q,P,f] = time_stepping(q0,p0,alpha,dt,max_iter)
 	Q = q0;
