@@ -7,7 +7,12 @@ function [ vargout ] = damped_spring(vargin )
 
 % [t,y] = ode45(@ode,[0 100],[0.1; 0.1; 0.1]);
 
-[t,y] = numint(@ode,[0 100],0.01,[0; 0.1; 0.1],'implicit_midpoint');
+dt = 0.01;
+tspan = [0 100];
+y0 = [0; 0.1; 0.1];
+integrator = 'implicit_midpoint';
+
+[t,y] = numint(@ode, tspan, dt, y0, integrator);
 
 % y(:,1) is position, y(:,2) is momentum, and y(:,3) is the force function
 % f(t)
@@ -41,7 +46,7 @@ function dydt = ode(t,y)
 dydt = [y(3); -y(1); 0];
 end
 
-function [t,y] = numint(ode, tspan, dt, y0, int_flag)
+function [t,y] = numint(ode, tspan, dt, y0, integrator)
 % function [t,y] = numint(ode, tspan, y0, jac)
 % solves first order ode y' = f(t,y) in the time interval tspan with initial condition
 % y0 with the (symplectic) implicit midpoint rule
@@ -64,7 +69,7 @@ rhs = @(t,y,n) y(:,n) +[0;0;(y(2,n+1)-0.01*dt*sum(y(3,1:n)))/(1+0.01*dt)-y(3,n)]
 % rhs = @(t,y,n) y(:,n) +[0;0;(y(2,n+1) -0.01*trapz(t(1:n),y(3,1:n)))/(1+0.01*dt)-y(3,n)] + dt*ode(At(t(n),t(n+1)),At(y(:,n),y(:,n+1)));
 
 % fixed point iteration
-switch int_flag
+switch integrator
     case 'implicit_midpoint'
         for n = 1:N-1
             y(:,n+1) = y(:,n);

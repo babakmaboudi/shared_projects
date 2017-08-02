@@ -7,7 +7,11 @@ function [ vargout ] = damped_spring(vargin )
 
 % [t,y] = ode45(@ode,[0 100],[0.1; 0.1; 0.1]);
 
-[t,y] = numint(@ode,[0 100],0.01,[0; 0.1; 0.1],'implicit_midpoint');
+dt = 0.01;
+tspan = [0 100];
+
+
+[t,y] = numint(@ode, tspan, dt, [0; 0.1; 0.1], 'implicit_midpoint');
 
 % y(:,1) is position, y(:,2) is momentum, and y(:,3) is the force function
 % f(t)
@@ -61,6 +65,7 @@ y(:,1) = y0;
 
 % right hand side for implicit midpoint
 rhs = @(t,y,n) y(:,n) +[0;0;(y(2,n+1)-0.01*dt*sum(y(3,1:n)))/(1+0.01*dt)-y(3,n)] + dt*ode(At(t(n),t(n+1)),At(y(:,n),y(:,n+1)));
+% rhs = @(t,y,n) y(:,n) +[0;0;(y(2,n+1) -0.01*trapz(t(1:n),y(3,1:n)))/(1+0.01*dt)-y(3,n)] + dt*ode(At(t(n),t(n+1)),At(y(:,n),y(:,n+1)));
 
 % fixed point iteration
 switch int_flag
