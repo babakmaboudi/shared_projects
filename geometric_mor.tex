@@ -1,0 +1,94 @@
+\documentclass[12pt,a4paper,draft]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\author{Ashish Bhatt}
+
+\newcommand{\dt}{\Delta t}
+
+\title{Geometric MOR of Mechanical Systems}
+\begin{document}
+\maketitle
+
+\section{Mechanical systems}
+\subsection{Continuous system}
+Consider the linear mechanical system
+\begin{align}
+M(\mu)\ddot{q} + D(\mu) \dot{q} + K(\mu) q = 0
+\end{align}
+where $M, D, K$ are parameter $\mu$ dependent matrices and $q$ is the unknown. We can write this as a first order system by introducing momentum $p$ as below
+\begin{gather}
+\begin{aligned}
+\dot{q} &= M^{-1}p, \\
+\dot{p} &= -DM^{-1}p - Kq.
+\end{aligned}
+\end{gather}
+Due to the presence of damping in the system, it is not Hamiltonian but can be turned into one by enlarging the phase space. This attains the following objectives:
+\begin{enumerate}
+\item We can use geometric MOR techniques on the enlarged system.
+\item The Hamiltonian can work as a Lyapunov function and hence can be used to derive and implement new error estimators for this mechanical system.
+\end{enumerate}
+
+Keeping this in mind, let us define an enlarged phase space
+\begin{align}
+U = \begin{bmatrix}
+u(t) \\ \theta(s,t) \\ \phi(s,t)
+\end{bmatrix}
+\end{align}
+where $u = [q^T, p^T]^T$. Over this phase space, we define Hamiltonian $\mathcal{H}$ as below
+\begin{align}
+\mathcal{H}(U) &= \frac{1}{2} \|\mathcal{K} U\|^2 \\
+&= \frac{1}{2} \|Su-T\phi\|^2 + \frac{1}{2} q^T K q + \frac{1}{2} \int_{-\infty}^{\infty} \{ \|\theta(s,t)\|^2 + \|\partial_s \phi(s,t)\|^2 \} ds
+\end{align}
+where
+\begin{gather}
+\begin{aligned}
+\mathcal{K} = \begin{bmatrix}
+S & 0 & -T \\
+0 & 1 & 0 \\
+0 & 0 & \partial_s
+\end{bmatrix}, S = \begin{bmatrix}
+0 & 0 \\ 0 & I
+\end{bmatrix}, \quad
+T\phi = \int_{-\infty}^{\infty} \zeta(s) \phi(s) ds,\\
+\zeta(s) = \frac{1}{2\pi} \int_{-\infty}^{\infty} \cos(\omega s) \sqrt{2\omega Im \hat{\chi}(\omega)} d\omega, \quad \chi(\tau) = \begin{bmatrix}
+DM^{-1} & 0 \\ 0 & 0
+\end{bmatrix}
+\end{aligned}
+\end{gather}
+The equations of motion corresponding to this Hamiltonian in the enlarged space read
+\begin{align}
+\partial_t U(s,t) = \mathcal{J} \nabla_U \mathcal{H} = \mathcal{J} \mathcal{K}^T \mathcal{K} U(s,t)
+\end{align}
+Here $\nabla_U \mathcal{H}$ denotes the vector of variational derivatives and
+\begin{align}
+\mathcal{J} = \begin{bmatrix}
+J & 0 & 0 \\
+0 & 0 & -1 \\
+0 & 1 & -1
+\end{bmatrix}, J = \begin{bmatrix}
+0 & I \\
+-I & 0
+\end{bmatrix}
+\end{align}
+
+\subsection{Discrete system}
+(Symplectic) implicit midpoint rule is:
+\begin{align}
+\frac{U^{n+1,i+1/2} - U^{n,i+1/2}}{\dt} = \mathcal{J} \nabla_U \mathcal{H}(U^{n+1/2,i+1/2}).
+\end{align}
+Here $n$ and $i$ are the time and spatial indices, respectively, and $n+1/2$ or $i+1/2$ denote corresponding midpoints.
+
+Hamiltonian-preserving discrete gradient method reads
+\begin{align}
+\frac{U^{n+1,i+1/2} - U^{n,i+1/2}}{\dt} = \mathcal{J} \bar{\nabla}_U \mathcal{H}(U^{n+1/2,i+1/2}).
+\end{align}
+where $\bar{\nabla}$ is a discrete gradient.
+
+\subsection{Lyapunov function}
+Since $\mathcal{H}$ satisfies 
+$$\mathcal{H}(0) = 0, \mathcal{H}(U) > 0 \text{ for } U \neq 0, \text{ and } \frac{d}{dt}\mathcal{H} =0,$$
+it is a good candidate for the Lyapunov function of the extended system.
+
+\end{document}
