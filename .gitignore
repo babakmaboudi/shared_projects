@@ -2,3 +2,6 @@
 *.vtu
 *.aux
 *.log
+*.mat
+*.dat
+*.pvd
