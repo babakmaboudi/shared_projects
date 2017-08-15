@@ -58,7 +58,9 @@ Lp = inner(p0,v)*dx - dt*theta*inner( sigma(q_new) , epsilon(v) )*dx - dt*(1-the
 Aq = assemble(aq)
 Ap = assemble(ap)
 
-vtkfile = File('results/solution.pvd')
+energy = inner(p0,p0)*dx + inner(sigma(q0),epsilon(q0))*dx
+
+vtkfile = File('results_imp/solution.pvd')
 
 for i in range(0,3000):
 #	print(i)
@@ -67,6 +69,7 @@ for i in range(0,3000):
 	solve(Aq,q_new.vector(),bq)
 
 	bp = assemble(Lp)
+	bc.apply(Ap,bp)
 	solve(Ap,p_new.vector(),bp)
 #	solve(ap == Lp , p_new)
 
@@ -77,5 +80,11 @@ for i in range(0,3000):
 #	magnitude = project(magnitude, V1d)
 #
 #	vtkfile << (magnitude,i*dt)
-	mat = np.matrix( q0.vector() )
-	print( np.max( np.abs(mat) ) )
+#	mat = np.matrix( q0.vector() )
+#	print( np.max( np.abs(mat) ) )
+
+	E = assemble(energy)
+	plot(E)
+	
+	if np.mod(i,10) == 0:
+		vtkfile << (q_new,i*dt)
