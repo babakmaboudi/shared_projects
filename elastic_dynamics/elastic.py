@@ -45,7 +45,7 @@ T = Constant((0, 0, 0))
 q0 = Function(V)
 p0 = Function(V)
 
-dt = 0.01
+dt = 0.1
 theta = 0.5
 
 aq = inner(q,v)*dx + pow(theta,2)*pow(dt,2)*inner( sigma(q) , epsilon(v) )*dx
@@ -58,12 +58,15 @@ Lp = inner(p0,v)*dx - dt*theta*inner( sigma(q_new) , epsilon(v) )*dx - dt*(1-the
 Aq = assemble(aq)
 Ap = assemble(ap)
 
-energy = inner(p0,p0)*dx + inner(sigma(q0),epsilon(q0))*dx
+energy = 0.5*inner(p0,p0)*dx + 0.5*inner(sigma(q0),epsilon(q0))*dx - inner( f,q0 )*dx
 
 vtkfile = File('results_imp/solution.pvd')
+vtkfile2 = File('results_imp/energy.pvd')
 
-for i in range(0,3000):
-#	print(i)
+e_vec = np.array([0])
+
+for i in range(0,400):
+	print(i)
 	bq = assemble(Lq)
 	bc.apply(Aq,bq)
 	solve(Aq,q_new.vector(),bq)
@@ -78,13 +81,17 @@ for i in range(0,3000):
 
 #	magnitude = sqrt(dot(q_new, q_new))
 #	magnitude = project(magnitude, V1d)
-#
+
 #	vtkfile << (magnitude,i*dt)
 #	mat = np.matrix( q0.vector() )
 #	print( np.max( np.abs(mat) ) )
 
 	E = assemble(energy)
-	plot(E)
-	
-	if np.mod(i,10) == 0:
-		vtkfile << (q_new,i*dt)
+	e_vec = np.append(e_vec,E)
+#	print(e_vec)
+#	
+#	if np.mod(i,10) == 0:
+#		vtkfile << (q_new,i*dt)
+
+plt.plot(e_vec)
+plt.show()
