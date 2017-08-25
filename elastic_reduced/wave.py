@@ -30,9 +30,10 @@ class Wave:
 		self.beta = 1.25
 		self.lambda_ = self.beta
 		self.g = self.gamma
+		self.damping = 1; # damping flag: 0 == no damping, 1 == has damping
 
 		# numerical parameters
-		self.MAX_ITER = 500
+		self.MAX_ITER = 100
 		self.dt = 0.01
 		self.theta = 0.5;
 
@@ -61,7 +62,7 @@ class Wave:
 		self.T = Constant((0, 0, 0))
 		
 		#initialize the energy vector
-		self.e_vec = assemble(energy(self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
+		self.e_vec = np.array([0])
 
 		#define the weak form with the strommer-verlet scheme 
 		#self.aq = inner(self.q,self.v)*dx
@@ -72,8 +73,8 @@ class Wave:
 		#define the weak form of implicit-midpoint scheme
 		self.aq = inner(self.q,self.v)*dx + pow(self.theta,2)*pow(self.dt,2)*inner( sigma(self.q,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx
 		self.Lq = inner(self.q0,self.v)*dx - pow(self.dt,2)*self.theta*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*inner(self.p0,self.v)*dx + pow(self.dt,2)*pow(self.theta,2)*inner(self.f,self.v)*dx + pow(self.dt,2)*self.theta*(1-self.theta)*inner(self.f,self.v)*dx
-		self.ap = inner(self.p,self.v)*dx
-		self.Lp = inner(self.p0,self.v)*dx - self.dt*self.theta*inner( sigma(self.q_new,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx - self.dt*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*self.theta*inner(self.f,self.v)*dx + self.dt*(1-self.theta)*inner(self.f,self.v)*dx #+ dt*theta*inner(T, v)*ds + dt*(1-theta)*inner(T,v)*ds
+		self.ap = (1 + self.damping*self.dt*self.theta)*inner(self.p,self.v)*dx
+		self.Lp = (1 - self.damping*self.dt*(1-self.theta))*inner(self.p0,self.v)*dx - self.dt*self.theta*inner( sigma(self.q_new,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx - self.dt*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*self.theta*inner(self.f,self.v)*dx + self.dt*(1-self.theta)*inner(self.f,self.v)*dx 
 
 		self.Aq = assemble(self.aq)
 		self.Ap = assemble(self.ap)
@@ -146,6 +147,13 @@ class Wave:
 			self.snap_P = np.c_[self.snap_P,coef]
 #			if np.mod(i,50) == 0:
 			self.snap_Q = np.c_[self.snap_Q,coef]
+			
+			self.E = assemble(energy(self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
+			self.e_vec = np.append(self.e_vec,self.E)
+			
+	def plot_energy( self ):
+		plt.plot(self.e_vec)
+		plt.show()
 
 	def save_vtk_result( self ):
 		f = Function(self.V)
