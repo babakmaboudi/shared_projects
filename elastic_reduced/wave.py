@@ -30,10 +30,10 @@ class Wave:
 		self.beta = 1.25
 		self.lambda_ = self.beta
 		self.g = self.gamma
-		self.damping = 1; # damping flag: 0 == no damping, 1 == has damping
+		self.damping = 0; # damping flag: 0 == no damping, 1 == has damping
 
 		# numerical parameters
-		self.MAX_ITER = 100
+		self.MAX_ITER = 1000
 		self.dt = 0.01
 		self.theta = 0.5;
 
@@ -128,15 +128,21 @@ class Wave:
 		#store initial data
 		self.snap_Q = np.zeros((528,1))
 		self.snap_P = np.zeros((528,1))
+		#self.coef = Function(self.V)
 
 		#loop over time steps
 		for i in range(0,self.MAX_ITER):
 			print(i)
 			self.apply_bc_q()
+			#solve(self.Aq_mat,coef,self.bq_mat)
 			coef = np.linalg.solve(self.Aq_mat,self.bq_mat)
 			self.q_new.vector().set_local( coef )
 
+#			if np.mod(i,50) == 0:
+			self.snap_Q = np.c_[self.snap_Q,coef]
+
 			self.apply_bc_p()
+			#solve(self.Ap_mat,coef,self.bp_mat)
 			coef = np.linalg.solve(self.Ap_mat,self.bp_mat)
 			self.p_new.vector().set_local( coef )
 
@@ -145,9 +151,7 @@ class Wave:
 
 #			if np.mod(i,50) == 0:
 			self.snap_P = np.c_[self.snap_P,coef]
-#			if np.mod(i,50) == 0:
-			self.snap_Q = np.c_[self.snap_Q,coef]
-			
+
 			self.E = assemble(energy(self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
 			self.e_vec = np.append(self.e_vec,self.E)
 			
@@ -167,4 +171,4 @@ class Wave:
 
 	def save_snapshots( self ):
 		self.snap_Q.dump("snap_Q.dat")
-		self.snap_Q.dump("snap_P.dat")
+		self.snap_P.dump("snap_P.dat")
