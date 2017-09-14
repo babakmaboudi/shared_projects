@@ -29,7 +29,7 @@ class Wave:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 1000
+		self.MAX_ITER = 2000
 		self.dt = 0.01
 
 	def initiate_fem( self ):
@@ -167,6 +167,94 @@ class Wave:
 			f.vector().set_local( vq0 )
 			if np.mod(i,10) == 0:
 				vtkfile << (f,i*self.dt)
+
+	def crank_nicolson_implicit( self ):
+		N = self.L.shape[0]
+
+		x = np.zeros([2*N,1])
+
+		vtkfile = File('results/solution.pvd')
+		f = Function(self.V)
+
+		temp1 = self.dt/2*np.eye(N)
+		temp2 = self.dt/2*self.L
+
+		temp3 = np.concatenate( (np.eye(N),-temp1) , 1 )
+		temp4 = np.concatenate( (-temp2,np.eye(N)) , 1 )
+
+		mat1 = np.concatenate( (temp3,temp4) , 0 )
+		mat1 = np.matrix(mat1)
+
+		temp3 = np.concatenate( (np.eye(N),temp1) , 1 )
+		temp4 = np.concatenate( (temp2,np.eye(N)) , 1 )
+
+		mat2 = np.concatenate( (temp3,temp4) , 0 )
+		mat2 = np.matrix(mat2)
+
+		vec = np.concatenate( (np.zeros([N,1]),self.dt*self.cp) , o )
+
+		for i in range(0,self.MAX_ITER):
+			print(i)
+
+			x = np.linalg.solve(mat1,mat2*x+vec)
+	
+			self.q_rhs = x[0:N]
+			self.apply_bc_q
+			self.p_rhs = x[N:2*N]
+			self.apply_bc_p
+
+			x = np.concatenate( (self.q_rhs,self.p_rhs) , 0 )
+
+			f.vector().set_local(x[0:N])
+			if np.mod(i,10) == 0:
+				vtkfile << (f,i*self.dt)
+
+	def crank_nicolson( self ):
+		vq0 = np.zeros(self.c.shape)
+		vp0 = np.zeros(self.c.shape)
+
+		vtkfile = File('results/solution.pvd')
+		f = Function(self.V)
+
+		N = self.L.shape[0]
+
+		mat1 = np.eye(N) - pow(self.dt,2)/4*self.L
+		mat2 = np.eye(N) + pow(self.dt,2)/4*self.L
+
+		e_vec = np.zeros( [self.MAX_ITER,1] )
+
+		for i in range(0,self.MAX_ITER):
+			print(i)
+
+			b = self.dt*vp0 + mat2*vq0 + pow(self.dt,2)/2*self.cp
+			self.q_rhs = np.linalg.solve(mat1,b)
+			self.apply_bc_q()
+
+			self.p_rhs = vp0 + self.dt/2*self.L*(self.q_rhs + vq0) + self.dt*self.cp
+			self.apply_bc_p()
+
+			vq0 = self.q_rhs
+			vp0 = self.p_rhs
+
+			e = self.compute_energy()
+			e_vec[i] = e
+
+			f.vector().set_local(vq0)
+			if np.mod(i,10) == 0:
+				vtkfile << (f,i*self.dt)
+
+		plt.plot(e_vec)
+		plt.show()
+
+	def compute_energy( self ):
+		q0 = Function( self.V )
+		q0.vector().set_local( self.q_rhs )
+		p0 = Function( self.V )
+		p0.vector().set_local( self.p_rhs )
+
+		energy = 0.5*inner(p0,p0)*dx + 0.5*inner(sigma(q0,self.lambda_,self.mu,self.d),epsilon(q0))*dx - inner( self.f,q0 )*dx
+		E = assemble(energy)
+		return E
 
 	def save_snapshots( self ):
 		self.snap_Q.dump("snap_Q.dat")
