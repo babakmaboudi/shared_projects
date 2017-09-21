@@ -1,10 +1,11 @@
 from fenics import *
+from scipy.linalg import sqrtm
+from scipy.ndimage.interpolation import shift
 import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib import pylab as plt
 
-import numpy as np
 
 def clamped_boundary(x, on_boundary):
 	return on_boundary and x[0] < DOLFIN_EPS
@@ -30,10 +31,10 @@ class Wave:
 		self.beta = 1.25
 		self.lambda_ = self.beta
 		self.g = self.gamma
-		self.damping = 1; # damping flag: 0 == no damping, 1 == has damping
-
+		self.damping = 1; # damping flag and scaling: 0 == no damping, nonzero == scaling factor
+		
 		# numerical parameters
-		self.MAX_ITER = 100
+		self.MAX_ITER = 1000
 		self.dt = 0.01
 		self.theta = 0.5;
 
@@ -55,6 +56,7 @@ class Wave:
 		self.q_new = Function(self.V)
 		self.p_new = Function(self.V)
 		self.r_new = Function(self.V)
+		self.r_vec = self.r_new
 
 		self.q0 = Function(self.V)
 		self.p0 = Function(self.V)
@@ -66,9 +68,8 @@ class Wave:
 		
 		#initialize the energy vector
 		self.e_vec = np.array([0])
-		self.r_vec = np.array(self.r0)
-
-		#define the weak form of implicit-midpoint scheme
+		
+		#define the weak form of the enlarged system for implicit-midpoint scheme
 		self.aq = inner(self.q,self.v)*dx + pow(self.theta,2)*pow(self.dt,2)*inner( sigma(self.q,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx
 		self.Lq = inner(self.q0,self.v)*dx - pow(self.dt,2)*self.theta*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*inner(self.r0,self.v)*dx + pow(self.dt,2)*pow(self.theta,2)*inner(self.f,self.v)*dx + pow(self.dt,2)*self.theta*(1-self.theta)*inner(self.f,self.v)*dx
 		self.ap = (1 + self.damping*self.dt*self.theta)*inner(self.p,self.v)*dx
@@ -78,8 +79,22 @@ class Wave:
 
 		self.Aq = assemble(self.aq)
 		self.Ap = assemble(self.ap)
+		self.Ar = assemble(self.ar)
 		self.Aq_mat = np.matrix( self.Aq.array() )
 		self.Ap_mat = np.matrix( self.Ap.array() )
+		self.Ar_mat = np.matrix( self.Ar.array() )
+		
+		#assemble mass, stiffness, and damping matrices
+		self.k = inner( sigma(self.q,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx 	# stiffness matrix integrand
+		self.m = inner(self.q,self.v)*dx                                			# mass matrix integrand
+
+		self.K = assemble(self.k) 	# assemble stiffness matrix
+		self.M = assemble(self.m) 	# assemble mass matrix
+		self.D = self.M 		# damping matrix
+		self.K_mat = np.matrix( self.K.array() )
+		self.M_mat = np.matrix( self.M.array() )
+		self.D_mat = self.damping*np.matrix( self.D.array() )
+		print(sqrt(self.D_mat.size))
 
 	def apply_bc_q( self ):
 		self.bq = assemble(self.Lq)
@@ -95,11 +110,11 @@ class Wave:
 		
 	def apply_bc_r( self ):
 		self.br = assemble(self.Lr)
-		self.bc.apply(Identity(self.d),self.br)
+		self.bc.apply(self.Ar,self.br)
 		self.br_mat = np.matrix( self.br.array() )
 		self.br_mat = np.transpose( self.br_mat )
 
-	def strommer_verlet( self ):
+	def strommer_verlet( self ): # outdated !
 		#store initial data
 		self.snap_Q = np.zeros((528,1))
 		self.snap_P = np.zeros((528,1))
@@ -154,7 +169,7 @@ class Wave:
 			self.snap_P = np.c_[self.snap_P,coef]
 			
 			self.apply_bc_r()
-			coef = np.linalg.solve(Identity(self.d),self.br_mat)
+			coef = np.linalg.solve(self.Ar_mat,self.br_mat)
 			self.r_new.vector().set_local( coef )
 
 #			if np.mod(i,50) == 0:
@@ -164,12 +179,12 @@ class Wave:
 			self.p0.assign( self.p_new )
 			self.r0.assign( self.r_new )
 
-			self.E = assemble(energy(self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
+			self.E = assemble(energy(self.damping*self.r0 +(not self.damping)*self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
 			self.e_vec = np.append(self.e_vec,self.E)
-			self.r_vec = np.sum(self.r_vec,self.r_new)
+			self.r_vec += self.r_new
 			
 	def plot_energy( self ):
-		plt.plot(self.e_vec)
+		plt.plot(self.e_vec + self.strings_energy())
 		plt.show()
 
 	def save_vtk_result( self ):
@@ -183,6 +198,46 @@ class Wave:
 				vtkfile << (f,i*self.dt)
 
 	def save_snapshots( self ):
-		self.snap_Q.dump("snap_Q.dat")
-		self.snap_P.dump("snap_P.dat")
-		self.snap_R.dump("snap_R.dat")
+		self.snap_Q.dump("results/snap_Q.dat")
+		self.snap_P.dump("results/snap_P.dat")
+		self.snap_R.dump("results/snap_R.dat")
+		
+	def strings_energy( self ):
+		#store initial data
+		#self.phi = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1))
+		#self.phi_s = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		#self.phi_t = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		
+		## evaluate sqrtm beforehand
+		#self.sqrtD = sqrtm(self.D_mat/2)
+		
+		## evaluate strings' displacements
+		#for i in range(0,527):
+			#self.phi[:,0] = self.snap_Q[i,:]
+			#for j in range(1,self.MAX_ITER+1):
+				#self.phi[:, j] = shift(self.phi[:,0],j,cval=0)
+			#[self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi)
+			
+		#return [np.trapz([pow(np.linalg.norm(self.sqrtD * self.phi_s[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.sqrtD * self.phi_t[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)]) for j in range(0,self.MAX_ITER+1)]
+		
+		#return np.trapz([np.norm(self.sqrtD * np.reshape(self.phi_s[i, j, :], (527)), 2) **elpow** 2 for i in range(0,527)] + [np.norm(self.sqrtD * np.reshape(self.phi_t[i, j, :], (527)), 2) **elpow** 2 for i in range(0,527)] for j in range(0,self.MAX_ITER))
+		#store initial data
+		  self.phi_mat = np.zeros((528,self.MAX_ITER+1))
+		  self.phi = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1))
+		  self.phi_s = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		  self.phi_t = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		  
+		  # evaluate sqrtm beforehand
+		  self.sqrtD = sqrtm(self.D_mat/2)
+		  
+		  for i in range(0,self.MAX_ITER+1):
+			  self.phi_mat[:,i] = np.reshape(self.sqrtD*self.snap_Q[:,i],528)
+			  		  
+		  # evaluate strings' displacements
+		  for i in range(0,527):
+			  self.phi[:, 0] = self.phi_mat[i, :]
+			  for j in range(1,self.MAX_ITER+1):
+				  self.phi[:, j] = shift(self.phi[:,0],j,cval=0)
+			  [self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi)
+						  
+		  return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)]) for j in range(0,self.MAX_ITER+1)]
