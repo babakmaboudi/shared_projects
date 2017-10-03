@@ -34,7 +34,7 @@ class Wave:
 		self.damping = 1; # damping flag and scaling: 0 == no damping, nonzero == scaling factor
 		
 		# numerical parameters
-		self.MAX_ITER = 1000
+		self.MAX_ITER = 10
 		self.dt = 0.01
 		self.theta = 0.5;
 
@@ -179,12 +179,14 @@ class Wave:
 			self.p0.assign( self.p_new )
 			self.r0.assign( self.r_new )
 
-			self.E = assemble(energy(self.damping*self.r0 +(not self.damping)*self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
+			self.E = assemble(energy(self.q0, self.damping*self.r0 +(not self.damping)*self.p0, self.f, self.lambda_, self.mu, self.d))
 			self.e_vec = np.append(self.e_vec,self.E)
 			self.r_vec += self.r_new
 			
 	def plot_energy( self ):
-		plt.plot(self.e_vec + self.strings_energy())
+		self.energy_vec = self.e_vec + self.damping*self.strings_energy()
+		self.energy_vec.dump("results/energy_vec.dat")
+		plt.plot(range(0,self.MAX_ITER+1),self.energy_vec,'r--',range(0,self.MAX_ITER+1),self.e_vec, 'b-.',range(0,self.MAX_ITER+1), self.energy_vec -self.e_vec, 'k.')
 		plt.show()
 
 	def save_vtk_result( self ):
@@ -233,11 +235,32 @@ class Wave:
 		  for i in range(0,self.MAX_ITER+1):
 			  self.phi_mat[:,i] = np.reshape(self.sqrtD*self.snap_Q[:,i],528)
 			  		  
+		  self.X = TensorFunctionSpace(self.mesh, 'P', 1)		  
+		  self.temp = Function(self.X)
+		  #self.temp.vector().array()[:] = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		  
 		  # evaluate strings' displacements
 		  for i in range(0,527):
 			  self.phi[:, 0] = self.phi_mat[i, :]
 			  for j in range(1,self.MAX_ITER+1):
 				  self.phi[:, j] = shift(self.phi[:,0],j,cval=0)
-			  [self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi)
+			  [self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi) #TODO: already have the time derivative of q(t)
+			  
+		  for i in range(0,self.MAX_ITER+1):
+			  for j in range(0,self.MAX_ITER+1):
+				  self.Phi_s = self.temp
+				  self.Phi_s.vector()[i,j,:] = self.phi_s[i,j,:]
+				  
+				  self.temp.vector().set_local( self.phi_t[i,j,:] )
+				  self.temp.update()
+				  self.Phi_t[i,j,:] = Function(self.V)
+				  self.Phi_t[i,j,:] = self.temp
 						  
-		  return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)]) for j in range(0,self.MAX_ITER+1)]
+		  #return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for j in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for j in range(0,self.MAX_ITER+1)]) for i in range(0,self.MAX_ITER+1)]
+		  #Phi_s = Function(self.V).vector().set_local(self.phi_s[i, j, :])
+		  [np.trapz([assemble(inner(self.Phi_s[i, j, :], self.Phi_s[i, j, :])*dx) for j in range(0,self.MAX_ITER+1)] + [assemble(inner(self.Phi_t[i, j, :], self.Phi_t[i, j, :])*dx) for j in range(0,self.MAX_ITER+1)]) for i in range(0,self.MAX_ITER+1)]
+		  #temp = Function(self.V)
+		  #[([temp[i, j, :].vector().set_local( self.phi_s[i, j, :] ) for j in range(0, self.MAX_ITER+1)]) for i in range(0, self.MAX_ITER+1)]
+		  #temp.update()
+		  #[np.trapz([assemble(inner(temp[i,j,:],temp[i,j,:])*dx) for j in range(0, self.MAX_ITER+1)]) for i in range(0, self.MAX_ITER+1)]
+		  return 0
