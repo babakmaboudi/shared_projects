@@ -70,12 +70,25 @@ class Wave:
 		self.e_vec = np.array([0])
 		
 		#define the weak form of the enlarged system for implicit-midpoint scheme
-		self.aq = inner(self.q,self.v)*dx + pow(self.theta,2)*pow(self.dt,2)*inner( sigma(self.q,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx
-		self.Lq = inner(self.q0,self.v)*dx - pow(self.dt,2)*self.theta*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*inner(self.r0,self.v)*dx + pow(self.dt,2)*pow(self.theta,2)*inner(self.f,self.v)*dx + pow(self.dt,2)*self.theta*(1-self.theta)*inner(self.f,self.v)*dx
+		self.aq = inner(self.q,self.v)*dx \
+		+ pow(self.theta,2)*pow(self.dt,2)*inner( sigma(self.q,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx
+		
+		self.Lq = inner(self.q0,self.v)*dx \
+		- pow(self.dt,2)*self.theta*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx \
+	       	+ self.dt*inner(self.r0,self.v)*dx \
+		+ pow(self.dt,2)*pow(self.theta,2)*inner(self.f,self.v)*dx \
+	       	+ pow(self.dt,2)*self.theta*(1-self.theta)*inner(self.f,self.v)*dx
+		
 		self.ap = (1 + self.damping*self.dt*self.theta)*inner(self.p,self.v)*dx
-		self.Lp = (1 - self.damping*self.dt*(1-self.theta))*inner(self.p0,self.v)*dx - self.dt*self.theta*inner( sigma(self.q_new,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx - self.dt*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx + self.dt*self.theta*inner(self.f,self.v)*dx + self.dt*(1-self.theta)*inner(self.f,self.v)*dx 
+
+		self.Lp = (1 - self.damping*self.dt*(1-self.theta))*inner(self.p0,self.v)*dx \
+		- self.dt*self.theta*inner( sigma(self.q_new,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx \
+		- self.dt*(1-self.theta)*inner( sigma(self.q0,self.lambda_,self.mu,self.d) , epsilon(self.v) )*dx \
+		+ self.dt*self.theta*inner(self.f,self.v)*dx + self.dt*(1-self.theta)*inner(self.f,self.v)*dx
+
 		self.ar = inner(self.r,self.v)*dx
-		self.Lr = inv(1+self.dt)*(inner(self.p_new,self.v)*dx -self.dt*inner(self.r_vec,self.v)*dx)
+
+		self.Lr = inv(1+self.dt)*(inner(self.p_new,self.v)*dx-self.dt*inner(self.r_vec,self.v)*dx)
 
 		self.Aq = assemble(self.aq)
 		self.Ap = assemble(self.ap)

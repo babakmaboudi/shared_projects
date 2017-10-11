@@ -1,0 +1,111 @@
+\title{Energy-preserving Finite Element Scheme for the Dissipative Elastic Beam}
+\author{
+        Babak Maboudi Afkham\\
+                Department of Mathematics \\
+		EPFL
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+\begin{document}
+\maketitle
+
+\section{The Dissipative Elastic Beam}
+The equations governing small elastic deformations of an elastic beam, fixed on one side can be written as
+\begin{equation} \label{eq:1}
+\begin{aligned}
+	\partial_{t} q &= p & q,p \in \Omega \\
+	\partial_{t} p + p -\nabla\cdot \sigma &= f,\\
+	\sigma &= \lambda \text{tr}(\epsilon)I + 2 \mu\epsilon, & \\
+	\epsilon &= \frac 1 2 \left( \nabla q + (\nabla q)^T \right), & \\
+	u &= 0, & u\in \partial \Omega,
+\end{aligned}
+\end{equation}
+where $sigma$ is the stress tensor, $f$ is the gravitational force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for the material in $\Omega$, $I$ is the identity tensor, tr is the trace operator on a tensor, $\epsilon$ is the symmetric strain-rate tensor (symmetric gradient), and $q$ and $p$ are the displacement and velocity vector fields, respectively. We have here assumed isotropic elastic conditions.
+
+\section{Variational Formulation}
+Here we assume that the solution to (\ref{eq:1}) belongs to a Hilbert space
+\begin{equation} \label{eq:2}
+	V = \{ u \in L^2 : \int_{\Omega}u^2 \ dx< \infty, \int_{\Omega} \| \nabla u \|^2 \ dx < \infty , u = 0 \text{ on } \partial \Omega \}/.
+\end{equation}
+Further we assume that $(\cdot,\cdot)$ is the standard inner production on $H$. Formulating the weak form consist of computing the inner product of (\ref{eq:1}) with a test function $v\in H$. We can write
+\begin{equation} \label{eq:3}
+\begin{aligned}
+	(\partial_{t} q, v) &= ( p,v ), \\
+	(\partial_{t} p,v) + (p,v) - (\nabla\cdot \sigma,v) &= (f,v).
+\end{aligned}
+\end{equation}
+By introducing the notion of tensorial inner product $\cdot : \cdot$, we can rewrite the latter as
+\begin{equation} \label{eq:4}
+\begin{aligned}
+	(\partial_{t} q, v) &= ( p,v ), \\
+	(\partial_{t} p,v) + (p,v) + \int_{\Omega} \sigma:\nabla v \ dx  - \int_{\partial \Omega} (\sigma\cdot n)\cdot v \ dx&= (f,v).
+\end{aligned}
+\end{equation}
+A finite element discretization of the latter can be obtained using standard methods.
+
+\section{Energy preserving extension}
+A time dissipative and dispersive formulation of equation \ref{eq:1} can be written as
+\begin{equation} \label{eq:5}
+\begin{aligned}
+	\partial_{t} q &= f & f,q,p \in \Omega \\
+	\partial_{t} p -\nabla\cdot \sigma &= f,\\
+	f(t,x) + \int_{0}^t f(\tau,x) \ d\tau &= p.
+\end{aligned}
+\end{equation}
+Following the footsteps of Figotin et al. 2007, the latter system can be reformulated as a conservative quadratic Hamiltonian system as
+\begin{equation} \label{eq:6}
+\begin{aligned}
+	\partial_{t} q &= f\\
+	\partial_{t} p -\nabla\cdot \sigma &= f,\\
+	\partial_{t} \phi(t,x,s) &= \theta(t,x,s), \\
+	\partial_{t} \theta(t,x,s) &= \partial_{s}^2 \phi(t,x,s) + \sqrt 2 \delta_{0}(s)f(t,x),
+\end{aligned}
+\end{equation}
+together with the transfer function
+\begin{equation} \label{eq:7}
+	f(t,x) + \int_{0}^t f(\tau,x) \ d\tau = p(t,x).
+\end{equation}
+
+Where $\theta,\phi\in V\times \mathcal{H}$, and $\mathcal H$ is some appropriate Hilbert space. We equip the space $V\times \mathcal{H}$ with the inner product
+\begin{equation} \label{eq:8}
+	[u,v] = \int_{\Omega} \int_{-\infty}^{\infty} uv\ dx \ d \xi, \qquad u,v \in V\times \mathcal{H}.
+\end{equation}
+
+Note that the added equations correspond to a vibrating string that carries the dissipated energy of the original system in the direction of the added pseudo-space $\mathcal H$. This allows us to solve these equations exactly in terms of $f$
+\begin{equation} \label{eq:9}
+	\phi(t,x,s) = \frac{\sqrt 2}{2} \int_{0}^{t-|s|} f(\tau,x) \ d\tau, \quad \theta(t,x,s) = \frac{\sqrt 2}{2} \int_{0}^{t-|s|} f(t - |s|).
+\end{equation}
+Then the energy associated to the extended system (\ref{eq:6}) is
+\begin{equation}
+	H(q,p,\phi,\theta) = \frac 1 2 \left\{ \int_{\Omega} \sigma:\nabla q \ dx + \big(p-\phi(t,x,0),p - \phi(t,x,0)\big) + [\theta,\theta] + [\partial_s \phi , \partial_s \phi]  \right\}.
+\end{equation}
+
+\section{Weak Formulation for the Extended System}
+We may form the weak formulation of the extended system by computing the inner product with a test function $v \in V$.
+\begin{equation}
+\begin{aligned}
+	(\partial_{t} q, v) &= ( p,v ), \\
+	(\partial_{t} p,v) + (p,v) - (\nabla\cdot \sigma,v) &= (f,v), \\
+	(\partial_{t} \phi,v) &= (\theta,v) \\
+	(\partial_t \theta , v) &= (\partial^2_s \phi,v) + \sqrt 2 \delta_0(s) (f,v)
+\end{aligned}
+\end{equation}
+together with the transfer function
+\begin{equation}
+	(f,v) + \int_0^t(f,v) \ d\tau = (p,v).
+\end{equation}
+Note that since the integration is only in the direction of the pseudo-space, then the integral can commute with the inner-product. We may use semi a discretization in the space $\mathcal H$ to compute the energy as
+\begin{equation}
+\begin{aligned}
+	H(q,p,\phi,\theta) & = \frac 1 2 \left\{ (\nabla q, \nabla q)_: + (p-\phi(0),p-\phi(0)) + [\partial_{s}\phi,\partial_{s}\phi] +  [\theta,\theta]\right\} \\
+	&= \frac 1 2 \big\{ (\nabla q, \nabla q)_: + (p-\phi(0),p-\phi(0)) \\
+	&+ \sum_{i=1}^{N} \Delta s_i \int_{\Omega} (\partial_{s}\phi(t,x,s_i))^2 +  (\theta(t,x,s_i)) \ dx \big\} \\
+	&= \frac 1 2 \big\{ (\nabla q, \nabla q)_: + (p-\phi(0),p-\phi(0)) \\
+	&+ \sum_{i=1}^{N} \Delta s_i (\partial_{s}\phi,\partial_{s}\phi)\big|_{s=s_i} + \Delta s_i(\theta,\theta)\big|_{s=s_i} \big\}
+\end{aligned}
+\end{equation}
+
+\end{document}
