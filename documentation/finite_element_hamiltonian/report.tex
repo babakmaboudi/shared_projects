@@ -1,0 +1,224 @@
+\title{Model Reduction of Finite Element Hamiltonian Systems With Respect to The Energy Norm}
+\author{
+        Babak Maboudi Afkham \\
+                Department of Mathematids\\
+        EPFL\\
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Here we summarize the basic concepts on how we generalize the model reduction with respect to energy norm to Hamiltonian systems.
+\end{abstract}
+
+\section{Preliminaries}
+
+\subsection{Finite Element Formulation}
+
+Consider the wave equation:
+\begin{equation} \label{eq:1}
+\begin{aligned}
+	\partial_t q - p &= 0, \\
+	\partial_t p - \Delta q &= f,\\
+	q(x,0) &= q0(x),\\
+	p(x,0) &= p0(x).
+\end{aligned}
+\end{equation}
+defined on the domain $\Omega\times [0,T] \subset \mathbb R^n \times \mathbb R$ We assume that the solution $(q,p)$ to the system of differential equation (\ref{eq:1}) belongs to $H^1_{\text{per}}\times H^1_{\text{per}}$ where
+\begin{equation} \label{eq:4}
+	H^1_{\text{per}} = \{ u \in L^2 : \|\nabla u\| \in L^2 \text{ and } u \text{ is periodic on }\Omega \}.
+\end{equation}
+We denote $(\cdot,\cdot)$ to be $L^2$ inner product. The solution to (\ref{eq:1}) also satisfies the weak form of finding $(q,p)$ such that
+
+\begin{equation} \label{eq:3}
+\begin{aligned}
+	(\partial_t q , u) - (p,u) &= 0, \\
+	(\partial_t p , v) + (\nabla q, \nabla v) &= 0.
+\end{aligned}
+\end{equation}
+The semi-discrete mixed formulation of (\ref{eq:4}) is to find $(q_h,p_h):[0,T]\times[0,T]\to U_h\times V_h$ such that
+\begin{equation} \label{eq:4}
+\begin{aligned}
+	(\partial_t q_h , u_h) - (p_h,u_h) &= 0, \\
+	(\partial_t p_h , v_h) + (\nabla q_h, \nabla v_h) &= 0.
+\end{aligned}
+\end{equation}
+where $U_h$ and $V_h$ are finite dimensional linear subspaces of $H^1_{\text{per}}$. Let $\{\phi_i\}_1^{\text{dim}(U_h)}$ and $\{\psi_i\}_1^{\text{dim}(V_h)}$ be the basis functions for $U_h$ and $V_h$ respectively. We define the mass matrices
+\begin{equation} \label{eq:5}
+\begin{aligned}
+	M_{i,j}^q &= (\phi_j,\phi_i), \\
+	M_{i,j}^p &= (\psi_j,\psi_i).
+\end{aligned}
+\end{equation}
+Further we define the stiffness matrices
+\begin{equation} \label{eq:6}
+\begin{aligned}
+	K^q_{i,j} &= (\phi_j,\psi_i), \\
+	K^p_{i,j} &= (\nabla \psi_j,\nabla \phi_i).
+\end{aligned}
+\end{equation}
+The semi-discrete form (\ref{eq:4}) also satisfies the system of ordinary differential equations
+\begin{equation} \label{eq:7}
+\begin{aligned}
+	M^q q_t - K^q p &= 0, \\
+	M^p p_t + K^p q &= M^p f.
+\end{aligned}
+\end{equation}
+
+The energy corresponding to the Hamiltonian system (\ref{eq:1}) is defined by
+\begin{equation} \label{eq:8}
+	H(q,p) = \frac 1 2 (p,p) + \frac 1 2 (\nabla q, \nabla q).
+\end{equation}
+The Hamiltonian defines an inner product on $(\cdot,\cdot)_H : H^1_{\text{per} }\times H^1_{\text{per} }\to \mathbb R$ denoted by
+\begin{equation} \label{eq:9}
+	( (q_1,p_1) , (q_2,p_2) )_H = \frac 1 2 (p_1,p_2) + \frac 1 2 (\nabla q_1, \nabla q_2),
+\end{equation}
+and the corresponding energy norm $\| (q,p) \|_H = \sqrt{ H(q,p) }$.
+
+An essential feature of Hamiltonian systems is the conservation of the energy and how it evolves under numerical time-integration. For a solution $(q,p)$ to the Hamiltonian equation (\ref{eq:1}) we have:
+\begin{equation} \label{eq:10}
+\begin{aligned}
+	\frac{d}{dt} \|(q,p) \|_H^2 &= \frac 1 2 \left( \frac{d}{dt}(p,p) + \frac{d}{dt}(\nabla q,\nabla q) \right) \\
+	& = (\partial_t p, p) + (\nabla \partial_t q , \nabla q) \\
+	& = ( \Delta q + f , p ) + (\nabla q , \nabla q) \\
+	& = (f,p) - (\nabla q , \nabla q) + (\nabla q , \nabla q) \\
+	& = (f,p)
+\end{aligned}
+\end{equation}
+By taking the integral over $[0,T]$ we obtain
+\begin{equation} \label{eq:11}
+	H(T) = H(0) + \int_0^T (f,p)\ dt.
+\end{equation}
+Now applying the Cauchy-Schwartz inequality yields,
+\begin{equation} \label{eq:12}
+\begin{aligned}
+	H(T) &\leq H(0) + \int_0^T \| f(\cdot,t) \|_{L^2} \cdot \| p(\cdot,t) \|_{L^2} \ dt \\
+	&\leq H(0) + \underset{0\leq t < T}{\sup(H)} \cdot \int_0^T \| f(\cdot,t) \|_{L^2} \ dt
+\end{aligned}
+\end{equation}
+where the last inequality is due to the fact that the energy inner product defines a norm on $H^1_{\text{per}}$.
+
+\subsection{Energy Preservation in Semi-Discrete mixed Formulation}
+Let $U_h\in U$ and $V_h\in V$ be finite dimensional proper subspaces of $U$ and $V$ respectively. Furthermore, suppose that $\pi_u:U\to U_h$ and $p_v:V\to V_h$ be the $L^2$ projection operators. By adding and subtracting $(\pi_Uq,u_h)$ and $(\pi_Vp,v_h)$ to the semi-discrete mixed formulation (\ref{eq:4}) we obtain
+\begin{equation} \label{eq:13}
+\begin{aligned}
+	(\dot q,u_h) + (\pi_U\dot q,u_h) - (\pi_U \dot q, u_h) - (p,u_h) + (\pi_V p , u_h) - (\pi_V p , u_h) &= 0 \\
+	(\dot p,v_h) + (\pi_V \dot p , v_h) - (\pi_V \dot p , vh) + (\nabla q , \nabla v_h) + (\nabla \pi_U q , \nabla v_h ) - (\nabla \pi_U q , \nabla v_h ) &= (f,v_h)
+\end{aligned}
+\end{equation}
+
+Having in mind that $q - \pi_U q$ and $p - \pi_V p$ are orthogonal to $U_h$ and $V_h$, respectively, we can omit many terms from above to obtain
+\begin{equation} \label{eq:14}
+\begin{aligned}
+	(\pi_U\dot q,u_h) - (\pi_V p , u_h) &= (\pi_U \dot q - \dot q , u_h) \\
+	(\pi_V \dot p, v_h) + (\nabla \pi_U q, \nabla v_h) &= (\pi_V \dot p - \dot p, v_h) + (f,v_h)
+\end{aligned}
+\end{equation}
+Now if we add the original weak form (\ref{eq:4}) to the above we retrieve
+\begin{equation} \label{eq:15}
+\begin{aligned}
+	(\pi_U \dot q - \dot q_h , u_h) - (\pi_V p - p_h, u_h ) &= (\pi_U \dot q - \dot q , u_h) \\
+	(\pi_V \dot p - \dot p_h, v_h) + (\nabla \pi_U q - \nabla q_h , \nabla v_h) &= (\pi_V \dot p - \dot p, v_h)
+\end{aligned}
+\end{equation}
+We define new variables $\theta = \pi_U q - q_h \in U_h$, $\rho = \pi_V p - p_h\in V_h$, $\mu = \pi_U q - q$ and  $\xi = \pi_V p  - p$. Then equation (\ref{eq:15}) turns into
+\begin{equation} \label{eq:16}
+\begin{aligned}
+	(\dot \theta , u_h) - (\rho, u_h ) &= (\dot \mu , u_h) \\
+	(\dot \rho,v_h) + (\nabla \theta , \nabla v_h) &= (\dot \xi, v_h)
+\end{aligned}
+\end{equation}
+
+To bound this we use the energy norm
+\begin{equation} \label{eq:17}
+\begin{aligned}
+	\frac d {dt} H(\theta , \rho)^2 = \frac d {dt} \| (\theta,\rho) \|^2 &= (\dot \rho,\rho) + (\nabla \dot \theta,\nabla \theta) \\
+	&= (\dot \xi,\rho) - (\nabla \theta , \nabla \rho) - (\rho , \Delta \theta) - (\dot \mu , \Delta \theta) \\
+	&= (\dot \xi, \rho) + (\nabla \dot \mu , \nabla \theta) \\
+	&= (\dot \xi, \rho) + (\dot \mu, \theta)_{\nabla}
+\end{aligned}
+\end{equation}
+where $(\cdot,\cdot)_{\nabla} = (\nabla \cdot,\nabla \cdot)$. Finally by applying the Cauchy inequality we obtain
+\begin{equation} \label{eq:18}
+\begin{aligned}
+	H^2(\theta,\rho)^2(T) &\leq \int_0^T \| \dot \xi \| \| \rho \| + \| \dot \mu\|_{\nabla} \|\theta \|_\nabla \ dt \\
+	& \leq \sqrt{2} \int_0^T \underbrace{( \| \rho \| + \|\theta \|_\nabla )}_{H(\theta,\rho)} ( \| \dot \xi \| + \| \dot \mu\|_{\nabla} ) \ dt \\
+	& \leq \sqrt{2}\cdot \underset{0\leq t < T}{\sup H(\theta,\rho)} \int_0^T \| \dot \xi \| + \| \dot \mu\|_{\nabla}  \ dt
+\end{aligned}
+\end{equation}
+Here we used the fact that $H(\theta,\rho)(0) = 0 $. And now by a theorem in [Symplectic-mixed finite element approximation of linear acoustic wave equations, Robert C. Kirby · Thinh Tri Kieu] we get
+\begin{equation} \label{eq:19}
+	H^2(\theta,\rho)(T) \leq \sqrt 2 \int_0^T \| \dot \xi \| + \| \dot \mu\|_{\nabla}  \ dt
+\end{equation}
+By assuming regularity on $\dot \xi$ and $\dot \mu$ and with theory of interpolation we can achieve several error estimations on the Finite Element solution.
+
+\subsection{Error Estimation in the Energy Norm}
+We define the error in the energy/Hamiltonian norm as
+\begin{equation} \label{eq:20}
+	\epsilon(t) = \| (q-q_h,p-p_h) \|_H
+\end{equation}
+Using the triangle inequality, we obtain
+\begin{equation} \label{eq:21}
+	\sup \epsilon(t) \leq \sup \underbrace{ \| (\mu, \xi) \|_H }_{I} + \sup \underbrace{ \| (\theta, \rho) \|_H }_{II}
+\end{equation}
+For part $I$ we can directly apply error estimation in the theory of interpolation, under regularity assumptions on $q$ and $p$. Also for part $II$ we can apply the error estimate obtain in (\ref{eq:19}).
+
+\section{Model Reduction With Respect to the Energy Inner Product}
+
+The energy norm appears naturally in the error analysis of the finite element methods. Suppose that $a(\cdot,\cdot)$ is the bilinear form corresponding to the variational formulation
+\begin{equation} \label{eq:22}
+	a(u,v) = L(v), \quad u,v \in V
+\end{equation}
+Where $V$ is some appropriate Hilbert space. The finite element discretization of equation (\ref{eq:22}) is
+\begin{equation} \label{eq:23}
+	a(u_h,v_v) = L(v_h), \quad u_h,v_h\in V_h \subset V
+\end{equation}
+The energy inner product associated to (\ref{eq:24}) is defined as
+\begin{equation} \label{eq:24}
+	(u_h,v_h)_a = a(u_h,v_h),
+\end{equation}
+which implies the energy norm $\| \cdot \|_a$. In vector notation we have
+\begin{equation} \label{eq:25}
+	(u_h,v_h)_a = \bar u^T X \bar v = u,
+\end{equation} 
+where $\bar u$ and $\bar v$ are expansion coefficients of $u_h$ and $v_h$ in the finite element basis, and $X$ is a positive definite matrix, usually taken to be the stiffness matrix. Note that we can rewrite an energy norm in terms of the 2-norm as $\| \bar u \|_a = \| X^{1/2} u \|_2$.
+
+The energy inner product induces a projection. Energy projection of function $u_h$ onto $e$ reads
+\begin{equation} \label{eq:26}
+	(u_h,e)_a \cdot e = \bar u_h^T X \bar e \cdot \bar e = \bar e \bar e^T X u_h. 
+\end{equation}
+Therefore the matrix $\bar e\bar e^T X$ is the energy projection operator in the matrix notation. Now suppose that $W = [ w_1,\dots,w_k ]$ is an expansion coefficients of a basis with respect to some finite element basis. Then the energy projection of a function $s$ onto the span space of $W$ would be $WW^TXs$. It is often desirable to find a basis $W$ that minimizes the energy projection error of a set of functions $\{s_1,\dots,s_N\}$. We have
+\begin{equation} \label{eq:27}
+\begin{aligned}
+	\min \sum_{i=1}^N \| s_i - WW^TXs_i \|_a &= \min \sum_{i=1}^N \| X^{1/2} s_i - X^{1/2 }WW^TXs_i \|_2 \\
+	&= \min \sum_{i=1}^N \| \tilde s_i - \tilde W \tilde W^T\tilde s_i \|_2 \\
+	&= \min \| \tilde S - \tilde W \tilde W^T \tilde S \|_2.
+\end{aligned}
+\end{equation}
+Where $\tilde W = X^{1/2} W$ and $\tilde s_i = X^{1/2} s_i$ and $\tilde S$ is the matrix containing $\tilde s_i$. The Smidth-Mirskey theorem implies that the solution to the above minimization is the truncated singular value decomposition of the matrix $\tilde S$.
+
+\subsection{Symplectic-Model Reduction with respect to an Energy Inner Product}
+The solution of the minimization problem (\ref{eq:27}), the basis $W$, is not necessarily compatible with the time integration of choice, e.g.,a symplectic time integrator. Note that the basis for the snapshots $s_i$ is $X^{-1/2} \tilde W$. Therefore we require the matrix $A = X^{-1/2} \tilde W$ to be a symplectic basis. This means
+\begin{equation}
+	A^T J A = \tilde W^T X^{-1/2} J X^{-1/2} W = J
+\end{equation}
+where $J$ is the standard symplectic matrix. Now if we define the skew-symmetric matrix $\tilde J = X^{-1/2} J X^{-1/2}$ then the minimization (\ref{eq:27}) turns into the constrained minimization
+\begin{equation}
+\begin{aligned}
+	& \min \| \tilde S - \tilde W \tilde W^T \tilde S \|_2, \\
+	& \text{subject to } \tilde W^T \tilde J \tilde W = J.
+\end{aligned}
+\end{equation}
+
+
+\bibliographystyle{abbrv}
+\bibliography{main}
+
+\end{document}
