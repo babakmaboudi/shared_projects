@@ -180,13 +180,13 @@ Where $V$ is some appropriate Hilbert space. The finite element discretization o
 \begin{equation} \label{eq:23}
 	a(u_h,v_v) = L(v_h), \quad u_h,v_h\in V_h \subset V
 \end{equation}
-The energy inner product associated to (\ref{eq:24}) is defined as
+The energy inner product associated to (\ref{eq:23}) is defined as
 \begin{equation} \label{eq:24}
 	(u_h,v_h)_a = a(u_h,v_h),
 \end{equation}
 which implies the energy norm $\| \cdot \|_a$. In vector notation we have
 \begin{equation} \label{eq:25}
-	(u_h,v_h)_a = \bar u^T X \bar v = u,
+	(u_h,v_h)_a = \bar u^T X \bar v,
 \end{equation} 
 where $\bar u$ and $\bar v$ are expansion coefficients of $u_h$ and $v_h$ in the finite element basis, and $X$ is a positive definite matrix, usually taken to be the stiffness matrix. Note that we can rewrite an energy norm in terms of the 2-norm as $\| \bar u \|_a = \| X^{1/2} u \|_2$.
 
@@ -205,13 +205,13 @@ Therefore the matrix $\bar e\bar e^T X$ is the energy projection operator in the
 Where $\tilde W = X^{1/2} W$ and $\tilde s_i = X^{1/2} s_i$ and $\tilde S$ is the matrix containing $\tilde s_i$. The Smidth-Mirskey theorem implies that the solution to the above minimization is the truncated singular value decomposition of the matrix $\tilde S$.
 
 \subsection{Symplectic Model Reduction With Respect to an Energy Inner Product}
-To fit the energy norm into the symplectic framework, we need to modify the energy projections operator. Suppose that $A$ contains the basis vectors (the expansion coefficients of a set of functions in a FEM basis) in its column space. For now We assume this basis is even dimensional. We define the sympelctic projection onto the span of $A$ with respect to the energy weight $X$ as
+To fit the energy norm into the symplectic framework, we need to modify the energy projection operator. Suppose that $A$ contains a set of basis vectors (the expansion coefficients of a set of functions in a FEM basis) in its column space. For now we assume this basis is even dimensional. We define a sympelctic projection onto the span of $A$ with respect to the energy weight $X$ as
 \begin{equation} \label{eq:28}
 	P(s) = AA^\times Xs,
 \end{equation}
 Where $J$ is the standard symplectic matrix and $A^\times$ is defined as
 \begin{equation} \label{eq:29}
-	A^\times = J^T A^T X J
+	A^\times = J^T A^T X J.
 \end{equation}
 Note that if we ensure
 \begin{equation} \label{eq:30}
@@ -220,8 +220,8 @@ Note that if we ensure
 with $I$ the identity matrix, then we see that the operator $AJ^TA^TXJX$ becomes idempotent since
 \begin{equation} \label{eq:31}
 \begin{aligned}
-	(AJ^TA^TXJX)^2 &= A(J^TA^TXJ)XAJ^TA^TXJX \\
-	&= A(A^\times XA)J^TA^TXJX\\
+	(AJ^TA^TXJX)^2 &= A\underbrace{J^TA^TXJ}_{A^\times}XAJ^TA^TXJX \\
+	&= A\underbrace{A^\times XA}_{I}J^TA^TXJX\\
        	&= AJ^TA^TXJX.
 \end{aligned}
 \end{equation}
@@ -233,7 +233,7 @@ We define $\tilde S = X^{1/2}S$, $\tilde A = X^{1/2} A$ and the skew-symmetric m
 \begin{equation} \label{eq:33}
 	\min \| \tilde S - \tilde A J^T {\tilde A}^T \tilde J \tilde S\|_2.
 \end{equation}
-Finally if we define the pseudo inverse ${\tilde A }^+ = J^T A^T X^{1/2} \tilde J$ then minimization (\ref{eq:31}) is equivalent to
+Finally if we define the pseudo inverse ${\tilde A }^+ = J^T A^T X^{1/2} \tilde J = J^T {\tilde A}^T \tilde J$ then the minimization (\ref{eq:31}) is equivalent to
 \begin{equation} \label{eq:34}
 	\min \| \tilde S - \tilde A {\tilde A}^+ \tilde S \|_2.
 \end{equation}
@@ -258,7 +258,7 @@ Suppose that the FEM discretization of a linear Hamiltonian system takes the for
 \begin{equation}
 	\dot x = J L x,
 \end{equation}
-where $x$ is the expansion coefficients of the FEM basis functions and $L$ is some linear positive definite matrix square. Let $A$ be the basis to a reduced subspace such that $x \approx Ay$ where $y$ is the expansion coefficients of $x$ in the basis of $A$. This implies
+where $x$ is the expansion coefficients of the FEM basis functions and $L$ is some linear positive definite square matrix. Let $A$ be the basis to a reduced subspace such that $x \approx Ay$ where $y$ is the expansion coefficients of $x$ in the basis of $A$. This implies
 \begin{equation}
 	A \dot y = J L A y.
 \end{equation}
@@ -266,7 +266,7 @@ Multiplying both sides with $A^\times X$ yields
 \begin{equation}
 	\dot y = A^\times X J L A y,
 \end{equation}
-due to condition (\ref{eq:30}). Having in mind that $L x = \nabla_x H(x)$ for some Hamiltonian function $H$, we recover
+due to the condition (\ref{eq:30}). Having in mind that $L x = \nabla_x H(x)$ for some Hamiltonian function $H$, we recover
 \begin{equation}
 	\nabla_x H(x) = \nabla_x H(Ay) = ( A^\times X )^T \nabla_y H(Ay).
 \end{equation}
@@ -280,19 +280,6 @@ which can be simplified to the system
 \end{equation}
 This is a Poisson system since $\tilde A ^+ \tilde J (\tilde A ^+)^T$ is skew-symmetric. A Poisson integrator can therefore preserve the Hamiltonian along integral curves.
 
-%The solution of the minimization problem (\ref{eq:27}), the basis $W$, is not necessarily compatible with the time integration of choice, e.g.,a symplectic time integrator. Note that the basis for the snapshots $s_i$ is $X^{-1/2} \tilde W$. Therefore we require the matrix $A = X^{-1/2} \tilde W$ to be a symplectic basis. This means
-%\begin{equation}
-%	A^T J A = \tilde W^T X^{-1/2} J X^{-1/2} W = J
-%\end{equation}
-%where $J$ is the standard symplectic matrix. Now if we define the skew-symmetric matrix $\tilde J = X^{-1/2} J X^{-1/2}$ then the minimization (\ref{eq:27}) turns into the constrained minimization
-%\begin{equation}
-%\begin{aligned}
-%	& \min \| \tilde S - \tilde W \tilde W^T \tilde S \|_2, \\
-%	& \text{subject to } \tilde W^T \tilde J \tilde W = J.
-%\end{aligned}
-%\end{equation}
-%
-%
 \bibliographystyle{abbrv}
 \bibliography{main}
 
