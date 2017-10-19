@@ -1,3 +1,10 @@
+*.__*
+*.pdf
+*.dvi
+*.aux
+*.bbl
+*.blg
+*.gz
 *.m~
 *.vtu
 *.aux

@@ -8,6 +8,7 @@
 
 \documentclass[12pt]{article}
 \usepackage{amsmath}
+\usepackage{cleveref}
 
 \begin{document}
 \maketitle
@@ -83,9 +84,9 @@ Then the energy associated to the extended system (\ref{eq:6}) is
 	H(q,p,\phi,\theta) = \frac 1 2 \left\{ \int_{\Omega} \sigma:\nabla q \ dx + \big(p-\phi(t,x,0),p - \phi(t,x,0)\big) + [\theta,\theta] + [\partial_s \phi , \partial_s \phi]  \right\}.
 \end{equation}
 
-\section{Weak Formulation for the Extended System}
+\section{Weak Formulation for the Extended System} \label{sec:weak-form}
 We may form the weak formulation of the extended system by computing the inner product with a test function $v \in V$.
-\begin{equation}
+\begin{equation} \label{eq:weak-form-1}
 \begin{aligned}
 	(\partial_{t} q, v) &= ( p,v ), \\
 	(\partial_{t} p,v) + (p,v) - (\nabla\cdot \sigma,v) &= (f,v), \\
@@ -94,7 +95,7 @@ We may form the weak formulation of the extended system by computing the inner p
 \end{aligned}
 \end{equation}
 together with the transfer function
-\begin{equation}
+\begin{equation} \label{eq:weak-form-2}
 	(f,v) + \int_0^t(f,v) \ d\tau = (p,v).
 \end{equation}
 Note that since the integration is only in the direction of the pseudo-space, then the integral can commute with the inner-product. We may use semi a discretization in the space $\mathcal H$ to compute the energy as
@@ -107,5 +108,43 @@ Note that since the integration is only in the direction of the pseudo-space, th
 	&+ \sum_{i=1}^{N} \Delta s_i (\partial_{s}\phi,\partial_{s}\phi)\big|_{s=s_i} + \Delta s_i(\theta,\theta)\big|_{s=s_i} \big\}
 \end{aligned}
 \end{equation}
+
+\subsection{Existence and uniqueness of the solution}
+Let us rewrite \cref{eq:weak-form-1,eq:weak-form-2}
+\begin{equation} \label{eq:weak-form-3}
+\begin{aligned}
+	(\partial_{t} q, u_q) &= ( \tilde{f},u_q ), \\
+	(\partial_{t} p,u_p) - (\nabla\cdot \sigma,u_p) &= (f,u_p), \\
+	(\partial_{t} \phi,u_\phi) &= (\theta,u_\phi) \\
+	(\partial_t \theta , u_\theta) &= (\partial^2_s \phi,u_\theta) + \sqrt 2 \delta_0(s) (\tilde{f},u_\theta) \\
+	(\tilde{f},u_{\tilde{f}}) + \int_0^t(\tilde{f},u_{\tilde{f}}) \ d\tau &= (p,u_{\tilde{f}}).
+\end{aligned}
+\end{equation}
+
+Notice that the vector of unknowns and the test functions
+\begin{align}
+U =
+\begin{bmatrix}
+q \\ p \\ \phi \\ \theta \\ \tilde{f}
+\end{bmatrix}
+V =
+\begin{bmatrix}
+u_q \\ u_p \\ u_\phi \\ u_\theta \\ u_{\tilde{f}}
+\end{bmatrix}
+\end{align}
+are of the same dimension as required for well-posedness of a weak formulation. Rewriting \Cref{eq:weak-form-3} we get the following defining equation
+\begin{align}
+a(\partial_t U,V) + b(U,V) = l_f(V)
+\end{align}
+where $a,b,$ and $l_f$ are bilinear and linear forms respectively with their obvious definitions. A time-discrete formulation of this equation is
+\begin{align}
+c(U^k, V) = \tilde{l_f}(V)
+\end{align}
+where $c = a + \Delta t b$ and $\tilde{l_f} = \Delta t l_f - a$. Therefore, according to Lax Milgram theorem, the weak form \eqref{eq:weak-form-3} has a unique solution \emph{assuming} the bilinear form $c$ is coercive and bounded and the linear form $\tilde{l_f}$ belongs to the dual space $V'$.
+
+\cite{WSH14}
+
+\bibliographystyle{abbrv}
+\bibliography{anm}
 
 \end{document}

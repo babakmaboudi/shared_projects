@@ -34,7 +34,7 @@ class Wave:
 		self.damping = 1; # damping flag and scaling: 0 == no damping, nonzero == scaling factor
 		
 		# numerical parameters
-		self.MAX_ITER = 1000
+		self.MAX_ITER = 10
 		self.dt = 0.01
 		self.theta = 0.5;
 
@@ -65,9 +65,6 @@ class Wave:
 		#define right hand side function
 		self.f = Constant((0, 0, -self.rho*self.g))
 		self.T = Constant((0, 0, 0))
-		
-		#initialize the energy vector
-		self.e_vec = np.array([0])
 		
 		#define the weak form of the enlarged system for implicit-midpoint scheme
 		self.aq = inner(self.q,self.v)*dx \
@@ -103,7 +100,7 @@ class Wave:
 
 		self.K = assemble(self.k) 	# assemble stiffness matrix
 		self.M = assemble(self.m) 	# assemble mass matrix
-		self.D = self.M 		# damping matrix
+		self.D = 0.01*self.M 		# damping matrix
 		self.K_mat = np.matrix( self.K.array() )
 		self.M_mat = np.matrix( self.M.array() )
 		self.D_mat = self.damping*np.matrix( self.D.array() )
@@ -164,6 +161,9 @@ class Wave:
 		self.snap_P = np.zeros((528,1))
 		self.snap_R = np.zeros((528,1))
 
+		#initialize the energy vector
+		self.e_vec = np.empty((self.MAX_ITER))
+		
 		#loop over time steps
 		for i in range(0,self.MAX_ITER):
 			print(i)
@@ -192,12 +192,15 @@ class Wave:
 			self.p0.assign( self.p_new )
 			self.r0.assign( self.r_new )
 
-			self.E = assemble(energy(self.damping*self.r0 +(not self.damping)*self.q0,self.p0,self.f,self.lambda_,self.mu,self.d))
-			self.e_vec = np.append(self.e_vec,self.E)
+			self.E = assemble(energy(self.q0, self.damping*self.r0 +(not self.damping)*self.p0, self.f, self.lambda_, self.mu, self.d))
+			self.e_vec[i] = self.E
 			self.r_vec += self.r_new
 			
 	def plot_energy( self ):
-		plt.plot(self.e_vec + self.strings_energy())
+		self.energy_vec = self.e_vec + self.damping*self.strings_energy()
+		self.energy_vec.dump("results/energy_vec.dat")
+		plt.plot(range(0,self.MAX_ITER),self.energy_vec,'r--',range(0,self.MAX_ITER),self.e_vec, 'b-.',range(0,self.MAX_ITER), self.energy_vec -self.e_vec, 'k.')
+		#plt.plot(range(0,self.MAX_ITER),self.e_vec)
 		plt.show()
 
 	def save_vtk_result( self ):
@@ -235,22 +238,53 @@ class Wave:
 		
 		#return np.trapz([np.norm(self.sqrtD * np.reshape(self.phi_s[i, j, :], (527)), 2) **elpow** 2 for i in range(0,527)] + [np.norm(self.sqrtD * np.reshape(self.phi_t[i, j, :], (527)), 2) **elpow** 2 for i in range(0,527)] for j in range(0,self.MAX_ITER))
 		#store initial data
-		  self.phi_mat = np.zeros((528,self.MAX_ITER+1))
-		  self.phi = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1))
-		  self.phi_s = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
-		  self.phi_t = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		  self.phi_mat = np.empty((528,self.MAX_ITER))
+		  self.phi = np.empty((self.MAX_ITER,self.MAX_ITER))
+		  self.phi_s = np.empty((self.MAX_ITER,self.MAX_ITER,528))
+		  self.phi_t = np.empty((self.MAX_ITER,self.MAX_ITER,528))
+		  self.ass_Phi = np.empty((self.MAX_ITER,self.MAX_ITER))
+		  self.int_ass_Phi = np.empty((self.MAX_ITER))
 		  
 		  # evaluate sqrtm beforehand
 		  self.sqrtD = sqrtm(self.D_mat/2)
 		  
-		  for i in range(0,self.MAX_ITER+1):
+		  for i in range(0,self.MAX_ITER):
 			  self.phi_mat[:,i] = np.reshape(self.sqrtD*self.snap_Q[:,i],528)
 			  		  
+		  self.X = TensorFunctionSpace(self.mesh, 'P', 1)		  
+		  self.temp = Function(self.V)
+		  #self.temp.vector().array()[:] = np.zeros((self.MAX_ITER+1,self.MAX_ITER+1,528))
+		  
 		  # evaluate strings' displacements
 		  for i in range(0,527):
 			  self.phi[:, 0] = self.phi_mat[i, :]
-			  for j in range(1,self.MAX_ITER+1):
+			  for j in range(1,self.MAX_ITER):
 				  self.phi[:, j] = shift(self.phi[:,0],j,cval=0)
-			  [self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi)
+			  [self.phi_s[:, :, i], self.phi_t[:, :, i]] = np.gradient(self.phi) #TODO: already have the time derivative of q(t)
+			
+		  for i in range(0,self.MAX_ITER):
+			  for j in range(0,self.MAX_ITER):
+				  self.Phi_s = self.temp
+				  self.Phi_s.vector().set_local( self.phi_s[i,j,:])
+				  
+				  self.Phi_t = self.temp
+				  self.Phi_t.vector().set_local( self.phi_t[i,j,:])
+				  
+				  self.ass_Phi[i,j] = assemble(inner(self.Phi_s,self.Phi_s)*dx) +assemble(inner(self.Phi_t,self.Phi_t)*dx)
+			  self.int_ass_Phi[i] = np.trapz(self.ass_Phi[i,:])
+			  
+		  return self.int_ass_Phi
+				  
 						  
-		  return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)]) for j in range(0,self.MAX_ITER+1)]
+
+		  #return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for j in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for j in range(0,self.MAX_ITER+1)]) for i in range(0,self.MAX_ITER+1)]
+		  #Phi_s = Function(self.V).vector().set_local(self.phi_s[i, j, :])
+		  #[np.trapz([assemble(inner(self.Phi_s[i, j, :], self.Phi_s[i, j, :])*dx) for j in range(0,self.MAX_ITER+1)] + [assemble(inner(self.Phi_t[i, j, :], self.Phi_t[i, j, :])*dx) for j in range(0,self.MAX_ITER+1)]) for i in range(0,self.MAX_ITER+1)]
+		  ##temp = Function(self.V)
+		  ##[([temp[i, j, :].vector().set_local( self.phi_s[i, j, :] ) for j in range(0, self.MAX_ITER+1)]) for i in range(0, self.MAX_ITER+1)]
+		  ##temp.update()
+		  ##[np.trapz([assemble(inner(temp[i,j,:],temp[i,j,:])*dx) for j in range(0, self.MAX_ITER+1)]) for i in range(0, self.MAX_ITER+1)]
+		  #return 0
+
+		  #return [np.trapz([pow(np.linalg.norm(self.phi_s[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)] + [pow(np.linalg.norm(self.phi_t[i, j, :], 2) ,2) for i in range(0,self.MAX_ITER+1)]) for j in range(0,self.MAX_ITER+1)]
+
