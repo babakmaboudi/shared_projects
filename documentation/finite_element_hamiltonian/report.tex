@@ -10,6 +10,8 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{todonotes}
+\usepackage{cleveref}
 
 \begin{document}
 \maketitle
@@ -258,7 +260,8 @@ Suppose that the FEM discretization of a linear Hamiltonian system takes the for
 \begin{equation}
 	\dot x = J L x,
 \end{equation}
-where $x$ is the expansion coefficients of the FEM basis functions and $L$ is some linear positive definite square matrix. Let $A$ be the basis to a reduced subspace such that $x \approx Ay$ where $y$ is the expansion coefficients of $x$ in the basis of $A$. This implies
+where $x$ is the expansion coefficients of the FEM basis functions and $L$ is some linear positive definite square 
+\todo[prepend]{$L$ should also be symmetric for the system to be Hamiltonian.} matrix. Let $A$ be the basis to a reduced subspace such that $x \approx Ay$ where $y$ is the expansion coefficients of $x$ in the basis of $A$. This implies
 \begin{equation}
 	A \dot y = J L A y.
 \end{equation}
@@ -275,10 +278,32 @@ This implies that
 	\dot y = A^\times X J (A^\times X)^T A^T L A y = A^\times X J X (A^\times)^T A^T L A y,
 \end{equation}
 which can be simplified to the system
-\begin{equation}
+\begin{equation} \label{eq:reduced-poisson}
 	\dot y = \tilde A ^+ \tilde J (\tilde A ^+)^T  A^T L A y.
 \end{equation}
 This is a Poisson system since $\tilde A ^+ \tilde J (\tilde A ^+)^T$ is skew-symmetric. A Poisson integrator can therefore preserve the Hamiltonian along integral curves.
+
+\subsection{Geometric integration of the Poisson system \eqref{eq:reduced-poisson} }
+\Cref{eq:reduced-poisson} is a a non-canonical Hamiltonian system with constant non-canonical \todo[prepend]{is the matrix invertible?}invertible skew-symmetric structure matrix $\mathbb{J} := \tilde A ^+ \tilde J (\tilde A ^+)^T$ and symmetric matrix $A^T L A$ (see todo above). That it is a symplectic system can be seen from the following computation. The variational form associated with the equation is
+\begin{align*}
+\dot dy &= \mathbb{J} A^T L A dy, \\
+\implies \dot dy \wedge \mathbb{J}dy &= 0, \\
+\implies \frac{d}{dt} dy \wedge \mathbb{J}dy &= 0.
+\end{align*}
+Here we have used symmetry and skew symmetry of the involved matrices to get the penultimate equation. Symplectic ensures preservation of phase space volume among other things. One can now use a symplectic integrator of choice to preserve the symplectic structure. e.g. midpoint rule gives
+\begin{align} \label{eq:imp}
+D_t y = \mathbb{J} A^T L A A_t y
+\end{align}
+where $D_t$ and $A_t$ are standard forward difference and averaging operators. The associated variational equation is
+\begin{align*}
+D_t y &= \mathbb{J} A^T L A A_t y,\\
+\implies D_t dy &= \mathbb{J} A^T L A A_t dy, \\
+\implies D_t dy \wedge \mathbb{J} A_t dy &= \mathbb{J} A^T L A A_t dy \wedge \mathbb{J} A^T L A A_t dy, \\
+\implies dy^{n+1} \wedge \mathbb{J} dy^{n+1} &= dy^{n} \wedge \mathbb{J} dy^{n}.
+\end{align*}
+Here we have again used the symmetry and skew-symmetry of the involved matrices and superscript $n$ is the discrete time index. Therefore the implicit midpoint rule \eqref{eq:imp} is a symplectic integrator. It is probably worth remarking that we have only used the skew-symmetry of the non-canonical structure matrix $\mathbb{J}$ and no other property of the matrix was needed.
+
+Generally, it is possible to do a coordinate transformation to get a Hamiltonian system with canonical $\mathbb{J}$ (identities at the off diagonal blocks), but I cannot seem to find the reference right now. I will add it later.
 
 \bibliographystyle{abbrv}
 \bibliography{main}
