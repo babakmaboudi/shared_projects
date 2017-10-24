@@ -303,7 +303,33 @@ D_t y &= \mathbb{J} A^T L A A_t y,\\
 \end{align*}
 Here we have again used the symmetry and skew-symmetry of the involved matrices and superscript $n$ is the discrete time index. Therefore the implicit midpoint rule \eqref{eq:imp} is a symplectic integrator. It is probably worth remarking that we have only used the skew-symmetry of the non-canonical structure matrix $\mathbb{J}$ and no other property of the matrix was needed.
 
-Generally, it is possible to do a coordinate transformation to get a Hamiltonian system with canonical $\mathbb{J}$ (identities at the off diagonal blocks), but I cannot seem to find the reference right now. I will add it later.
+In the theory of symplectic MOR, it is often convenient to reduce a canonical Hamiltonian system. In order to transform $\mathbb{J}$ into a canonical matrix, consider the following
+\begin{align*}
+\mathbb{J} = \tilde A ^+ \tilde J (\tilde A ^+)^T = J A^T X J XJXJX^TAJ.
+\end{align*}
+\emph{Assuming} $A$ and $X$ are diagonal matrices, the matrix $\mathbb{J}$ is block diagonal with zero diagonal blocks i.e. it has the following form
+\begin{align*}
+\mathbb{J} = \begin{bmatrix}
+0 & V^T \\ -V & 0
+\end{bmatrix}
+\end{align*}
+Here $V$ is a square matrix. Then there exists a congruent transformation $z = Qy$ with
+\begin{align*}
+Q = \begin{bmatrix}
+I & 0 \\ 0 & V^{-1}
+\end{bmatrix}
+\end{align*}
+such that
+\begin{align*}
+Q\mathbb{J}Q^T = \begin{bmatrix}
+0 & I \\ -I & 0
+\end{bmatrix} =: \mathbb{J}_{2k}
+\end{align*}
+where $k$ is the reduced dimension. With this congruent transformation, the non-canonical system \eqref{eq:reduced-poisson} turns into the following canonical Hamiltonian system
+\begin{align}
+\dot z = \mathbb{J}_{2k} A^TLAQ^{-1} z.
+\end{align}
+More about congruent transformation $Q$ can be found at e.g. \cite{Peng2016,Eves1980}.
 
 \bibliographystyle{abbrv}
 \bibliography{main}
