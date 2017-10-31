@@ -107,6 +107,44 @@ Now applying the Cauchy-Schwartz inequality yields,
 \end{equation}
 where the last inequality is due to the fact that the energy inner product defines a norm on $H^1_{\text{per}}$.
 
+\subsection{Circumventing non-Hamiltonianness of \cref{eq:7}}
+Since the equation is not-Hamiltonian unless $M^{-1}K$ commute, we propose the following semi-discrete formulation of \eqref{eq:1}:
+\begin{equation}
+\begin{aligned}
+	(\partial_{tt} \psi_h , u_h) + (\nabla \psi_h, \nabla u_h) = (\mathfrak{f},u_h).
+\end{aligned}
+\end{equation}
+where $\psi_h,\mathfrak{f}:[0,T] \to U_h \subset H^1_{per}$. Let $\{\phi_i\}_1^{dim(U_h)}$ be the basis of $U_h$ and define the mass and stiffness matrices to be
+\begin{align}
+M_{i,j} &= (\phi_j,\phi_i),\\
+K_{i,j} &= (\nabla \phi_j,\nabla \phi_i).
+\end{align}
+Then the following time-continuous equation follows
+\begin{align}
+M\ddot q +K q = M f
+\end{align}
+Here $q$ and $f$ are suitable finite coefficient functions in the basis expansion. This is a Canonical Hamiltonian system
+\begin{align}
+\dot x = J (Lx + h)
+\end{align}
+with 
+$$x = \begin{bmatrix}
+q \\ p
+\end{bmatrix},$$ $J$ the canonical structure matrix,
+$$L = \begin{bmatrix}
+K & \\ & M^{-1}
+\end{bmatrix},$$
+ $$h = \begin{bmatrix}
+-Mf \\ 0
+\end{bmatrix},$$
+and the Hamiltonian
+$$H = \frac{1}{2}(\nabla \psi, \nabla \psi) + \frac{1}{2}(\psi_t,\psi_t) +(\psi,\mathfrak{f})= \frac{1}{2}x^TLx+x^Th.$$
+
+Further study:
+\begin{enumerate}
+\item $L$ seems to be the natural weight matrix $X$ for energy norm.
+\end{enumerate}
+
 \subsection{Energy Preservation in Semi-Discrete mixed Formulation}
 Let $U_h\in U$ and $V_h\in V$ be finite dimensional proper subspaces of $U$ and $V$ respectively. Furthermore, suppose that $\pi_u:U\to U_h$ and $p_v:V\to V_h$ be the $L^2$ projection operators. By adding and subtracting $(\pi_Uq,u_h)$ and $(\pi_Vp,v_h)$ to the semi-discrete mixed formulation (\ref{eq:4}) we obtain
 \begin{equation} \label{eq:13}
@@ -247,8 +285,9 @@ which is satisfied when
 \begin{equation} \label{eq:36}
 	\tilde A ^T \tilde J \tilde A = J.
 \end{equation}
+\todo[inline]{did you mean $\tilde A ^T \tilde J \tilde A = \tilde J$? If yes then, this will mean that $\tilde A ^+ \tilde J (\tilde A ^+)^T = \tilde J$, which is still not canonical but closer.}
 The later condition holds when $\tilde A$ is a Poisson transformation. Therefore the minimization (\ref{eq:32}) is now rewritten as
-\begin{equation}
+\begin{equation} \label{eq:symplectic-basis}
 \begin{aligned}
 	& \min \| \tilde S - \tilde A {\tilde A}^+ \tilde S \|_2, \\
 	&\text{subject to } \tilde A ^T \tilde J \tilde A = J.
@@ -307,7 +346,7 @@ In the theory of symplectic MOR, it is often convenient to reduce a canonical Ha
 \begin{align*}
 \mathbb{J} = \tilde A ^+ \tilde J (\tilde A ^+)^T = J A^T X J XJXJX^TAJ.
 \end{align*}
-\emph{Assuming} $A$ and $X$ are diagonal matrices, the matrix $\mathbb{J}$ is block diagonal with zero diagonal blocks i.e. it has the following form
+\emph{Assuming} $A$ and $X$ are block diagonal matrices, the matrix $\mathbb{J}$ is anti-block diagonal with zero diagonal blocks i.e. it has the following form
 \begin{align*}
 \mathbb{J} = \begin{bmatrix}
 0 & V^T \\ -V & 0
@@ -330,6 +369,8 @@ where $k$ is the reduced dimension. With this congruent transformation, the non-
 \dot z = \mathbb{J}_{2k} A^TLAQ^{-1} z.
 \end{align}
 More about congruent transformation $Q$ can be found at e.g. \cite{Peng2016,Eves1980}.
+
+\todo[inline]{This congruent transformation doesn't work because $A$ already satisfies symplecticness constraint.}
 
 \bibliographystyle{abbrv}
 \bibliography{main}
