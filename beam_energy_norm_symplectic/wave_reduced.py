@@ -37,17 +37,17 @@ class Wave_Reduced:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 100000
-		self.dt = 0.0001
+		self.MAX_ITER = 3000
+		self.dt = 0.01
 
-		#load reduced basis and weight matrix
+		#load reduced basis
 		self.Phi = np.load( "RB.dat" )
-		self.X_mat = np.load( "X_mat.dat" )
-#		self.X_mat = np.load( "X_mat_eye.dat" )
-		self.X_mat = np.matrix(self.X_mat)
+		self.X = np.load( "X_mat_red.dat" )
+		self.Phi = np.matrix(self.Phi)
 
 		self.N = np.int_( self.Phi.shape[0]/2 );
 		self.K = np.int_( self.Phi.shape[1]/2 );
+
 
 	def initiate_fem( self ):
 		#define mesh
@@ -65,137 +65,142 @@ class Wave_Reduced:
 
 		#define functions
 		q = TrialFunction(self.V)
-		p = TrialFunction(self.V)
+#		p = TrialFunction(self.V)
 		self.d = q.geometric_dimension()
 		v = TestFunction(self.V)
 
-		#define mass and stifness matrices
-		kq = inner(p,v)*dx
-		Lq = inner(self.T,v)*dx
 		aq = inner(q,v)*dx
-		Kq, self.bq = assemble_system( kq, Lq, self.bc )
+		kq = -inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(v))*dx
+		Lq = inner(self.f,v)*dx
+
+		Kq, bq = assemble_system( kq, Lq, self.bc )
 		self.Aq, dummy = assemble_system( aq, Lq, self.bc )
-		Kq_mat = np.matrix( Kq.array() ) 
-		Aq_mat = np.matrix( self.Aq.array() )
 
+		#define the mass and stiffness matrices
+		M = np.matrix( self.Aq.array() )
+		self.M_inv = np.linalg.inv(M)
+		self.Kmat = np.matrix( Kq.array() )
 
-		kp = -inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(v))*dx
-		Lp = inner(self.f,v)*dx
-		ap = inner(p,v)*dx
-		Kp, self.bp = assemble_system( kp, Lp, self.bc )
-		self.Ap, dummy = assemble_system( ap, Lp, self.bc )
-		Kp_mat = np.matrix( Kp.array() )
-		Ap_mat = np.matrix( self.Ap.array() )
+		#define the force term
+		c = np.matrix( bq.array() )
+		self.cp = np.transpose( c )
 
-		A_inv = np.linalg.inv( Ap_mat )
-		self.L = A_inv*Kp_mat
+		#define reduced matrices
+		temp1 = np.concatenate([np.zeros([self.N,self.N]),self.M_inv],1)
+		temp2 = np.concatenate([self.Kmat,np.zeros([self.N,self.N])],1)
 
-#		self.bc.apply(self.Ap,self.bp)
-		c = np.matrix( self.bp.array() )
-		c = np.transpose( c )
-		self.cp = A_inv*c
-
-		#defining large vectors and matrices
-		temp1 = np.concatenate( ( np.zeros([self.N,self.N]) , np.eye(self.N) ) , 1 )
-		temp2 = np.concatenate( ( self.L , np.zeros([self.N,self.N]) ) , 1 )
-		L_mat = np.concatenate( (temp1,temp2), 0 )
-		c_vec = np.concatenate( (np.zeros([self.N,1]),self.cp) )
-
-		#construct reduced matrices
-#		self.X_mat = np.matrix(self.X_mat)
-#		proj_mat = self.X_mat*self.X_mat*self.Phi
-#		self.Lr = np.transpose( proj_mat )*L_mat*proj_mat
-#		self.cr = np.transpose( proj_mat )*c_vec
-
-#		self.Phi = np.matrix(self.Phi)
-#		self.Lr = np.transpose(self.Phi)*L_mat*self.Phi
-#		self.cr = np.transpose(self.Phi)*c_vec
-
-#		self.Phi = np.matrix(self.Phi)
-#		self.Lr = np.transpose(self.Phi)*self.X_mat*self.X_mat*L_mat*self.Phi
-#		self.cr = np.transpose(self.Phi)*self.X_mat*self.X_mat*c_vec
-
+		mat = np.concatenate([temp1,temp2],0)
+		
 		Jk = construct_Jk(self.K)
 		Jk = np.matrix(Jk)
 		Jn = construct_Jk(self.N)
 		Jn = np.matrix(Jn)
 
-		self.Phi = np.matrix(self.Phi)
-		self.X_mat = np.matrix(self.X_mat)
-		Phi_cross = np.transpose(Jk)*np.transpose(self.Phi)*self.X_mat*self.X_mat*Jn
+		Phi_cross = np.transpose(Jk)*np.transpose(self.Phi)*self.X*self.X*Jn
 
-		self.Lr = Phi_cross*self.X_mat*self.X_mat*L_mat*self.Phi
-		self.cr = Phi_cross*self.X_mat*self.X_mat*c_vec
+#		self.Lr = np.transpose(self.Phi)*mat*self.Phi
+		self.Lr = Phi_cross*self.X*self.X*mat*self.Phi
 
-#		Aplus = np.transpose(Jk)*np.transpose(self.Phi)*self.X_mat*self.X_mat*Jn*self.X_mat
-#		S = Aplus*self.X_mat*Jn*self.X_mat*np.transpose(Aplus)
-#		Lin = np.transpose(self.Phi)*np.transpose(Jn)*L_mat*self.Phi
-
-		self.L11 = self.Lr[0:self.K,0:self.K]
-		self.L12 = self.Lr[0:self.K,self.K:2*self.K]
-		self.L21 = self.Lr[self.K:2*self.K,0:self.K]
-		self.L22 = self.Lr[self.K:2*self.K,self.K:2*self.K]
-		self.L1 = self.Lr[0:self.K,:]
-		self.L2 = self.Lr[self.K:2*self.K,:]
-		
-		self.c1 = self.cr[0:self.K,:]
-		self.c2 = self.cr[self.K:2*self.K,:]
+		f_term = np.concatenate([np.zeros([self.N,1]),self.cp],0)
+#		self.f_termr = np.transpose(self.Phi)*f_term
+		self.f_termr = Phi_cross*self.X*self.X*f_term
 
 	def symplectic_euler( self ):
-		vqr0 = np.zeros(self.c1.shape)
-		vpr0 = np.zeros(self.c2.shape)
 
-		inv_factor = np.eye(self.K) - self.dt*self.L11
-		inv_factor = np.linalg.inv( inv_factor )
+		vq0 = np.zeros(self.cp.shape)
+		vp0 = np.zeros(self.cp.shape)
 
-		c1_factor = self.dt*inv_factor*self.c1
+		vtkfile = File('results/solution.pvd')
+		f = Function(self.V)
 
-		self.snap = np.zeros( [2*self.K,1] )
+		self.snap_Q = np.zeros( self.cp.shape )
+		self.snap_P = np.zeros( self.cp.shape )
 
 		for i in range(0,self.MAX_ITER):
 			print(i)
 
-			vqr0 = inv_factor*vqr0 + self.dt*inv_factor*self.L12*vpr0 + c1_factor
-			vpr0 = vpr0 + self.dt*self.L21*vqr0 + self.dt*self.L22*vpr0 + self.dt*self.c2
-			temp = np.concatenate( (vqr0,vpr0),0 )
-			self.snap = np.concatenate( (self.snap,temp),1 )
+			vq0 = vq0 + self.dt*self.M_inv*vp0
+			
+			vp0 = vp0 + self.dt*self.Kmat*vq0 + self.dt*self.cp
+
+			self.snap_Q = np.concatenate( (self.snap_Q,vq0) , 1 )
+			self.snap_P = np.concatenate( (self.snap_P,vp0) , 1 )
+		
+			f.vector().set_local( vq0 )
+			if np.mod(i,10) == 0:
+				vtkfile << (f,i*self.dt)
 
 	def mid_point( self ):
 		vtkfile = File('results_reduced/solution.pvd')
 		f = Function(self.V)
 
-		K = self.cr.shape[0]
+		K = self.f_termr.shape[0]
 		x0 = np.zeros([K,1])
 
 		inv_factor = np.linalg.inv( np.eye(K) - self.dt/2*self.Lr )
 		L = inv_factor*( np.eye(K) + self.dt/2*self.Lr )
 
-		c_factor = self.dt*inv_factor*self.cr
+		c_factor = self.dt*inv_factor*self.f_termr
+
+#		energy_mat = np.concatenate([-temp2,temp1],0)
 		
 
+#		self.snap_Q = np.zeros( self.cp.shape )
+#		self.snap_P = np.zeros( self.cp.shape )
+
 		for i in range(0,self.MAX_ITER):
-#			print(i)
+			print(i)
 
 			x0 = L*x0 + c_factor
-#			x0 = self.dt*self.Lr*x0 + self.dt*self.cr
+#			print(np.transpose(x0)*energy_mat*x0 - np.transpose(x0) * np.concatenate([np.zeros([N,1]),self.cp],0))
+
+#			self.snap_Q = np.concatenate( (self.snap_Q,x0[0:N,:]) , 1 )
+#			self.snap_P = np.concatenate( (self.snap_P,x0[N:2*N,:]) , 1 )
 
 			print(np.linalg.norm(x0))
-#			f.vector().set_local( x0[0:N,:] )
-			if np.mod(i,1000) == 0:
-				temp = self.Phi*x0
-				temp = temp[0:528,:]
-				f.vector().set_local( temp )
-				vtkfile << (f,i*self.dt)
-
-	def save_vtk_result( self ):
-		f = Function(self.V)
-
-		vtkfile = File('results_reduced/solution.pvd')
-		for i in range(0,self.MAX_ITER+1):
-			coef = self.Phi*self.snap[:,i]
-			coef = coef[0:self.N,:]
-			f.vector().set_local( coef )
+			full = self.Phi*x0
+			f.vector().set_local( full[0:self.N,:] )
 			if np.mod(i,10) == 0:
 				vtkfile << (f,i*self.dt)
 
+	def generate_X_matrix( self ):
+		q = TrialFunction(self.V)
+		f = Function(self.V)
+		v = v = TestFunction(self.V)
+		k = inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(v))*dx
+		L = inner(f,v)*dx
+
+		K, dummy = assemble_system( k, L, self.bc )
+		Kq_mat = np.matrix( K.array() )
+
+		p = TrialFunction(self.V)
+		k = inner(p,v)*dx
+
+		K, dummy = assemble_system( k, L, self.bc )
+		Kp_mat = np.matrix( K.array() )
+
+		temp1 = np.concatenate( [Kq_mat,np.zeros(Kq_mat.shape)] , 1 )
+		temp2 = np.concatenate( [np.zeros(Kp_mat.shape),Kp_mat] , 1 )
+		X_mat = np.concatenate( [temp1,temp2] , 0 )
+
+		Xsqrt = scla.sqrtm(X_mat)
+		Xsqrt = np.matrix( np.real(Xsqrt) )
+		Xsqrt.dump("X_mat.dat")
+
+		N = self.cp.shape[0]
+		temp = np.eye(2*N)
+		temp.dump("X_mat_eye.dat")
+		
+
+
+#		X_mat = np.concatenate( (Kmat,np.zeros(Kmat.shape)) , 1 )
+#		temp = np.concatenate( (np.zeros(Kmat.shape),np.eye(Kmat.shape[0])) , 1 )
+#		X_mat = np.concatenate( (X_mat,temp) , 0 )
+#
+#		Xsqrt = scla.sqrtm(X_mat)
+#		Xsqrt = np.matrix( Xsqrt )
+
+	def save_snapshots( self ):
+		self.snap_Q.dump("snap_Q.dat")
+		self.snap_P.dump("snap_P.dat")
 

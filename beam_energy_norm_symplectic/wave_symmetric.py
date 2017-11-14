@@ -49,35 +49,25 @@ class Wave:
 
 		#define functions
 		q = TrialFunction(self.V)
-		p = TrialFunction(self.V)
+#		p = TrialFunction(self.V)
 		self.d = q.geometric_dimension()
 		v = TestFunction(self.V)
 
-		#define mass and stifness matrices
-		kq = inner(p,v)*dx
-		Lq = inner(self.T,v)*dx
 		aq = inner(q,v)*dx
-		Kq, self.bq = assemble_system( kq, Lq, self.bc )
+		kq = -inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(v))*dx
+		Lq = inner(self.f,v)*dx
+
+		Kq, bq = assemble_system( kq, Lq, self.bc )
 		self.Aq, dummy = assemble_system( aq, Lq, self.bc )
-		Kq_mat = np.matrix( Kq.array() ) 
-		Aq_mat = np.matrix( self.Aq.array() )
 
+		#define the mass and stiffness matrices
+		M = np.matrix( self.Aq.array() )
+		self.M_inv = np.linalg.inv(M)
+		self.K = np.matrix( Kq.array() )
 
-		kp = -inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(v))*dx
-		Lp = inner(self.f,v)*dx
-		ap = inner(p,v)*dx
-		Kp, self.bp = assemble_system( kp, Lp, self.bc )
-		self.Ap, dummy = assemble_system( ap, Lp, self.bc )
-		Kp_mat = np.matrix( Kp.array() )
-		Ap_mat = np.matrix( self.Ap.array() )
-
-		A_inv = np.linalg.inv( Ap_mat )
-		self.L = A_inv*Kp_mat
-
-#		self.bc.apply(self.Ap,self.bp)
-		c = np.matrix( self.bp.array() )
-		c = np.transpose( c )
-		self.cp = A_inv*c
+		#define the force term
+		c = np.matrix( bq.array() )
+		self.cp = np.transpose( c )
 
 	def symplectic_euler( self ):
 
@@ -93,17 +83,15 @@ class Wave:
 		for i in range(0,self.MAX_ITER):
 			print(i)
 
-			self.q_rhs = vq0 + self.dt*vp0
-			vq0 = self.q_rhs
+			vq0 = vq0 + self.dt*self.M_inv*vp0
 			
-			self.p_rhs = vp0 + self.dt*self.L*vq0 + self.dt*self.cp
-			vp0 = self.p_rhs
+			vp0 = vp0 + self.dt*self.K*vq0 + self.dt*self.cp
 
 			self.snap_Q = np.concatenate( (self.snap_Q,vq0) , 1 )
 			self.snap_P = np.concatenate( (self.snap_P,vp0) , 1 )
-
+		
 			f.vector().set_local( vq0 )
-			if np.mod(i,100) == 0:
+			if np.mod(i,10) == 0:
 				vtkfile << (f,i*self.dt)
 
 	def mid_point( self ):
@@ -113,8 +101,8 @@ class Wave:
 		N = self.cp.shape[0]
 		x0 = np.zeros([2*N,1])
 
-		temp1 = np.concatenate([np.zeros([N,N]),np.eye(N)],1)
-		temp2 = np.concatenate([self.L,np.zeros([N,N])],1)
+		temp1 = np.concatenate([np.zeros([N,N]),self.M_inv],1)
+		temp2 = np.concatenate([self.K,np.zeros([N,N])],1)
 
 		mat = np.concatenate([temp1,temp2],0)
 
@@ -122,6 +110,8 @@ class Wave:
 		L = inv_factor*( np.eye(2*N) + self.dt/2*mat )
 
 		c_factor = self.dt*inv_factor*np.concatenate([np.zeros([N,1]),self.cp],0)
+
+#		energy_mat = np.concatenate([-temp2,temp1],0)
 		
 
 		self.snap_Q = np.zeros( self.cp.shape )
@@ -131,6 +121,7 @@ class Wave:
 			print(i)
 
 			x0 = L*x0 + c_factor
+#			print(np.transpose(x0)*energy_mat*x0 - np.transpose(x0) * np.concatenate([np.zeros([N,1]),self.cp],0))
 
 			self.snap_Q = np.concatenate( (self.snap_Q,x0[0:N,:]) , 1 )
 			self.snap_P = np.concatenate( (self.snap_P,x0[N:2*N,:]) , 1 )
@@ -157,9 +148,15 @@ class Wave:
 		Kp_mat = np.matrix( K.array() )
 
 		temp1 = np.concatenate( [Kq_mat,np.zeros(Kq_mat.shape)] , 1 )
-		temp2 = np.concatenate( [np.zeros(Kp_mat.shape),Kp_mat] , 1 )
+		temp2 = np.concatenate( [np.zeros(Kp_mat.shape),self.M_inv] , 1 )
 		X_mat = np.concatenate( [temp1,temp2] , 0 )
 
+#		N = self.cp.shape[0]
+#
+#		temp1 = np.concatenate([np.zeros([N,N]),self.M_inv],1)
+#		temp2 = np.concatenate([self.K,np.zeros([N,N])],1)
+#
+#		X_mat = np.concatenate([-temp2,temp1],0)
 		Xsqrt = scla.sqrtm(X_mat)
 		Xsqrt = np.matrix( np.real(Xsqrt) )
 		Xsqrt.dump("X_mat.dat")

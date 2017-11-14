@@ -9,6 +9,8 @@ class Mor:
 #		self.X = np.load("X_mat_eye.dat")
 		self.X = np.matrix(self.X)
 
+		self.X.dump("X_mat_red.dat")
+
 	def set_basis_size(self,k):
 		self.rb_size = k
 
