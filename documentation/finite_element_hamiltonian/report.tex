@@ -1,8 +1,10 @@
 \title{Model Reduction of Finite Element Hamiltonian Systems With Respect to The Energy Norm}
 \author{
         Babak Maboudi Afkham \\
-                Department of Mathematids\\
-        EPFL\\
+                Department of Mathematics\\
+        EPFL\\ \\
+	Ashish Bhatt \\
+		University of Stuttgart
 }
 \date{\today}
 
@@ -12,6 +14,7 @@
 \usepackage{amssymb}
 \usepackage{todonotes}
 \usepackage{cleveref}
+\usepackage{algorithm}
 
 \begin{document}
 \maketitle
@@ -321,6 +324,122 @@ which can be simplified to the system
 	\dot y = \tilde A ^+ \tilde J (\tilde A ^+)^T  A^T L A y.
 \end{equation}
 This is a Poisson system since $\tilde A ^+ \tilde J (\tilde A ^+)^T$ is skew-symmetric. A Poisson integrator can therefore preserve the Hamiltonian along integral curves.
+
+\subsection{Greedy Generation of a Generalized Symplectic Basis}
+A proper orthogonalization method is at the core of the generation of a reduced basis. We define by $[\cdot,\cdot]$ and $[\cdot,\cdot]_{X}$ a standard Euclidean inner production and the weighted inner product on a Euclidean space, respectively. Further we define
+\begin{equation}
+	<v_1,v_2>_{J} = v_1^T J v_2,\quad v_1,v_2 \in \mathbb R^{2k}, 
+\end{equation}
+to be the symplectic form with respect to the skew-symmetric matrix $J$. Suppose that $\tilde A_{2k}=[e_1,\dots,e_k,f_1,\dots,f_k]$ is a given generalized symplectic basis in the sense of (\ref{eq:36}) with respect to the skew-symmetric matrix $\tilde J$ and the weight matrix $X$. Furthermore, assume $z\not \in \text{span} (\tilde A_{2k})$ is given. We wish to $\tilde J$-orthogonalize $z$ with respect to $\tilde A_{2k}$ and seek $\alpha_i,\beta_i$, $i=1,\dots,k$ such that
+\begin{equation}
+	< z + \sum \alpha_i e_i + \sum \beta_i f_i , \sum \bar \alpha_i e_i + \sum \bar \beta_i f_i >_{\tilde J},
+\end{equation}
+for all possible $\bar \alpha_i , \bar \beta_i$. It can be easily checked that
+\begin{equation}
+	\alpha_i = -<z,f_i>_{\tilde J}, \quad \beta_i = <z,e_i>_{\tilde J}.
+\end{equation}
+Now we define the modified vector
+\begin{equation}
+	\tilde z = z - \sum <z,f_i>_{\tilde J} e_i + \sum <z,e_i>_{\tilde J} f_i.
+\end{equation}
+Finally, we take $e_{k+1} = \tilde z / \| \tilde z \|_X$. Note that we have a freedom in taking $f_{k+1}$. If we take
+\begin{equation}
+	f_{k+1} = \tilde J ^{\times} e_{k+1},
+\end{equation}
+where $\tilde J ^{\times} = X^{-1/2} J_{n}^T X^{1/2}$, then it can be seen that $\tilde A_{2(k+1)}$ is a generalized symplectic matrix in the sense of (\ref{eq:36}). Also if we take $f_i = \tilde J ^{\times} e_i$, $i=1,\dots,k$, then $A_{2(k+1)}$ is an orthonormal basis with respect to the $X$ norm: we have
+\begin{equation}
+		[e_i,e_j]_X = [\tilde J ^{\times}e_i,\tilde J ^{\times}e_j]_X = <e_i,\tilde J ^{\times} e_j>_{\tilde J} = \delta_{i,j}, \quad i=1,\dots,k,
+\end{equation}
+and
+\begin{equation}	
+		[e_i,\tilde J ^{\times} e_i]_X = <e_i,e_j>_{\tilde J} = 0, \quad i=1,\dots,k.
+\end{equation}
+We summarize the symplectic greedy approach in the following Algorithm \ref{alg:1}.
+
+\begin{algorithm} 
+\caption{The greedy algorithm for generation of a generalized symplectic basis} \label{alg:1}
+{\bf Input:} Tolerated projection error $\delta$, initial condition $ \tilde z_0 = X^{1/2} z_0$
+\begin{enumerate}
+\item $t^1 \leftarrow t=0$
+\item $e_1 \leftarrow \tilde z_0$
+\item $A \leftarrow [e_1,\tilde J^{\times}_{2n}e_1]$
+\item $k \leftarrow 1$
+\item \textbf{while} $\| \tilde z(t) - \tilde A{\tilde A}^+\tilde z(t) \|_2 > \delta$ for all $t \in [0,T]$
+\item \hspace{0.5cm} $t^{k+1} := \underset{t\in [0,T]}{\text{argmax }} \| \tilde z(t) - \tilde A{\tilde A}^+\tilde z(t) \|_2$
+\item \hspace{0.5cm} $\tilde J$-orthogonalize $ \tilde z(t^{k+1})$ to obtain $e_{k+1}$
+\item \hspace{0.5cm} $A \leftarrow [e_1,\dots ,e_{k+1} , \tilde J^{\times}e_1,\dots,\tilde J^{\times}e_{k+1}]$
+\item \hspace{0.5cm} $k \leftarrow k+1$
+\item \textbf{end while}
+\end{enumerate}
+\vspace{0.5cm}
+{\bf Output:} Symplectic basis $A$.
+\end{algorithm}
+
+Note that for parametric Hamiltonian system we may use the error in the Hamiltonian as a cheap surrogate to the projection error to accelerate the basis selection procedure. It is worth to mention that if take $X = I$, the identity matrix, then the entire process collapses to the original symplectic model reduction and the original symplectic greedy method.
+
+\subsection{Model Reduction of Nonlinear terms (SDEIM)}
+
+An essential part of model reduction of non-linear terms is the availability of the chain rule on the weak formulation. Suppose that a discretized Hamiltonian system takes the form.
+\begin{equation} \label{eq:2.4.1}
+	\dot x = J (L x + g(x) ) 
+\end{equation}
+for some $g(x) = \nabla_x H(x)$. The discrete empirical interpolation method (DEIM) for approximating the nonlinear function yields
+\begin{equation} \label{eq:2.4.2}
+	\dot y = A^{\times} X J LAy + A^{\times} X J V(P^TV)^{-1} P^T g(Ay).
+\end{equation}
+Where $V$ contains the basis to the nonlinear snapshots of $g$. The linear term in the equation above can be treated following waht is presented in the previous subsection. Note that for (\ref{eq:2.4.2}) to be a Poisson system we require the nonlinear term to be of the form $\tilde A ^+ \tilde J (\tilde A ^+)^T \nabla_y G(y)$, for some scalar function $G$. This can be obtained by taking $V = X (A^{\times})^T$ because
+\begin{equation}
+ 	g(Ay) = \nabla_x H(Ay) = X (A^{\times})^T \nabla_y H(Ay).
+\end{equation}
+The question that remains, is how can we require $V = X (A^{\times})^T$. To answer we need to state the following lemma.
+
+\textbf{Lemma. }$\tilde A$ $\tilde J$-symplectic and is ortho-normal with respect to the $X$-norm if and only if $(\tilde A^+)^T$ is $\bar J$-symplectic and is ortho-normal with respect to the $X^{-1}$-norm, where $\bar J = X^{-1/2}J^TX^{-1/2}$. Also we have that $\tilde A = \left( \left( \left(\tilde A^+\right)^T \right)^+ \right)^T$.
+
+\emph{proof. }First we show that $(\tilde A^+)^T$ is $\bar J$-symplectic
+\begin{equation}
+\begin{aligned}
+	\tilde A^+ \bar J (\tilde A^+)^T &= J^T \tilde A^T\underbrace{ \tilde J \bar J \tilde J ^T }_{\tilde J} \tilde A J \\
+	&= J^T \underbrace{ \tilde A^T \tilde J \tilde A}_{J} J \\
+	&= J.
+\end{aligned}
+\end{equation}
+Now we can show that it is orthonormal with respect to the $X^{-1}$-norm
+\begin{equation}
+\begin{aligned}
+	\tilde A^+ X^{-1} (\tilde A^+)^T &= J^T \tilde A^T \underbrace{ \tilde J X^{-1} \tilde J ^T}_{X} \tilde A J \\
+	&= J^T \underbrace{ \tilde A^T X \tilde A }_{I} J \\
+	&= I.
+\end{aligned}
+\end{equation}
+The inverse statement can be shown similarly. One can easily check that the last statement of the lemma is also true.
+
+The lemma above shows that if we enrich the basis $\tilde A$ such that $\tilde A$ remains ortho-normal with respect to $X$, then $(\tilde A ^+)^T$ remains orthonormal with respect to $X^{-1}$, and vise versa. This provides a recipe for ensuring $V = X (A^{\times})^T$. Assume that vector $z$ is in span$\left( X( A^{\times})^T\right)$. Then $X^{-1/2}z \in \text{span}\left(X^{1/2} (A^{\times})^T\right) = \text{span}\left( (\tilde A^+)^T\right)$.
+
+We summarize the SDEIM method in Algorithm \ref{alg:2}.
+
+
+\begin{algorithm} 
+\caption{Symplectic Discrete Empirical Interpolation Method} \label{alg:2}
+{\bf Input:} Symplectic basis $\tilde A=[  e_1,\dots,e_k,f_1,\dots,f_k ]$, nonlinear snapshots $\tilde S = X^{-1/2}\{ g( x_i ) \}$ and tolerance $\delta$
+\begin{enumerate}
+\item Compute $(\tilde A^+)^T = \{ e'_1,\dots,e'_k,f'_1,\dots,f'_k \}$
+\item $i \leftarrow 1$
+\item \textbf{while} max$\| \tilde s - (\tilde A^+)^T ((\tilde A^+)^T)^+\tilde s \|_2 > \delta$ for all $\tilde s\in \tilde S$
+\item \hspace{0.5cm} $\tilde s^* \leftarrow \underset{\tilde s \in \tilde S}{\text{argmax }}\| \tilde s - (\tilde A^+)^T ((\tilde A^+)^T)^+ \tilde s \|_2$
+\item \hspace{0.5cm} $\bar J$-orthogonalize $ \tilde S^*$ to obtain $e'_{k+1}$ 
+\item \hspace{0.5cm} $f'_{k+i} = \bar J^{\times} e'_{k+i}$
+\item \hspace{0.5cm} $(\tilde A^+)^T \leftarrow [e'_1,\dots,e'_{k+i},f'_1,\dots,f'_{k+i}]$
+\item \hspace{0.5cm} $i\leftarrow i+1$
+\item \textbf{end while}
+\item compute $(((A^+)^T)^+)^T$
+\end{enumerate}
+\vspace{0.5cm}
+{\bf Output:} Symplectic basis $\tilde A$ enriched with nonlinear snapshots.
+\end{algorithm}
+
+
+
+
 
 \subsection{Geometric integration of the Poisson system \eqref{eq:reduced-poisson} }
 \Cref{eq:reduced-poisson} is a a non-canonical Hamiltonian system with constant non-canonical \todo[prepend]{is the matrix invertible?}invertible skew-symmetric structure matrix $\mathbb{J} := \tilde A ^+ \tilde J (\tilde A ^+)^T$ and symmetric matrix $A^T L A$ (see todo above). That it is a symplectic system can be seen from the following computation. The variational form associated with the equation is
