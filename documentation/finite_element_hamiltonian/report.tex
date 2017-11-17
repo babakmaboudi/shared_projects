@@ -227,11 +227,11 @@ The energy inner product associated to (\ref{eq:23}) is defined as
 \begin{equation} \label{eq:24}
 	(u_h,v_h)_a = a(u_h,v_h),
 \end{equation}
-which implies the energy norm $\| \cdot \|_a$. In vector notation we have
+which implies the energy norm $\| \cdot \|_X$. In vector notation we have
 \begin{equation} \label{eq:25}
 	(u_h,v_h)_a = \bar u^T X \bar v,
 \end{equation} 
-where $\bar u$ and $\bar v$ are expansion coefficients of $u_h$ and $v_h$ in the finite element basis, and $X$ is a positive definite matrix, usually taken to be the stiffness matrix. Note that we can rewrite an energy norm in terms of the 2-norm as $\| \bar u \|_a = \| X^{1/2} u \|_2$.
+where $\bar u$ and $\bar v$ are expansion coefficients of $u_h$ and $v_h$ in the finite element basis, and $X$ is a positive definite matrix, usually taken to be the stiffness matrix. Note that we can rewrite an energy norm in terms of the 2-norm as $\| \bar u \|_X = \| X^{1/2} u \|_2$.
 
 The energy inner product induces a projection. Energy projection of function $u_h$ onto $e$ reads
 \begin{equation} \label{eq:26}
@@ -240,7 +240,7 @@ The energy inner product induces a projection. Energy projection of function $u_
 Therefore the matrix $\bar e\bar e^T X$ is the energy projection operator in the matrix notation. Now suppose that $W = [ w_1,\dots,w_k ]$ is an expansion coefficients of a basis with respect to some finite element basis. Then the energy projection of a function $s$ onto the span space of $W$ would be $WW^TXs$. It is often desirable to find a basis $W$ that minimizes the energy projection error of a set of functions $\{s_1,\dots,s_N\}$. We have
 \begin{equation} \label{eq:27}
 \begin{aligned}
-	\min \sum_{i=1}^N \| s_i - WW^TXs_i \|_a &= \min \sum_{i=1}^N \| X^{1/2} s_i - X^{1/2 }WW^TXs_i \|_2 \\
+	\min \sum_{i=1}^N \| s_i - WW^TXs_i \|_X &= \min \sum_{i=1}^N \| X^{1/2} s_i - X^{1/2 }WW^TXs_i \|_2 \\
 	&= \min \sum_{i=1}^N \| \tilde s_i - \tilde W \tilde W^T\tilde s_i \|_2 \\
 	&= \min \| \tilde S - \tilde W \tilde W^T \tilde S \|_2.
 \end{aligned}
@@ -270,7 +270,7 @@ with $I$ the identity matrix, then we see that the operator $AJ^TA^TXJX$ becomes
 \end{equation}
 This means that $AJ^TA^TXJX$ is a projection operator onto the span space of $A$. Now if we require the energy norm of the projection of a snapshot matrix $S$ onto the span of $A$ to be minimized with respect to an energy norm we would have
 \begin{equation} \label{eq:32}
-	\min \| S - AJ^TA^TXJX S \|_a = \min \| X^{1/2} S - X^{1/2} AJ^TA^TXJX S \|_2.
+	\min \| S - AJ^TA^TXJX S \|_X = \min \| X^{1/2} S - X^{1/2} AJ^TA^TXJX S \|_2.
 \end{equation}
 We define $\tilde S = X^{1/2}S$, $\tilde A = X^{1/2} A$ and the skew-symmetric matrix $\tilde J = X^{1/2} J X^{1/2}$. Then equation (\ref{eq:31}) turns into
 \begin{equation} \label{eq:33}
