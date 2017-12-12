@@ -1,0 +1,177 @@
+\documentclass[review]{siamart1116}
+
+%% ------------------------------------------------------------------
+%% Code used in examples, needed to reproduce 
+%% ------------------------------------------------------------------
+%% Used for \set, used in an example below
+\usepackage{braket,amsfonts}
+
+%% Used in table example below
+\usepackage{array}
+
+%% Used in table and figure examples below
+\usepackage[caption=false]{subfig}
+%% Used for papers with subtables created with the subfig package
+\captionsetup[subtable]{position=bottom}
+\captionsetup[table]{position=bottom}
+
+%% Used for PgfPlots example, shown in the "Figures" section below.
+\usepackage{pgfplots}
+
+%% Used for creating new theorems, remarks
+\newsiamthm{claim}{Claim}
+\newsiamremark{rem}{Remark}
+\newsiamremark{expl}{Example}
+\newsiamremark{hypothesis}{Hypothesis}
+\crefname{hypothesis}{Hypothesis}{Hypotheses}
+
+%% Algorithm style, could alternatively use algpseudocode
+\usepackage{algorithmic}
+
+%% For figures
+\usepackage{graphicx,epstopdf}
+
+
+%% For referencing line numbers
+\Crefname{ALC@unique}{Line}{Lines}
+
+%% For creating math operators
+\usepackage{amsopn}
+\DeclareMathOperator{\Range}{Range}
+
+%strongly recommended
+\numberwithin{theorem}{section}
+
+%% ------------------------------------------------------------------
+%% Macros for in-document examples. These are not meant to reused for
+%% SIAM journal papers.
+%% ------------------------------------------------------------------
+\usepackage{xspace}
+\usepackage{bold-extra}
+\usepackage[most]{tcolorbox}
+\newcommand{\BibTeX}{{\scshape Bib}\TeX\xspace}
+\newcounter{example}
+\colorlet{texcscolor}{blue!50!black}
+\colorlet{texemcolor}{red!70!black}
+\colorlet{texpreamble}{red!70!black}
+\colorlet{codebackground}{black!25!white!25}
+
+\newcommand\bs{\symbol{'134}} % print backslash in typewriter OT1/T1
+\newcommand{\preamble}[2][\small]{\textcolor{texpreamble}{#1\texttt{#2 \emph{\% <- Preamble}}}}
+
+\lstdefinestyle{siamlatex}{%
+  style=tcblatex,
+  texcsstyle=*\color{texcscolor},
+  texcsstyle=[2]\color{texemcolor},
+  keywordstyle=[2]\color{texemcolor},
+  moretexcs={cref,Cref,maketitle,mathcal,text,headers,email,url},
+}
+
+\tcbset{%
+  colframe=black!75!white!75,
+  coltitle=white,
+  colback=codebackground, % bottom/left side
+  colbacklower=white, % top/right side
+  fonttitle=\bfseries,
+  arc=0pt,outer arc=0pt,
+  top=1pt,bottom=1pt,left=1mm,right=1mm,middle=1mm,boxsep=1mm,
+  leftrule=0.3mm,rightrule=0.3mm,toprule=0.3mm,bottomrule=0.3mm,
+  listing options={style=siamlatex}
+}
+
+\newtcblisting[use counter=example]{example}[2][]{%
+  title={Example~\thetcbcounter: #2},#1}
+
+\newtcbinputlisting[use counter=example]{\examplefile}[3][]{%
+  title={Example~\thetcbcounter: #2},listing file={#3},#1}
+
+\DeclareTotalTCBox{\code}{ v O{} }
+{ %fontupper=\ttfamily\color{texemcolor},
+  fontupper=\ttfamily\color{black},
+  nobeforeafter,
+  tcbox raise base,
+  colback=codebackground,colframe=white,
+  top=0pt,bottom=0pt,left=0mm,right=0mm,
+  leftrule=0pt,rightrule=0pt,toprule=0mm,bottomrule=0mm,
+  boxsep=0.5mm,
+  #2}{#1}
+
+% Stretch the pages
+\patchcmd\newpage{\vfil}{}{}{}
+\flushbottom
+
+%% ------------------------------------------------------------------
+%% End of macros for in-document examples. 
+%% ------------------------------------------------------------------
+
+%% ------------------------------------------------------------------
+%% HEADING INFORMATION
+%% ------------------------------------------------------------------
+\begin{tcbverbatimwrite}{tmp_\jobname_header.tex}
+\title{Sympletic Model-Reduction with a Weighted Inner Product%
+  \thanks{%
+\funding{Funding information goes here.}} }
+
+\author{Babak Maboudi Afkham%
+  \thanks{Institute of Mathematics (MATH), School of Basic Sciences (FSB), Ecole Polytechnique F\'ed\'erale de Lausanne, 1015 Lausanne, Switzerland (\email{babak.maboudi@epfl.ch}, \email{jan.hesthaven@epfl.ch}).}%
+  \and
+  Ashish Bhatt%
+  \thanks{Add your info here.}
+  \and
+  Jan S. Hesthaven%
+  \footnotemark[2]
+}
+
+% Custom SIAM macro to insert headers
+\headers{Guide to Using  SIAM'S \LaTeX\ Style}
+{Dianne Doe, Paul T. Frank, and Jane E. Smith}
+\end{tcbverbatimwrite}
+\input{tmp_\jobname_header.tex}
+
+% Optional: Set up PDF title and authors
+\ifpdf
+\hypersetup{ pdftitle={Guide to Using  SIAM'S \LaTeX\ Style} }
+\fi
+
+%% ------------------------------------------------------------------
+%% END HEADING INFORMATION
+%% ------------------------------------------------------------------
+
+%% ------------------------------------------------------------------
+%% MAIN Document
+%% ------------------------------------------------------------------
+\begin{document}
+\maketitle
+
+%% ------------------------------------------------------------------
+%% ABSTRACT
+%% ------------------------------------------------------------------
+\begin{tcbverbatimwrite}{tmp_\jobname_abstract.tex}
+\begin{abstract}
+	Abstract to be added...
+\end{abstract}
+
+\begin{keywords}
+   
+\end{keywords}
+
+\begin{AMS}
+	
+\end{AMS}
+\end{tcbverbatimwrite}
+\input{tmp_\jobname_abstract.tex}
+%% ------------------------------------------------------------------
+%% END HEADER
+%% ------------------------------------------------------------------
+
+%% ------------------------------------------------------------------
+%% MAIN Body
+%% ------------------------------------------------------------------
+
+\input{./chapters/1.intro.tex}
+\input{./chapters/2.hamil.tex}
+
+\bibliographystyle{siamplain}
+\bibliography{references}
+
+\end{document}

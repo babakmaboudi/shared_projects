@@ -13,3 +13,5 @@
 *.dat
 *.pvd
 *.pyc
+*.out
+*.thm

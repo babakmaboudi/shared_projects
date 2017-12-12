@@ -1,0 +1,34 @@
+\section{Hamiltonian Systems}
+\label{sec:hamil}
+
+In this section we discuss the basic concepts around the geometry of symplectic linear vector spaces and introduce Hamiltonian and Generalized Hamiltonian systems.
+
+\subsection{Generalized Hamiltonian Systems}
+\label{sec:hamil.1}
+
+Let $(\mathbb R^{2n}, \Omega)$ be a symplectic linear vector space, with $\mathbb R^{2n}$ the configuration space and $\Omega:\mathbb R^{2n}\times\mathbb R^{2n} \to \mathbb R$ a closed, skew-symmetric and non-degenerate 2-form on $\mathbb R^{2n}$. Given a smooth Hamiltonian function $H:\mathbb R^{2n} \to \mathbb R$, the \emph{generalized Hamiltonian} equation of evolution reads
+\begin{equation} \label{eq:hamil.1}
+\left\{
+\begin{aligned}
+	& \dot z = J_{2n} \nabla_z H,  \\
+	&  z(0) = z_0.
+\end{aligned}
+\right.
+\end{equation}
+Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a full-rank and skew-symmetric $2n\times 2n$ matrix such that $\Omega(x,y) = x^TJ_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Note that one can Always find a coordinate transformation $\tilde z = V z$, with $V \in \mathbb R^{2n\times 2n}$ such that $J_{2n}$ takes the form $\mathbb{J}_{2n}$ in the new coordinate system \cite{de2006symplectic}, and $\mathbb{J}_{2n}$ is the standard symplectic matrix given as
+\begin{equation} \label{eq:hamil.2}
+	\mathbb{J}_{2n} = 
+	\begin{pmatrix}
+	0_n & I_n \\
+	-I_n & 0_n
+	\end{pmatrix}.
+\end{equation}
+Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively. A central feature of Hamiltonian systems is the conservation of the Hamiltonian which we summarize in the following theorem.
+\begin{theorem}
+Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of the Hamiltonian system (\ref{eq:hamil.1}). Then $H \circ \phi_t = H$.
+\end{theorem}
+
+Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). It turns out that only transformations which preserve the symplectic form, \emph{symplectic transformations}, also preserve the form of a Hamiltonian system. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. The transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
+\begin{equation}
+	\Omega(x,y) = \Lambda(\alpha(x),\alpha(y)), \quad \text{for all } x,y\in\mathbb R^{2n}.
+\end{equation}
