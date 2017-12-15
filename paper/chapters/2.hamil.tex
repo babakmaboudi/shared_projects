@@ -24,11 +24,29 @@ Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a fu
 	\end{pmatrix}.
 \end{equation}
 Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively. A central feature of Hamiltonian systems is the conservation of the Hamiltonian which we summarize in the following theorem.
-\begin{theorem}
+\begin{theorem} \label{thm:1}
 Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of the Hamiltonian system (\ref{eq:hamil.1}). Then $H \circ \phi_t = H$.
 \end{theorem}
 
-Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). It turns out that only transformations which preserve the symplectic form, \emph{symplectic transformations}, also preserve the form of a Hamiltonian system. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. The transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
+Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). It turns out that only transformations which preserve the symplectic form, \emph{symplectic transformations}, also preserve the form of a Hamiltonian system \cite{Hairer:1250576}. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. A transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
 \begin{equation}
 	\Omega(x,y) = \Lambda(\alpha(x),\alpha(y)), \quad \text{for all } x,y\in\mathbb R^{2n}.
 \end{equation}
+In matrix notation, i.e. when we agree upon a set of basis vectors for $\mathbb R^{2n}$ and $\mathbb R^{2k}$, a linear symplectic transformation is a matrix $A\in \mathbb R^{2n\times 2k}$ that satisfies
+\begin{equation}
+	A^T J_{2n} A = J_{2k}.
+\end{equation}
+We are interested in a class of symplectic transformations that transform a symplectic form $J_{2n}$ into the standard symplectic form $\mathbb J_{2k}$.
+\begin{definition}
+Let $J_{2n}\in \mathbb R^{2n\times 2n}$ be a full-rank skew-symmetric matrix. A matrix $A\in\mathbb R^{2n\times 2k}$ is $J_{2n}$-symplectic if
+\begin{equation}
+A^T J_{2n} A = \mathbb{J}_{2k}.
+\end{equation}
+\end{definition}
+Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, symplectic transformations are commonly referred to only $\mathbb J_{2n}$-symplectic transformations and not to the cases discussed above.
+
+It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in theorem \ref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong behaviour of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems that result in the stability of the solution over long time-integration. The implicit midpoint rule
+\begin{equation}
+	z_{n+1} = z_{n} + \Delta t J_{2n} \nabla_z H( \frac{z_{n+1} + z_n}{2} ),
+\end{equation}
+is an example of a second order Poisson integrator. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
