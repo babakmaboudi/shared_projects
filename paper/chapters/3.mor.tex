@@ -13,26 +13,26 @@ Consider a dynamical system of the form
 \end{aligned}
 \right.
 \end{equation}
-where $x\in \mathbb R^{n}$ and $f:\mathbb R \times \mathbb R^{n} \to \mathbb R^{n}$ is some continuous function. In this paper we may assume that time $t$ is the only parameter that the solution vector $x$ depends on. Nevertheless, it is straight forward to generalize the findings of this paper to the case where $x$ also depends on a set of physical or geometrical parameters that belong to a closed and bounded subset of a Euclidean space.
+where $x\in \mathbb R^{m}$ and $f:\mathbb R \times \mathbb R^{m} \to \mathbb R^{m}$ is some continuous function. In this paper we may assume that time $t$ is the only parameter that the solution vector $x$ depends on. Nevertheless, it is straight forward to generalize the findings of this paper to the case where $x$ also depends on a set of physical or geometrical parameters that belong to a closed and bounded subset of a Euclidean space.
 
-Suppose that $x$ lies on or very close to a low dimensional linear subspace with the basis $V=[v_1|\dots|v_k]$, $v_i\in \mathbb R^{n}$ for $i=1,\dots,k$. The approximates solution to (\ref{eq:mor.1}) in this basis reads
+Suppose that $x$ lies on or very close to a low dimensional linear subspace with the basis $V=[v_1|\dots|v_k]$, $v_i\in \mathbb R^{m}$ for $i=1,\dots,k$. The approximates solution to (\ref{eq:mor.1}) in this basis reads
 \begin{equation} \label{eq:mor.2}
 	x = Vy,
 \end{equation}
 where $y$ is the expansion coefficients of $x$ in the basis of $V$. Note that the method of projecting $x$ onto the span space of $V$ depends on the inner product and the norm that are defined most appropriate to (\ref{eq:mor.1}). We define the weighted inner product
 \begin{equation} \label{eq:mor.3}
-	[x,y]_X = x^TXy,\quad \text{for all } x,y \in \mathbb R^n,
+	[x,y]_X = x^TXy,\quad \text{for all } x,y \in \mathbb R^m,
 \end{equation}
-for some symmetric and positive-definite matrix $X\in \mathbb{R}^{n\times n}$. We also refer to $\|\cdot \|_X$ as the $X$-norm associated to this inner product. If we choose $V$ to be an ortho-normal basis with respect to the $X$-norm ($V^TXV=I_k$), then the operator
+for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$. We also refer to $\|\cdot \|_X$ as the $X$-norm associated to this inner product. If we choose $V$ to be an ortho-normal basis with respect to the $X$-norm ($V^TXV=I_k$), then the operator
 \begin{equation} \label{eq:mor.4}
-	P_{X,V}(x) = VV^TXx, \quad \text{for all } x\in \mathbb R^{n}
+	P_{X,V}(x) = VV^TXx, \quad \text{for all } x\in \mathbb R^{m}
 \end{equation}
 becomes idempotent. This means that $P_{X,V}$ is a projection operator onto the span space of $V$.
 
 Now suppose that $\{x(t_i)\}_{i=1}^N$ is a collection of $N$ samples of the solution to (\ref{eq:mor.1}) at instances $t_1,\dots,t_N$. We would like to find $V$ such that it minimizes the collective projection error of the samples onto the span space of $V$. This corresponds to the minimization problem
 \begin{equation} \label{eq:mor.5}
 \begin{aligned}
-& \underset{V\in \mathbb{R}^{n\times k}}{\text{minimize}}
+& \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
 & & \sum_{i=1}^N \| x_i - P_{X,V}(x_i) \|_X, \\
 & \text{subject to}
 & & V^TXV = I_k.
@@ -41,7 +41,7 @@ Now suppose that $\{x(t_i)\}_{i=1}^N$ is a collection of $N$ samples of the solu
 Following the derivations in \cite{quarteroni2015reduced} the above minimization is equivalent to
 \begin{equation} \label{eq:mor.6}
 \begin{aligned}
-& \underset{V\in \mathbb{R}^{n\times k}}{\text{minimize}}
+& \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
 & & \| \tilde S - \tilde V \tilde V^T \tilde S \|_2, \\
 & \text{subject to}
 & & \tilde V^T\tilde V = I_k.
@@ -56,9 +56,9 @@ where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, $S$ is the matrix that con
 	\end{aligned}
 	\right.
 \end{equation}
-If $k$ can be chosen such that $k \ll n$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced} for further information regarding the development and the efficiency of reduced order models.
+If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced} for further information regarding the development and the efficiency of reduced order models.
 
-It is worthwhile to note that the proper orthogonal decomposition (POD) method \cite{hesthaven2015certified} corresponds to taking $X = I_n$. In this case, the projection $P_{I_n,V}$ constructed from the solution to (\ref{eq:mor.5}) becomes the POD-Galerkin projection \cite{hesthaven2015certified}.
+It is worthwhile to note that the proper orthogonal decomposition (POD) method \cite{hesthaven2015certified} corresponds to taking $X = I_m$. In this case, the projection $P_{I_n,V}$ constructed from the solution to (\ref{eq:mor.5}) becomes the POD-Galerkin projection \cite{hesthaven2015certified}.
 
 \subsection{Symplectic Model-Reduction} \label{sec:mor.2}
 Conventional model reduction methods, e.g. those introduced in section \ref{sec:mor.1}, do no generally preserve the conservation law expressed in theorem \ref{thm:1}. This often result in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic model reduction aims to construct a reduced system that conserves the geometric symmetry expressed in theorem \ref{thm:1} which helps with the stability of the reduced system.
@@ -79,7 +79,7 @@ We refer the reader to \cite{doi:10.1137/17M1111991} for the details of derivati
 \begin{equation} \label{eq:mor.10}
 	\dot y(t) = \mathbb J_{2k} A^T L A y + \mathbb J_{2k} \nabla_y f(Ay).
 \end{equation}
-This system is a Hamiltonian system with the Hamiltonian $\tilde H(y) = y^T A^T L A y + f(Ay)$. To reduced the complexity of evaluating the nonlinear term in (\ref{eq:mor.10}), we may apply the discrete empirical interpolation method (DEIM) \cite{Chaturantabut:2010cz}. Assuming that $\nabla_z f(z)$ lies on a low dimensional subspace with a basis $U$ the DEIM approximation reads
+This system is a Hamiltonian system with the Hamiltonian $\tilde H(y) = y^T A^T L A y + f(Ay)$. To reduced the complexity of evaluating the nonlinear term in (\ref{eq:mor.10}), we may apply the discrete empirical interpolation method (DEIM) \cite{barrault2004empirical,Chaturantabut:2010cz}. Assuming that $\nabla_z f(z)$ lies on a low dimensional subspace with a basis $U$ the DEIM approximation reads
 \begin{equation} \label{eq:mor.11}
 	\nabla_z f(z) \approx U (P^T U)^{-1} P^T \nabla_z f(z).
 \end{equation}

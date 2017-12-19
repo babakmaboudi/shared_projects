@@ -47,6 +47,6 @@ Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, symp
 
 It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in theorem \ref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong behaviour of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems that result in the stability of the solution over long time-integration. The implicit midpoint rule
 \begin{equation}
-	z_{n+1} = z_{n} + \Delta t J_{2n} \nabla_z H( \frac{z_{n+1} + z_n}{2} ),
+	z_{n+1} = z_{n} + \Delta t \cdot J_{2n} \nabla_z H( \frac{z_{n+1} + z_n}{2} ),
 \end{equation}
 is an example of a second order Poisson integrator. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
