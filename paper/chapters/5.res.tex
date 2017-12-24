@@ -1,1 +1,93 @@
 \section{Numerical Results} \label{sec:res}
+In this section we discuss the performance of the symplectic model-reduction with an energy inner product. In section \ref{?} we apply the model reduction method to the equations of an elastic beam. We examine the evaluation of nonlinear terms in the model reduction of the nonlinear sine-Gordon equation, in section \ref{?}.
+
+\section{The Elastic Beam Equation}
+Consider the equations governing small deformations of a clamped elastic body $\Gamma\subset \mathbb R^{3}$ as 
+\begin{equation} \label{eq:res.1}
+\left\{
+\begin{aligned}
+	u_{tt}(t,x) &= \nabla \cdot \sigma + f, \quad & x\in \Gamma, \\
+	u(0,x) &= \vec 0, & x\in \Gamma,\\
+	\sigma \cdot n &= T, & x \in \partial \Gamma_T,\\
+	u(t,x) &= \vec 0, & x \in\partial \Gamma \backslash \partial \Gamma_T,
+\end{aligned}
+\right.
+\end{equation}
+and
+\begin{equation}  \label{eq:res.2}
+	\sigma = \lambda (\nabla \cdot u) I + \mu(\nabla u + (\nabla u)^T).
+\end{equation}
+Here $u$ is the displacement vector field defined on $\Gamma$, subscript $t$ denotes derivative with respect to time, $\sigma$ is the stress tensor, $f$ is the body force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for material in $\Gamma$, $I$ is the identity tensor, $n$ is the outward unit normal vector at the boundary and $T:\partial \Gamma_T \to \mathbb R^3$ is the traction at the boundary $\partial \Gamma_T$ \cite{langtangen2017solving}.
+
+We define the vector valued function space where we seek for the solution to (\ref{eq:res.1}) as $V = \{ u \in L^2(\Gamma) : \| \nabla u \|_2 \in L^2 \text{ and } u = \vec 0 \text{ on } \partial \Gamma_T \}$, equipped with the standard $L^2$ inner product $(\cdot,\cdot):V\times V \to \mathbb R$. To formulate the weak formulation of (\ref{eq:res.1}), we multiply it with the vector valued test function $v \in V$ and integrate over $\Gamma$
+\begin{equation}  \label{eq:res.3}
+	\int_{\Gamma} u_{tt} \cdot v\ dx = \int_{\Gamma} (\nabla \cdot \sigma) \cdot v \ dx + \int_{\Gamma} f \cdot v \ dx.
+\end{equation}
+We may integrate the first term on the right hand side by parts to obtain
+\begin{equation}  \label{eq:res.4}
+	\int_{\Gamma} u_{tt} \cdot v\ dx = - \int_{\Gamma} \sigma : \nabla v \ dx+ \int_{\partial \Gamma_T} (\sigma \cdot n) \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx,
+\end{equation}
+where $\sigma : \nabla v$ is the tensor inner product. Note that the skew-symmetric part of $\nabla v$ vanishes over the product $\sigma : \nabla v$, since $\sigma$ is symmetric. By prescribing the boundary conditions to (\ref{eq:res.4}) we recover
+\begin{equation} \label{eq:res.5}
+	\int_{\Gamma} u_{tt} \cdot v\ dx = - \int_{\Gamma} \sigma : \text{Sym}(\nabla v) \ dx+ \int_{\partial \Gamma_T} T \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx,
+\end{equation}
+with Sym$(\nabla v) = (\nabla v + (\nabla v)^T)/2$. The variational form associated to (\ref{eq:res.1}) then reads
+\begin{equation} \label{eq:res.6}
+	(u_{tt},v) = - a(u,v) + L(v), \quad u,v\in V,
+\end{equation}
+where
+\begin{equation} \label{eq:res.7}
+\begin{aligned}
+	a(u,v) &= \int_{\Gamma} \sigma : \text{Sym}(\nabla v) \ dx, \\
+	L(v) &= \int_{\partial \Gamma_T} T \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx.
+\end{aligned}
+\end{equation}
+To obtain the finite element method (FEM) discretization of (\ref{eq:res.6}), we discretize the domain $\Gamma$ into a triangulated mesh, which discretizes the domain into a set of disjoint tetrahedrons. Furthermore, we define vector valued piece-wise linear basis functions $\{\phi_i\}_{i=1}^{N_h}$ and define the FEM space $V_h$ as an approximation of $V$ over these set of basis functions. Projecting (\ref{eq:res.6}) onto $V_h$ gives us the discretized weak form
+\begin{equation} \label{eq:res.8}
+	((u_h)_{tt},v_h) = - a(u_h,v_h) + L(v_h),\quad u_h,v_h\in V_h.
+\end{equation}
+Any particular function $u_h$ can be expressed as $u_h = \sum_{i=1}^{N_h} q_i \phi_i$, where $q_i$, $i=1,\dots,N_h$, are the expansion coefficients. Therefore, by choosing test functions $v_h = \phi_i$, $i=1,\dots,N_h$, we obtain the ordinary differential equation
+\begin{equation} \label{eq:res.9}
+	M\ddot q = -K q + g_{q}.
+\end{equation}
+where $q=(q_1,\dots,q_{N_h})^T$, $M\in \mathbb R^{N_h\times N_h}$ is given as $M_{i,j} = (\phi_i,\phi_j)$, $K\in \mathbb R^{N_h\times N_h}$ is given as $K_{i,j} = a(\phi_i,\phi_j)$ and $g_q=(L(v_1),\dots,L(v_{N_h}))^T$. We now introduce the canonical coordinate $p = M\dot q$ to recover the Hamiltonian system
+\begin{equation} \label{eq:res.10}
+	\dot z = \mathbb J_{2N_h} Lz + g_{qp}
+\end{equation}
+where
+\begin{equation} \label{eq:res.11}
+	z = 
+	\begin{pmatrix}
+	q \\
+	p	
+	\end{pmatrix}, \quad 
+	L = 
+	\begin{pmatrix}
+	K & 0 \\
+	0 & M^{-1}
+	\end{pmatrix}, \quad
+	g_{qp} =
+	\begin{pmatrix}
+	0 \\
+	g_p
+	\end{pmatrix},
+\end{equation}
+together with the Hamiltonian function $H(z) = z^TLz + z^T \mathbb J_{2N_h}^T g_{qp}$. A proper FEW set up leads to a symmetric and positive-definite matrix $L$. Therefore, it seams natural to take $X=L$, the energy matrix assciated to (\ref{eq:res.10}). System parameters are summarized in the table below. For further information regarding the problem set up, we refer the reader to \cite{langtangen2017solving}
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Domain shape & box: $l_x = 1,\ l_y = 0.2,\ l_z = 0.2$ \\
+No. mesh points & $n_x = 10,\ n_y = 4,\ n_z = 4$ \\
+Time discretization size & $\Delta t = 0.01$ \\
+Gravitational force & $g = (0,0,-0.4)^T$ \\
+Traction & $T = \vec 0$ \\
+Lam\'e parameters & $\lambda = 1.25$, $\mu = 1.0$ \\
+Degree of freedom & $2N_{h} = 1650$ \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+
+We used the implicit midpoint rule (\ref{eq:hamil.5}) to integrate (\ref{eq:res.10}) in time. We generated the basis with the original model reduction method with energy inner product, according to section (\ref{eq:mor.1}). Furthermore, we construct symplectic bases with respect to the Euclidean inner product and the energy inner product according to algorithm \ref{alg:1} and algorithm \ref{alg:2}, respectively.

@@ -29,17 +29,17 @@ Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of
 \end{theorem}
 
 Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). It turns out that only transformations which preserve the symplectic form, \emph{symplectic transformations}, also preserve the form of a Hamiltonian system \cite{Hairer:1250576}. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. A transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
-\begin{equation}
+\begin{equation} \label{eq:hamil.3}
 	\Omega(x,y) = \Lambda(\alpha(x),\alpha(y)), \quad \text{for all } x,y\in\mathbb R^{2n}.
 \end{equation}
 In matrix notation, i.e. when we agree upon a set of basis vectors for $\mathbb R^{2n}$ and $\mathbb R^{2k}$, a linear symplectic transformation is a matrix $A\in \mathbb R^{2n\times 2k}$ that satisfies
-\begin{equation}
+\begin{equation} \label{eq:hamil.4}
 	A^T J_{2n} A = J_{2k}.
 \end{equation}
 We are interested in a class of symplectic transformations that transform a symplectic form $J_{2n}$ into the standard symplectic form $\mathbb J_{2k}$.
 \begin{definition}
 Let $J_{2n}\in \mathbb R^{2n\times 2n}$ be a full-rank skew-symmetric matrix. A matrix $A\in\mathbb R^{2n\times 2k}$ is $J_{2n}$-symplectic if
-\begin{equation}
+\begin{equation} \label{eq:hamil.5}
 A^T J_{2n} A = \mathbb{J}_{2k}.
 \end{equation}
 \end{definition}
