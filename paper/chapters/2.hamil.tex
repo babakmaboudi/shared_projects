@@ -10,12 +10,12 @@ Let $(\mathbb R^{2n}, \Omega)$ be a symplectic linear vector space, with $\mathb
 \begin{equation} \label{eq:hamil.1}
 \left\{
 \begin{aligned}
-	& \dot z = J_{2n} \nabla_z H,  \\
+	& \dot z = J_{2n} \nabla_z H(z),  \\
 	&  z(0) = z_0.
 \end{aligned}
 \right.
 \end{equation}
-Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a full-rank and skew-symmetric $2n\times 2n$ matrix such that $\Omega(x,y) = x^TJ_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Note that one can Always find a coordinate transformation $\tilde z = V z$, with $V \in \mathbb R^{2n\times 2n}$ such that $J_{2n}$ takes the form $\mathbb{J}_{2n}$ in the new coordinate system \cite{de2006symplectic}, and $\mathbb{J}_{2n}$ is the standard symplectic matrix given as
+Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a full-rank and skew-symmetric $2n\times 2n$ \emph{structure} matrix such that $\Omega(x,y) = x^TJ_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Note that there always exists a coordinate transformation $\tilde z = V z$, with $V \in \mathbb R^{2n\times 2n}$, such that $J_{2n}$ takes the form of the \emph{standard} symplectic structure matrix
 \begin{equation} \label{eq:hamil.2}
 	\mathbb{J}_{2n} = 
 	\begin{pmatrix}
@@ -23,7 +23,8 @@ Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a fu
 	-I_n & 0_n
 	\end{pmatrix}.
 \end{equation}
-Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively. A central feature of Hamiltonian systems is the conservation of the Hamiltonian which we summarize in the following theorem.
+in the new coordinate system \cite{de2006symplectic}.
+Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively. A central feature of Hamiltonian systems is conservation of the Hamiltonian which we summarize in the following theorem.
 \begin{theorem} \label{thm:1}
 Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of the Hamiltonian system (\ref{eq:hamil.1}). Then $H \circ \phi_t = H$.
 \end{theorem}
@@ -36,17 +37,17 @@ In matrix notation, i.e. when we agree upon a set of basis vectors for $\mathbb 
 \begin{equation} \label{eq:hamil.4}
 	A^T J_{2n} A = J_{2k}.
 \end{equation}
-We are interested in a class of symplectic transformations that transform a symplectic form $J_{2n}$ into the standard symplectic form $\mathbb J_{2k}$.
-\begin{definition}
-Let $J_{2n}\in \mathbb R^{2n\times 2n}$ be a full-rank skew-symmetric matrix. A matrix $A\in\mathbb R^{2n\times 2k}$ is $J_{2n}$-symplectic if
+We are interested in a class of symplectic transformations that transform a symplectic structure $J_{2n}$ into the standard symplectic structure $\mathbb J_{2k}$.
+\begin{definition} \label{def:symp-mat}
+Let $J_{2n}\in \mathbb R^{2n\times 2n}$ be a full-rank skew-symmetric structure matrix. A matrix $A\in\mathbb R^{2n\times 2k}$ is $J_{2n}$-symplectic if
 \begin{equation} \label{eq:hamil.5}
 A^T J_{2n} A = \mathbb{J}_{2k}.
 \end{equation}
 \end{definition}
-Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, symplectic transformations are commonly referred to only $\mathbb J_{2n}$-symplectic transformations and not to the cases discussed above.
+Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, all symplectic transformations are standard ($\mathbb{J}_{2n}$-symplectic) in contrast to \Cref{def:symp-mat}.
 
-It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in theorem \ref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong behaviour of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems that result in the stability of the solution over long time-integration. The implicit midpoint rule
+It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in  \Cref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong \todo{think of a more descriptive word} behavior of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems which results in the stability of the solution over long time-integration. The implicit midpoint rule
 \begin{equation}
-	z_{n+1} = z_{n} + \Delta t \cdot J_{2n} \nabla_z H( \frac{z_{n+1} + z_n}{2} ),
+	z_{n+1} = z_{n} + \Delta t J_{2n} \nabla_z H \left( \frac{z_{n+1} + z_n}{2} \right)
 \end{equation}
-is an example of a second order Poisson integrator. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
+for \Cref{eq:hamil.1} is an example of a second order Poisson integrator. Here subscript $n$ of the coordinate variable $z$ denotes the time-stepping index. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
