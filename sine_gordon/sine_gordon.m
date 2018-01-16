@@ -31,12 +31,13 @@ function wave()
 %	max(abs(func(x,z0,dt,K,bd)))
 %	plot(x)
 
-	[Y,NL] = time_stepping(z0,K,bd,dt,MAX_ITER,K_energy,N,dx);
-	save('snaps.mat','Y','NL')
+	[Y,NL,WY] = time_stepping(z0,K,bd,dt,MAX_ITER,K_energy,N,dx,v);
+	save('snaps.mat','Y','NL','WY')
 
-function [Z,NL] = time_stepping(z0,K,bd,dt,MAX_ITER,K_energy,N,dx)
+function [Z,NL,WeightedZ] = time_stepping(z0,K,bd,dt,MAX_ITER,K_energy,N,dx,v)
 	z = z0;
 	Z = z;
+    WeightedZ = blkdiag(-1/(v^2-1)*eye(N),cos(z(1:end/2)).*eye(N))*z;
 	NL = [];
 
 	for i=1:MAX_ITER
@@ -51,12 +52,13 @@ function [Z,NL] = time_stepping(z0,K,bd,dt,MAX_ITER,K_energy,N,dx)
 
 %		if(mod(i,10)==1)
 			Z = [Z,z];
+            WeightedZ = [blkdiag(-1/(v^2-1)*eye(N),cos(z(1:end/2)).*eye(N))*z,WeightedZ];
 			q = z(1:N);
 			nl = [zeros(N,1); sin(q) ];
 			NL = [NL,nl];
 %		end
-	end
-
+    end
+    
 function [q,p] = initial_condition(N,L,x0,v)
 	X = linspace(0,L,N);
 	q = 4*atan(exp((X-x0)/sqrt(1-v^2)));

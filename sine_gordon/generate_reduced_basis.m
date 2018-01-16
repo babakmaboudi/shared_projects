@@ -4,7 +4,7 @@ function generate_reduced_basis()
 	X = generate_X_mat();
 
 	fprintf('generating greedy basis...\n')
-	Phi = greedy_energy(Y,X,100);
+	Phi = greedy_energy(WY,X,100);
 	fprintf('generating basis for the nonlinear term...\n')	
 	[Phi,P] = greedy_nonlinear(Phi,NL,X,100);
 	fprintf('saving reduced basis...\n')
