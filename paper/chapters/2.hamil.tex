@@ -26,7 +26,7 @@ Here $z\in \mathbb R^{2n}$ is the configuration coordinates and $J_{2n}$ is a fu
 in the new coordinate system \cite{de2006symplectic}.
 Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively. A central feature of Hamiltonian systems is conservation of the Hamiltonian which we summarize in the following theorem.
 \begin{theorem} \label{thm:1}
-Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of the Hamiltonian system (\ref{eq:hamil.1}). Then $H \circ \phi_t = H$.
+\cite{Marsden:2010:IMS:1965128} Consider the flow $\phi_t:\mathbb R \times \mathbb R^{2n} \to \mathbb R^{2n}$ of the Hamiltonian system (\ref{eq:hamil.1}). Then $H \circ \phi_t = H$.
 \end{theorem}
 
 Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). It turns out that only transformations which preserve the symplectic form, \emph{symplectic transformations}, also preserve the form of a Hamiltonian system \cite{Hairer:1250576}. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. A transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
@@ -46,8 +46,18 @@ A^T J_{2n} A = \mathbb{J}_{2k}.
 \end{definition}
 Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, all symplectic transformations are standard ($\mathbb{J}_{2n}$-symplectic) in contrast to \Cref{def:symp-mat}.
 
-It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in  \Cref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong \todo{think of a more descriptive word} behavior of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems which results in the stability of the solution over long time-integration. The implicit midpoint rule
-\begin{equation}
-	z_{n+1} = z_{n} + \Delta t J_{2n} \nabla_z H \left( \frac{z_{n+1} + z_n}{2} \right)
+It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation law expressed in  \Cref{thm:1}. Conventional numerical time integrators, e.g. the Runge-Kutta methods, do not generally conserve the symplectic symmetry of Hamiltonian systems and often result in a wrong behavior of the solution over long time-integration. The class of time-integrators for (\ref{eq:hamil.1}) that preserve the Hamiltonian are called \emph{Poisson integrators} \cite{Hairer:1250576}. To construct a general Poisson integrator, first we find a coordinate transformation $T:\mathbb R^{2n}\to\mathbb R^{2n}$, $\tilde z = T^{-1}z$, such that $J_{2n} = T \mathbb J_{2n} T^T$. Then, a \emph{symplectic integrator} can preserve the symplectic structure of the transformed system. The \emph{St\"ormer-Verlet} scheme is an example of a second order symplectic time-integrator given as
+\begin{equation} \label{eq:hamil.6}
+	\begin{aligned}
+	q_{m+1/2} &= q_m + \frac{\Delta t} 2 \cdot \nabla_p \tilde H(p_m,q_{m+1/2}), \\
+	p_{m+1} &= p_m - \frac{\Delta t} 2  \cdot \left( \nabla_q \tilde H(p_m,q_{m+1/2}) + \nabla_{q} \tilde H(p_{m+1},q_{m+1/2}) \right), \\
+	q_{m+1} &= q_{m+1/2} + \frac{\Delta t} 2  \cdot  \nabla_p \tilde H(p_{m+1},q_{m+1/2}).
+	\end{aligned}
 \end{equation}
-for \Cref{eq:hamil.1} is an example of a second order Poisson integrator. Here subscript $n$ of the coordinate variable $z$ denotes the time-stepping index. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
+Here, $\tilde z = (q^T,p^T)^T$, $\tilde H(\tilde z) = H(T^{-1}z)$ and the subscript $m$ denotes the time-stepping index. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. Note that it is important to use a backward stable method to compute the transformation $T$. In this paper we use the symplectic Gaussian elimination method with a complete pivoting to compute the decomposition $J_{2n} = T \mathbb J_{2n} T^T$. However, one may use a more computationally efficient method, e.g., a Cholesky-like factorization proposed in \cite{benner:chol} or the isotropic Arnoldi/Lanczos methods \cite{doi:10.1137/S1064827500366434}.
+
+%or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems which results in the stability of the solution over long time-integration. The implicit midpoint rule
+%\begin{equation}
+%	z_{n+1} = z_{n} + \Delta t J_{2n} \nabla_z H \left( \frac{z_{n+1} + z_n}{2} \right)
+%\end{equation}
+%for \Cref{eq:hamil.1} is an example of a second order Poisson integrator. Here subscript $n$ of the coordinate variable $z$ denotes the time-stepping index. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. 
