@@ -61,7 +61,7 @@ If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7
 It is worthwhile to note that the proper orthogonal decomposition (POD) method \cite{hesthaven2015certified} corresponds to taking $X = I_m$. In this case, the projection $P_{I_n,V}$ constructed from the solution to (\ref{eq:mor.5}) becomes the POD-Galerkin projection \cite{hesthaven2015certified}.
 
 \subsection{Symplectic Model-Reduction} \label{sec:mor.2}
-Conventional model reduction methods, e.g. those introduced in section \ref{sec:mor.1}, do no generally preserve the conservation law expressed in theorem \ref{thm:1} \todo{referencing case anomaly}. This often result in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic model reduction aims to construct a reduced system that conserves the geometric symmetry expressed in theorem \ref{thm:1} which helps with the stability of the reduced system.
+Conventional model reduction methods, e.g. those introduced in section \ref{sec:mor.1}, do no generally preserve the conservation law expressed in theorem \ref{thm:1} \todo{referencing case anomaly - Respond: proper reference should be added in the introduction}. This often result in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic model reduction aims to construct a reduced system that conserves the geometric symmetry expressed in theorem \ref{thm:1} which helps with the stability of the reduced system.
 Consider a Hamiltonian system of the form
 \begin{equation} \label{eq:mor.8}
 \left\{
@@ -83,7 +83,7 @@ This system is a Hamiltonian system with the Hamiltonian $\tilde H(y) = y^T A^T 
 \begin{equation} \label{eq:mor.11}
 	\nabla_z f(z) \approx U (P^T U)^{-1} P^T \nabla_z f(z).
 \end{equation}
-Here $P$ \todo{P is also the projection matrix} is the interpolating index matrix \cite{Chaturantabut:2010cz}. For a general choice of $U$ the approximation in (\ref{eq:mor.11}) destroys the Hamiltonian structure in (\ref{eq:mor.10}). It is shown in \cite{doi:10.1137/17M1111991} that by taking $U = (A^+)^T$ we can recover the Hamiltonian structure in (\ref{eq:mor.10}). Therefore, the reduced system to (\ref{eq:mor.8}) becomes
+Here $P$ \todo{P is also the projection matrix - good point} is the interpolating index matrix \cite{Chaturantabut:2010cz}. For a general choice of $U$ the approximation in (\ref{eq:mor.11}) destroys the Hamiltonian structure in (\ref{eq:mor.10}). It is shown in \cite{doi:10.1137/17M1111991} that by taking $U = (A^+)^T$ we can recover the Hamiltonian structure in (\ref{eq:mor.10}). Therefore, the reduced system to (\ref{eq:mor.8}) becomes
 \begin{equation} \label{eq:mor.12}
 \left\{
 \begin{aligned}
@@ -92,7 +92,7 @@ Here $P$ \todo{P is also the projection matrix} is the interpolating index matri
 \end{aligned}
 \right.
 \end{equation}
-Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in theorem \ref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system. \todo{also $\tilde{H}$ is close to $H$} Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
+Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in theorem \ref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system. \todo{also $\tilde{H}$ is close to $H$ - This is not important, any smooth function can be approximated with DEIM} Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
 
 \subsection{The Greedy Generation of a $\mathbb J_{2n}$-Symplectic Basis} \label{sec:mor.3}
 Suppose that $S$ is the snapshot matrix containing the time instances $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We would like to find the $\mathbb J_{2n}$-symplectic basis $A$ such that the collective symplectic projection error of samples in $S$ onto the span space of $A$ is minimized.
@@ -125,7 +125,7 @@ Evaluation of the projection error is impractical for parametric problems. The l
 \end{equation}
 Here $\Omega\subset \mathbb R^{d}$ is a closed and bounded set of parameters that the original Hamiltonian system depends on. It is shown in \cite{doi:10.1137/17M1111991} that the loss in the Hamiltonian is constant in time. Therefore, $\omega^{k+1}$ can be identified prior to time integration.
 
-We summarized the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in algorithm \ref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to \todo{symplectic inverse of} the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more detail on the generation and properties of a symplectic basis. In section \ref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
+We summarized the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in algorithm \ref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to \todo{symplectic inverse of - adding to the basis is the same as adding to the inverse} the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more detail on the generation and properties of a symplectic basis. In section \ref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
 
 \begin{algorithm} 
 \caption{The greedy algorithm for generation of a $\mathbb J_{2n}$-symplectic basis} \label{alg:1}
