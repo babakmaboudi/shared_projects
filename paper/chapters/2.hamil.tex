@@ -54,7 +54,11 @@ It is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to
 	q_{m+1} &= q_{m+1/2} + \frac{\Delta t} 2  \cdot  \nabla_p \tilde H(p_{m+1},q_{m+1/2}).
 	\end{aligned}
 \end{equation}
-Here, $\tilde z = (q^T,p^T)^T$, $\tilde H(\tilde z) = H(T^{-1}z)$ and the subscript $m$ denotes the time-stepping index. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}. Note that it is important to use a backward stable method to compute the transformation $T$. In this paper we use the symplectic Gaussian elimination method with a complete pivoting to compute the decomposition $J_{2n} = T \mathbb J_{2n} T^T$. However, one may use a more computationally efficient method, e.g., a Cholesky-like factorization proposed in \cite{benner:chol} or the isotropic Arnoldi/Lanczos methods \cite{doi:10.1137/S1064827500366434}.
+Here, $\tilde z = (q^T,p^T)^T$, $\tilde H(\tilde z) = H(T^{-1}z)$ and the subscript $m$ denotes the time-stepping index. Note that it is important to use a backward stable method to compute the transformation $T$. In this paper we use the symplectic Gaussian elimination method with a complete pivoting to compute the decomposition $J_{2n} = T \mathbb J_{2n} T^T$. However, one may use a more computationally efficient method, e.g., a Cholesky-like factorization proposed in \cite{benner:chol} or the isotropic Arnoldi/Lanczos methods \cite{doi:10.1137/S1064827500366434}. There are a few known numerical integrators that can preserve the symplectic symmetry of generalized Hamiltonian systems without requiring the computation of the transformation matrix $T$ \cite{Hairer:1250576}. The implicit midpoint rule
+\begin{equation} \label{eq:hamil.7}
+	z_{m+1} = z_{m} + \Delta t \cdot J_{2n} \nabla_z H \left( \frac{z_{m+1} + z_m}{2} \right)
+\end{equation}
+for \Cref{eq:hamil.1} is an example of such integrators. For more on the construction and the applications of Poisson/symplectic integrators, we refer the reader to \cite{Hairer:1250576}.
 
 %or \emph{symplectic integrators} when $J_{2n} = \mathbb J_{2n}$. These methods preserves the symplectic symmetry of Hamiltonian systems which results in the stability of the solution over long time-integration. The implicit midpoint rule
 %\begin{equation}

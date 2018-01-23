@@ -99,7 +99,7 @@ We used the St\"ormer-Verlet scheme (\ref{eq:hamil.6}) to integrate (\ref{eq:res
 \includegraphics[width=0.45\textwidth]{./figs/beam/l2_norm} & \includegraphics[width=0.45\textwidth]{./figs/beam/energy_norm} \\
 (c) & (d) \\
 \end{tabular}
-\caption{(a) the decay of the singular values. (b) conservation of the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the $X$-norm.}
+\caption{numerical results related to the beam equation. (a) the decay of the singular values. (b) conservation of the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the $X$-norm.}
 \end{figure}
 
 Figure \ref{fig:1}a shows the decay of the singular values of the time snapshots $S$ and $X^{1/2}S$ respectively. We notice that the decay of the two matrices are different and as the matter of fact the decay saturates for $X^{1/2}S$.
@@ -130,15 +130,15 @@ One can check that $u_{t} = \delta H / \delta v$ and $v_{t} = - \delta H / \delt
 \begin{equation} \label{eq:res.14}
 	u(t,x) = 4 \text{arctan}\left( \exp ( \pm \frac{x - x_0 - ct}{\sqrt{1-c^2}} ) \right),
 \end{equation}
-where the plus and minus signs are known as the \emph{kink} and \emph{anti-kink} solutions, respectively. Here $|c|<1$ is the wave speed. We discretize the box into $N$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,N$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) to obtain
-\begin{equation}
+where the plus and minus signs are known as the \emph{kink} and \emph{anti-kink} solutions, respectively. Here $|c|<1$ is the wave speed. We discretize the box into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) to obtain
+\begin{equation} \label{eq:res.15}
 	\dot z = \mathbb J_{2n} L z + \mathbb J_{2n} g(z) + \mathbb J_{2n} c_b.
 \end{equation}
 Here $z = (q^T,p^T)^T$, $q(t) = (u(t,x_1),\dots,u(t,x_N))^T$, $p(t) = (v(t,x_1),\dots,v(t,x_N))^T$, $c_b$ is the term corresponding to the boundary conditions and
-\begin{equation}
+\begin{equation} \label{eq:res.16}
 	L = 
 	\begin{pmatrix}
-		Dx^TDx & 0_N \\
+		D_x^TD_x & 0_N \\
 		0_N & I_n
 	\end{pmatrix}, 
 	\quad
@@ -148,9 +148,9 @@ Here $z = (q^T,p^T)^T$, $q(t) = (u(t,x_1),\dots,u(t,x_N))^T$, $p(t) = (v(t,x_1),
 	\vec 0
 	\end{pmatrix},
 \end{equation}
-where $Dx$ is the standard matrix differentiation operator. The discrete Hamiltonian, then takes the form
-\begin{equation}
-	H_{\Delta x} = \Delta x \cdot \frac 1 2 \| p \|^2 + \Delta x \cdot \| D_x q \|^2 + \sum_{i=1}^{N} \Delta x \cdot ( 1 - \cos(q_i) ).
+where $D_x$ is the standard matrix differentiation operator. We may take $X = L$ as the weight matrix associated to (\ref{eq:res.15}). The discrete Hamiltonian, then takes the form
+\begin{equation} \label{eq:res.17}
+	H_{\Delta x} = \Delta x \cdot \frac 1 2 \| p \|^2 + \Delta x \cdot \| D_x q \|^2 + \sum_{i=1}^{n} \Delta x \cdot ( 1 - \cos(q_i) ).
 \end{equation}
 The system parameters can be found in the table below.
 \vspace{0.5cm}
@@ -158,7 +158,7 @@ The system parameters can be found in the table below.
 \begin{tabular}{|l|l|}
 \hline
 Domain legnth & box: $L = 50$ \\
-No. grid points & $n = 250$ \\
+No. grid points & $n = 500$ \\
 Time discretization size & $\Delta t = 0.01$ \\
 Wave speed & $c=0.2$ \\
 \hline
@@ -166,4 +166,44 @@ Wave speed & $c=0.2$ \\
 \end{center}
 \vspace{0.5cm}
 
-The St\"ormer-Verlet Scheme is used to integrate (\ref{eq:res.12}) in time and generate the snapshot matrix $S$. Similar to the previous subsection, projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,A}$ are used to construct a reduced system. To accelerate the evaluation of the nonlinear term, the symplectic methods discussed in section (\ref{eq:mor.1}) and (\ref{eq:mor.2}) are coupled with the projection operators $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,A}$, respectively. Furthermore, the DEIM approximation is used for efficient evaluation of the reduced system obtained by the projection $P_{X,V}$. The time-stepping scheme used to integrate the reduced systems are taken identical to the ones in section (\ref{sec:res.1})
+The midpoint scheme (\ref{eq:hamil.7}) is used to integrate (\ref{eq:res.12}) in time and generate the snapshot matrix $S$. Similar to the previous subsection, projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,A}$ are used to construct a reduced system. To accelerate the evaluation of the nonlinear term, the symplectic methods discussed in section (\ref{eq:mor.1}) and (\ref{eq:mor.2}) are coupled with the projection operators $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,A}$, respectively. Furthermore, the DEIM approximation is used for efficient evaluation of the reduced system obtained by the projection $P_{X,V}$. The midpoint rule is also used to integrate the reduced systems in time.
+
+
+
+\begin{figure} \label{fig:2}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{./figs/sine/singulars} & \includegraphics[width=0.45\textwidth]{./figs/sine/energy} \\
+(a) & (b) \\
+\includegraphics[width=0.45\textwidth]{./figs/sine/l2} & \includegraphics[width=0.45\textwidth]{./figs/sine/energy_norm} \\
+(c) & (d) \\
+\end{tabular}
+\caption{numerical results related to the sine-Gordon equation. (a) the decay of the singular values. (b) error in the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the $X$-norm.}
+\end{figure}
+
+Figure \ref{fig:2}a shows the decay of the singular values of matrices $S$ and $X^{1/2}S$. Similar to the previous section, we observe a saturation in the decay of the singular values of $X^{1/2}S$ compared to the singular values of $S$. This indicates that reduced bases, based on a weighted inner product, should be taken larger to provide similar accuracy as the those which are based on the $L^2$ inner product.
+
+Figure \ref{fig:2}b displays the error in the Hamiltonian. It is observed that the symplectic approach conserves the Hamiltonian. However, the classical approaches do not necessarily conserve the Hamiltonian. We point out using the projection operator $P_{X,V}$ helped with the boundedness of the Hamiltonian. The contrary is observed when we apply the POD with respect to the $L^2$ inner-product, i.e. applying the projection operator $P_{I,V}$. This can be seen in the results presented in \cite{doi:10.1137/140978922}, where the unboundedness of the Hamiltonian is observed when $P_{I,V}$ is applied to the sine-Gordon equation. Nevertheless, only the symplectic model reduction routines consistently preserve the Hamiltonian.
+
+Figure \ref{fig:2}c exhibits the $L^2$ error between the solution of the projected systems and the original system. The behavior of the solution is investigated for $k=100$, $k=125$ and $k=150$ number of basis vectors. We observe that all systems that are projected with respect to the $X$-norm are bounded. As the results in \cite{doi:10.1137/140978922} suggest, the standard inner-product does not necessarily yield a bounded reduced system. Moreover, we notice that the symplectic projection $P^{\text{symp}}_{X,\tilde A}$ result in a substantially more accurate reduced system compared to the reduced system yielded from $P_{X,V}$. This is because the overall behavior of the original system due to the sympelctic structure is translated correctly to the reduced system constructed with the symplectic projection. Whereas for systems constructed by the classical methods, the Hamiltonian structure is lost.
+
+The error with respect to the $X$-norm between the solution of the original system and the projected systems are presented in figure \ref{fig:2}d. We see that the behavior of the $X$-norm error is similar to the $L^2$ norm, however the growth of the error is slower for methods based on a weighted inner product. Note that the connection between the error in the $L^2$-norm and the $X$-norm is problem dependent. It is also observed that symplectic methods are substantially more accurate.
+
+\begin{figure} \label{fig:3}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{./figs/sine/nonlinear/l2} & \includegraphics[width=0.45\textwidth]{./figs/sine/nonlinear/energy_norm} \\
+(a) & (b) \\
+\multicolumn{2}{c}{
+\includegraphics[width=0.45\textwidth]{./figs/sine/nonlinear/energy}
+} \\
+\multicolumn{2}{c}{(c)} \\
+\end{tabular}
+\caption{numerical results related to the sine-Gordon equation with efficient evaluation of the nonlinear terms. Here, ``c.+DEIM'' indicates classical model reduction with the DEIM, ``s.+DEIM'' indicates symplectic model reduction with the DEIM and ``s.'' indicates symplectic model reduction with symplectic treatment of the nonlinear term. (a) error with respect to the $L^2$ norm. (b) error with respect to the $X$-norm. (c) error in the Hamiltonian. }
+\end{figure}
+
+Figure \ref{fig:3} shows the error between the projected systems and the original system, when an efficient method is adopted in evaluating the nonlinear term in (\ref{eq:res.15}). This figure compares the symplectic approaches against non-symplectic methods. For all simulations, the size of the reduced basis for (\ref{eq:res.15}) is kept as $k=100$. The size of the basis of the nonlinear term is then chosen as $k_n=75$ and $k_n=100$. For symplectic methods, a basis for the nonlinear term is constructed according to algorithm \ref{alg:3}, whereas for non-symplectic methods, the DEIM is applied. Note that for symplectic methods, the basis for the nonlinear term is added to the symplectic basis $A$. This means that the size of the reduced system is larger compared to the classical approach.
+
+Figure \ref{fig:3}a and \ref{fig:3}b show the error with respect to the $L^2$-norm and the $X$-norm between the solution of the projected systems compared to the solution of the original system, respectively. We observe that all solutions are bounded and the behavior of the error in the $L^2$-norm and the $X$-norm is similar. We observe that enriching the DEIM basis, do not increase the overall accuracy of the system projected using $P_{X,V}$ (orange lines). Furthermore, applying the DEIM to a symplectic reduced system (green lines) also destroys the symplectic nature of the reduced system, as suggested in section \ref{sec:normmor.3}. Therefore, it is essential to adopt a symplectic approach to reduce the complexity of evaluating the nonlinear terms. We observe that the symplectic method presented in \ref{sec:normmor.3} provides not only an accurate approximation of the nonlinear term, but also preserves the symplectic structure of the reduce system. Moreover, enriching such a basis consistently increases the accuracy of the solution, as suggested in Figure \ref{fig:3}a and \ref{fig:3}b.
+
+Figure \ref{fig:3}b shows the conservation of the Hamiltonian for different methods. It is again seen that applying the DEIM to a symplectic reduced system destroys the Hamiltonian structure, therefore the Hamiltonian is not preserved.
+
+
