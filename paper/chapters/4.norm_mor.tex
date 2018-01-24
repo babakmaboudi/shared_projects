@@ -1,9 +1,9 @@
 \section{Symplect Model-Redcution with a Weighted Inner Product} \label{sec:normmor}
 
-In this section we will combine the concept of model reduction with a weighted inner product in section \ref{sec:mor.1} with the symplectic model reduction discussed in section \ref{sec:mor.2}. We will discuss how the new method can be viewed as a natural extension to the original symplectic method. Finally we generalize the greedy method for the symplectic basis generation, and the symplectic model reduction of nonlinear terms to be compatible with any weighted inner product.
+In this section we will combine the concept of model reduction with a weighted inner product in \Cref{sec:mor.1} with the symplectic model reduction discussed in \Cref{sec:mor.2}. We will discuss how the new method can be viewed as a natural extension to the original symplectic method. Finally we generalize the greedy method for the symplectic basis generation, and the symplectic model reduction of nonlinear terms to be compatible with any weighted inner product.
 
 \subsection{Generalization of the Symplectic Projection} \label{sec:normmor.1}
-As discussed in section \ref{sec:mor.1}, proper error analysis of methods for solving partial differential equations often require using a weighted inner product. This is particularly important when dealing with Hamiltonian systems where the system energy can induce a norm that is fundamental to the dynamics of the system.
+As discussed in \Cref{sec:mor.1}, proper error analysis of methods for solving partial differential equations often require using a weighted inner product. This is particularly important when dealing with Hamiltonian systems, where the system energy can induce a norm that is fundamental to the dynamics of the system.
 
 Consider a Hamiltonian system of the form (\ref{eq:mor.8}) together with the weighted inner product defined in (\ref{eq:mor.3}) with $m=2n$. Also suppose that the solution $z$ to (\ref{eq:mor.8}) lies on a $2k$ dimensional symplectic subspace with the basis $A$. We would like to construct a projection operator that minimizes the projection error with respect to the $X$-norm while preserving the symplectic dynamics of (\ref{eq:mor.8}) in the projected space. Consider the operator $P: \mathbb R^{2n} \to \mathbb R^{2n}$ defined as
 \begin{equation} \label{eq:normmor.1}
@@ -13,7 +13,7 @@ It is easy to show that $P$ is idempotent if and only if
 \begin{equation} \label{eq:normmor.2}
 	\mathbb J_{2k}^T A^T X \mathbb J_{2n} X A = I_{2k}.
 \end{equation}
-This means that $P$ is a projection operator onto the span space of $A$. Suppose that $S$ is the snapshot matrix containing time samples $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We like to find the basis $A$ that minimizes the projection error of the samples in $S$ with respect to $P$.
+This means that $P$ is a projection operator onto the span space of $A$. Suppose that $S$ is the snapshot matrix containing the time samples $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We like to find the basis $A$ that minimizes the projection error of the samples in $S$ with respect to $P$.
 \begin{equation} \label{eq:normmor.3}
 \begin{aligned}
 & \underset{A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
@@ -30,7 +30,7 @@ by (\ref{eq:normmor.1}) we have
 	&= \| \tilde S - \tilde A \tilde A ^+ \tilde S \|_2.
 \end{aligned}
 \end{equation}
-Here $\tilde S = X^{1/2} S$, $\tilde A = X^{1/2} A$ and $\tilde A^+ = \mathbb J_{2k}^T \tilde A^T J_{2n}$ is the sympletic inverse of $\tilde A$ with respect to the skew-symmetric matrix $J_{2n} = X^{1/2} \mathbb J_{2n} X^{1/2}$. Note that the symplectic inverse in (\ref{eq:normmor.4}) is a generalization of the symplectic inverse introduced in section \ref{sec:mor.2}. Therefore, we may use the same notation (the superscript $+$) for both. We summarized the properties of this generalization in theorem \ref{?}. With the new notation, the condition (\ref{eq:normmor.2}) turns into $\tilde A ^+ \tilde A = I$ which is equivalent to $\tilde A ^T J_{2n} \tilde A = \mathbb J_{2k}$. In other words, this condition implies that $\tilde A$ has to be a $J_{2n}$-symplectic matrix. Finally we can rewrite the minimization (\ref{eq:normmor.3}) as
+Here $\tilde S = X^{1/2} S$, $\tilde A = X^{1/2} A$ and $\tilde A^+ = \mathbb J_{2k}^T \tilde A^T J_{2n}$ is the sympletic inverse of $\tilde A$ with respect to the skew-symmetric matrix $J_{2n} = X^{1/2} \mathbb J_{2n} X^{1/2}$. Note that the symplectic inverse in (\ref{eq:normmor.4}) is a generalization of the symplectic inverse introduced in \Cref{sec:mor.2}. Therefore, we may use the same notation (the superscript $+$) for both. We summarized the properties of this generalization in \Cref{thm:2}. With the introduced notations, the condition (\ref{eq:normmor.2}) turns into $\tilde A ^+ \tilde A = I$ which is equivalent to $\tilde A ^T J_{2n} \tilde A = \mathbb J_{2k}$. In other words, this condition implies that $\tilde A$ has to be a $J_{2n}$-symplectic matrix. Finally we can rewrite the minimization (\ref{eq:normmor.3}) as
 \begin{equation} \label{eq:normmor.5}
 \begin{aligned}
 & \underset{A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
@@ -39,7 +39,9 @@ Here $\tilde S = X^{1/2} S$, $\tilde A = X^{1/2} A$ and $\tilde A^+ = \mathbb J_
 & & \tilde A^T J_{2n} \tilde A = \mathbb J_{2k}.
 \end{aligned}
 \end{equation}
-where $P^\text{symp}_{X,\tilde A} = \tilde A \tilde A^+$ is the symplectic projection with respect to the $X$-norm onto the span of $\tilde A$. Similar to the minimization (\ref{eq:mor.13}), direct approaches to solving (\ref{eq:normmor.5}) are impractical. Furthermore, there are no SVD-type methods known to the authors, that solve (\ref{eq:normmor.5}). However, the greedy generation of the symplectic basis can be generalized to generate a near optimal basis $\tilde A$. The generalized greedy method is discussed in section \ref{?}.
+where $P^\text{symp}_{X,\tilde A} = \tilde A \tilde A^+$ is the symplectic projection with respect to the $X$-norm onto the span of $\tilde A$. At the first glance, the minimization (\ref{eq:normmor.5}) might look similar to (\ref{eq:mor.13}). However, since $\tilde A$ is $J_{2n}$-symplectic, and the projection operator depends on $X$, we need to seek for alternative approaches to find a near optimal solution to (\ref{eq:normmor.5}). 
+
+Similar to (\ref{eq:mor.13}), direct approaches to solving (\ref{eq:normmor.5}) are impractical. Furthermore, there are no SVD-type methods known to the authors, that solves (\ref{eq:normmor.5}). However, the greedy generation of the symplectic basis can be generalized to generate a near optimal basis $\tilde A$. The generalized greedy method is discussed in \Cref{sec:normmor.2}.
 
 Now suppose that a basis $A$ that solves (\ref{eq:normmor.5}) is in hand such that $z = Ay$ with $y\in \mathbb R^{2k}$, the expansion coefficients of $z$ in the basis of $A$. Using (\ref{eq:normmor.2}) we may write the reduced system to (\ref{eq:mor.8}) as
 \begin{equation} \label{eq:normmor.6}
@@ -76,7 +78,7 @@ it is straight forward to show all statements using the definition of a symplect
 \end{proof}
 
 \subsection{Greedy Generation of a $J_{2n}$-Symplectic Basis} \label{sec:normmor.2}
-In this section we modify the greedy algorithm introduced in section (\ref{sec:mor.3}) to construct a $J_{2n}$-symplectic basis. Ortho-normalization is an essential step in most of greedy approaches to basis generation \cite{hesthaven2015certified,quarteroni2015reduced}. Here, we summarize a variation of the Gram-Schmidt orthogonalization process, known as the \emph{symplectic Gram-Schmidt} process.
+In this section we modify the greedy algorithm introduced in \Cref{sec:mor.3} to construct a $J_{2n}$-symplectic basis. Ortho-normalization is an essential step in most greedy approaches to basis generation \cite{hesthaven2015certified,quarteroni2015reduced}. Here, we summarize a variation of the Gram-Schmidt orthogonalization process, known as the \emph{symplectic Gram-Schmidt} process.
 
 Suppose that $\Omega$ is a symplectic form defined on $\mathbb R^{2n}$ such that $\Omega(x,y) = x^T J_{2n} y$, for all $x,y\in \mathbb R^{2n}$ and some full rank and skew-symmetric matrix $J_{2n} = X^{1/2} \mathbb J_{2n} X^{1/2}$. We would like to build a basis of size $2k+2$ in an iterative manner. We start with some initial vector, e.g. $e_1 = z_0$. It is known that a symplectic basis is even dimensional \cite{Marsden:2010:IMS:1965128}. We may take $Te_1$, where $T = X^{-1/2} \mathbb J_{2n}^{T}X^{1/2}$ as a candidate for the second basis vector. It is easily checked that $\tilde A_2=[e_1|Te_1]$ is $J_{2n}$-symplectic and consequently, $\tilde A_2$ is the first basis generated by the greedy approach. Next, suppose that $\tilde A_{2k} = [e_1|\dots|e_k|Te_1|\dots|Te_k]$ is generated in $k$-th step of the greedy method and $z\not \in \text{span}\left(\tilde A_{2k}\right)$ is provided. We aim to $J_{2n}$-orthogonalize $z$ with respect to the basis $\tilde A_{2k}$. This means we should find coefficients $\alpha_i,\beta_i\in \mathbb R$, for $i=1,\dots,k$ such that
 \begin{equation} \label{eq:normmor.9}
@@ -107,13 +109,13 @@ and
 \end{equation}
 where $\delta_{i,j}$ is the Kronecker delta function. This shows that $\tilde A_{2k}^TX\tilde A_{2k} = I_{2k}$, i.e., $\tilde A_{2k}$ is an ortho-normal basis with respect to the $X$-norm.
 \end{proof}
-We point out that if we take $X=I_{2n}$, then the greedy process generates a $\mathbb J_{2n}$- symplectic basis. As the matter of fact, with this choice, the greedy method discussed above becomes identical to the greedy process discussed in section \ref{sec:mor.3}, since $T = X^{-1/2}\mathbb J_{2n}^TX^{1/2} = \mathbb J_{2n}^T$.
+We point out that if we take $X=I_{2n}$, then the greedy process generates a $\mathbb J_{2n}$- symplectic basis. As the matter of fact, with this choice, the greedy method discussed above becomes identical to the greedy process discussed in \Cref{sec:mor.3}, since $T = X^{-1/2}\mathbb J_{2n}^TX^{1/2} = \mathbb J_{2n}^T$.
 
-For identifying the best vectors to be added to a set of basis vectors, we may use similar error functions to those introduced in section \ref{sec:mor.3}. The projection error can be used to identify the snapshot that is worst approximated by a given basis $\tilde A_{2k}$:
+For identifying the best vectors to be added to a set of basis vectors, we may use similar error functions to those introduced in \Cref{sec:mor.3}. The projection error can be used to identify the snapshot that is worst approximated by a given basis $\tilde A_{2k}$:
 \begin{equation} \label{eq:normmor.14}
 	t^{k+1} := \underset{t}{\text{argmax } }\| X^{1/2}z(t) - P^\text{symp}_{X,\tilde A_{2k}}(X^{1/2}z(t)) \|_2. 
 \end{equation}
-Or alternatively we can use the loss in the Hamiltonian function in (\ref{eq:mor.16}) for parametric problems. We summarized the greedy method for generating a $J_{2n}$-symplectic matrix in algorithm \ref{alg:2}.
+Or alternatively we can use the loss in the Hamiltonian function in (\ref{eq:mor.16}) for parameter dependent problems. We summarized the greedy method for generating a $J_{2n}$-symplectic matrix in \Cref{alg:2}.
 
 \begin{algorithm} 
 \caption{The greedy algorithm for generation of a $J_{2n}$-symplectic basis} \label{alg:2}
@@ -139,13 +141,13 @@ Or alternatively we can use the loss in the Hamiltonian function in (\ref{eq:mor
 It is shown in \cite{doi:10.1137/17M1111991} that under natural assumptions on the solution manifold of (\ref{eq:mor.8}), the original greedy method for symplectic basis generation converges exponentially fast. We expect similar convergence rate for the generalized greedy method, since the $X$-norm is topologically equivalent to the standard Euclidean norm \cite{friedman1970foundations}, for a full rank matrix $X$.
 
 \subsection{Efficient Evaluation of Nonlinear Terms} \label{sec:normmor.3}
-Evaluating the nonlinear term in (\ref{eq:normmor.8}) still contain a computational complexity proportional to the size of the full order system (\ref{eq:mor.8}). To overcome this inefficiency, we may take a similar approach to section (\ref{sec:mor.2}). The DEIM approximation of the nonlinear term in (\ref{eq:normmor.8}) yields
+Evaluating the nonlinear term in (\ref{eq:normmor.8}) still contain a computational complexity proportional to the size of the full order system (\ref{eq:mor.8}). To overcome this inefficiency, we may take a similar approach to \Cref{sec:mor.2}. The DEIM approximation of the nonlinear term in (\ref{eq:normmor.8}) yields
 \begin{equation} \label{eq:normmor.15}
-	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (P^TU)^{-1} P^T \nabla_z f(z).
+	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1}\mathcal  P^T \nabla_z f(z).
 \end{equation}
-Here $U$ is a basis for the nonlinear snapshots $\{\nabla_z f(z(t_i))\}_{i=1}^N$, and $P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in section (\ref{sec:mor.2}), for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not take a Hamiltonian form. Applying the chain rule on (\ref{eq:normmor.15}) gives
+Here $U$ is a basis for the nonlinear snapshots $\{\nabla_z f(z(t_i))\}_{i=1}^N$, and $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in section (\ref{sec:mor.2}), for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not take a Hamiltonian form. Applying the chain rule on (\ref{eq:normmor.15}) gives
 \begin{equation} \label{eq:normmor.16}
-	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (P^TU)^{-1} P^T X^{1/2} (\tilde A^+)^T \nabla_y f(Ay).
+	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1} \mathcal P^T X^{1/2} (\tilde A^+)^T \nabla_y f(Ay).
 \end{equation}
 Now if we require $U = X^{1/2} (\tilde A^+)^T$ then the complex expression in (\ref{eq:normmor.16}) reduces to
 \begin{equation} \label{eq:normmor.17}
@@ -155,13 +157,13 @@ and hence we recover the Hamiltonian structure. This gives rise to the reduced s
 \begin{equation} \label{eq:normmor.18}
 \left\{
 \begin{aligned}
-	\dot y(t) &= J_{2k} A^TLAy + J_{2k} (P^TX^{1/2} (\tilde A^+)^T)^{-1} P^T \nabla_z f(z), \\
+	\dot y(t) &= J_{2k} A^TLAy + J_{2k} (\mathcal P^TX^{1/2} (\tilde A^+)^T)^{-1} \mathcal P^T \nabla_z f(z), \\
 	y(0) &= \tilde A^+ X^{1/2} z_0.
 \end{aligned}
 \right.
 \end{equation}
 
-We now discuss how to ensure $X^{1/2} (\tilde A^+)^T$ to be a basis for the nonlinear snapshots. Note that if $z \in \text{span}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{span}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Theorem \ref{thm:2} indicates that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). Note that theorem \ref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We summarized the process of generating a basis for the nonlinear terms in algorithm \ref{alg:3}.
+We now discuss how to ensure $X^{1/2} (\tilde A^+)^T$ to be a basis for the nonlinear snapshots. Note that if $z \in \text{span}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{span}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. \Cref{thm:2} indicates that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). Note that \Cref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We summarized the process of generating a basis for the nonlinear terms in \Cref{alg:3}.
 
 \begin{algorithm} 
 \caption{Generation of a basis for nonlinear terms} \label{alg:3}

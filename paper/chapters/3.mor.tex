@@ -1,9 +1,9 @@
 \section{Model Order Reduction}
 \label{sec:mor}
 
-In this section we summarize basic concepts around model order reduction. We discuss the conventional approach to model order reduction with a weighted inner product. We then outline the main results presented in \cite{doi:10.1137/17M1111991} regarding symplectic model reduction. In \cref{sec:normor} we shall combine the two concepts to introduce the symplectic model reduction of Hamiltonian systems with respect to a weighted inner product.
+In this section we summarize the fundamentals of model order reduction. We discuss the conventional approach to model order reduction with a weighted inner product. We then outline the main results presented in \cite{doi:10.1137/17M1111991} regarding symplectic model reduction. In \Cref{sec:normmor} we shall combine the two concepts to introduce the symplectic model reduction of Hamiltonian systems with respect to a weighted inner product.
 
-\subsection{Model-Reduction with a Weighted Inner Product} \label{sec:mor.1}
+\subsection{Model Reduction with a Weighted Inner Product} \label{sec:mor.1}
 Consider a dynamical system of the form
 \begin{equation} \label{eq:mor.1}
 \left\{
@@ -15,7 +15,7 @@ Consider a dynamical system of the form
 \end{equation}
 where $x\in \mathbb R^{m}$ and $f:\mathbb R \times \mathbb R^{m} \to \mathbb R^{m}$ is some continuous function. In this paper we may assume that time $t$ is the only parameter that the solution vector $x$ depends on. Nevertheless, it is straight forward to generalize the findings of this paper to the case where $x$ also depends on a set of physical or geometrical parameters that belong to a closed and bounded subset of a Euclidean space.
 
-Suppose that $x$ lies on or very close to a low dimensional linear subspace with the basis $V=[v_1|\dots|v_k]$, $v_i\in \mathbb R^{m}$ for $i=1,\dots,k$. The approximates solution to (\ref{eq:mor.1}) in this basis reads
+Suppose that $x$ lies on or very close to a low dimensional linear subspace with the basis $V=[v_1|\dots|v_k]$, $v_i\in \mathbb R^{m}$ for $i=1,\dots,k$. The approximated solution to (\ref{eq:mor.1}) in this basis reads
 \begin{equation} \label{eq:mor.2}
 	x = Vy,
 \end{equation}
@@ -58,10 +58,10 @@ where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, $S$ is the matrix that con
 \end{equation}
 If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced} for further information regarding the development and the efficiency of reduced order models.
 
-It is worthwhile to note that the proper orthogonal decomposition (POD) method \cite{hesthaven2015certified} corresponds to taking $X = I_m$. In this case, the projection $P_{I_n,V}$ constructed from the solution to (\ref{eq:mor.5}) becomes the POD-Galerkin projection \cite{hesthaven2015certified}.
+It is worthwhile to note that the proper orthogonal decomposition (POD) method \cite{hesthaven2015certified} corresponds to taking $X = I_m$. In this case, the projection $P_{I_m,V}$ constructed from the solution to (\ref{eq:mor.5}) becomes the POD-Galerkin projection \cite{hesthaven2015certified}.
 
 \subsection{Symplectic Model-Reduction} \label{sec:mor.2}
-Conventional model reduction methods, e.g. those introduced in section \ref{sec:mor.1}, do no generally preserve the conservation law expressed in theorem \ref{thm:1} \todo[inline]{referencing case anomaly - Respond: proper reference should be added in the introduction, AB: I meant references to blocks like theorems, algorithms, and definitions should start with capital letters, that is the convention as far as I know.}. This often result in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic model reduction aims to construct a reduced system that conserves the geometric symmetry expressed in theorem \ref{thm:1} which helps with the stability of the reduced system.
+Conventional model reduction methods, e.g. those introduced in \Cref{sec:mor.1}, do no generally preserve the conservation law expressed in \Cref{thm:1}. This often result in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model order reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic model reduction aims to construct a reduced system that conserves the geometric symmetry expressed in \Cref{thm:1} which helps with the stability of the reduced system.
 Consider a Hamiltonian system of the form
 \begin{equation} \label{eq:mor.8}
 \left\{
@@ -71,7 +71,7 @@ Consider a Hamiltonian system of the form
 \end{aligned}
 \right.
 \end{equation}
-Here $z\in \mathbb R^{2n}$ is the state vector, $L\in\mathbb R^{2n\times 2n}$ is a symmetric and positive-definite matrix and $f:\mathbb R^{2n}\to\mathbb R^{2n}$ is some function. Note that the Hamiltonian for system (\ref{eq:mor.8}) is given by $H(z) = z^TLz + f(z)$. Suppose that the solution to (\ref{eq:mor.8}) lies on a low dimensional symplectic subspace. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis containing the basis vectors $A=[e_1|\dots|e_k|f_1|\dots|f_k]$ such that $z = Ay$ with $y$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ = \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
+Here $z\in \mathbb R^{2n}$ is the state vector, $L\in\mathbb R^{2n\times 2n}$ is a symmetric and positive-definite matrix and $f:\mathbb R^{2n}\to\mathbb R^{2n}$ is some smooth enough function. Note that the Hamiltonian for system (\ref{eq:mor.8}) is given by $H(z) = z^TLz + f(z)$. Suppose that the solution to (\ref{eq:mor.8}) lies on a low dimensional symplectic subspace. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis containing the basis vectors $A=[e_1|\dots|e_k|f_1|\dots|f_k]$, such that $z = Ay$ with $y$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ = \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
 \begin{equation} \label{eq:mor.9}
 	\dot y = A^+ \mathbb J_{2n} (A^+)^T A^T L A y + A^+ \mathbb J_{2n} (A^+)^T \nabla_y f(Ay).
 \end{equation}
@@ -81,18 +81,18 @@ We refer the reader to \cite{doi:10.1137/17M1111991} for the details of derivati
 \end{equation}
 This system is a Hamiltonian system with the Hamiltonian $\tilde H(y) = y^T A^T L A y + f(Ay)$. To reduced the complexity of evaluating the nonlinear term in (\ref{eq:mor.10}), we may apply the discrete empirical interpolation method (DEIM) \cite{barrault2004empirical,Chaturantabut:2010cz}. Assuming that $\nabla_z f(z)$ lies on a low dimensional subspace with a basis $U$ the DEIM approximation reads
 \begin{equation} \label{eq:mor.11}
-	\nabla_z f(z) \approx U (P^T U)^{-1} P^T \nabla_z f(z).
+	\nabla_z f(z) \approx U (\mathcal P^T U)^{-1} \mathcal P^T \nabla_z f(z).
 \end{equation}
-Here $P$ \todo{P is also the projection matrix - good point, AB: should we rename it because it appears at the same time in a reduced model?} is the interpolating index matrix \cite{Chaturantabut:2010cz}. For a general choice of $U$ the approximation in (\ref{eq:mor.11}) destroys the Hamiltonian structure in (\ref{eq:mor.10}). It is shown in \cite{doi:10.1137/17M1111991} that by taking $U = (A^+)^T$ we can recover the Hamiltonian structure in (\ref{eq:mor.10}). Therefore, the reduced system to (\ref{eq:mor.8}) becomes
+Here $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. For a general choice of $U$ the approximation in (\ref{eq:mor.11}) destroys the Hamiltonian structure in (\ref{eq:mor.10}). It is shown in \cite{doi:10.1137/17M1111991} that by taking $U = (A^+)^T$ we can recover the Hamiltonian structure in (\ref{eq:mor.10}). Therefore, the reduced system to (\ref{eq:mor.8}) becomes
 \begin{equation} \label{eq:mor.12}
 \left\{
 \begin{aligned}
-	\dot y(t) &= \mathbb J_{2k} A^T L A y + \mathbb J_{2k} (P^T (A^+)^T)^{-1} P^T \nabla_z f(Ay), \\
+	\dot y(t) &= \mathbb J_{2k} A^T L A y + \mathbb J_{2k} (\mathcal P^T (A^+)^T)^{-1} \mathcal P^T \nabla_z f(Ay), \\
 	y(0) &= A^+ z_0.
 \end{aligned}
 \right.
 \end{equation}
-Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in theorem \ref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system and the difference of the Hamiltonians of the two system \cref{eq:mor.8,eq:mor.12} is constant. Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
+Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in \Cref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system and the difference of the Hamiltonians of the two system \cref{eq:mor.8,eq:mor.12} is constant. Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
 
 \subsection{The Greedy Generation of a $\mathbb J_{2n}$-Symplectic Basis} \label{sec:mor.3}
 Suppose that $S$ is the snapshot matrix containing the time instances $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We would like to find the $\mathbb J_{2n}$-symplectic basis $A$ such that the collective symplectic projection error of samples in $S$ onto the span space of $A$ is minimized.
@@ -113,19 +113,19 @@ The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near
 \begin{equation} \label{eq:mor.14}
 	t^{k+1} := \underset{t}{\text{argmax } }\| z(t) - P^\text{symp}_{I,A}(z(t)) \|_2. 
 \end{equation}
-If $e_{k+1}$ is the vector obtained by $\mathbb J_{2n}$-orthogonalize $z(t^{k+1})$ with respect to $A_{2k}$ \cite{doi:10.1137/17M1111991}, then the enriched basis $A_{2k+2}$ reads
+If $e_{k+1}$ is the vector obtained by $\mathbb J_{2n}$-orthogonalizing $z(t^{k+1})$ with respect to $A_{2k}$ \cite{doi:10.1137/17M1111991}, then the enriched basis $A_{2k+2}$ reads
 \begin{equation} \label{eq:mor.15}
 	A_{2k+2} = [e_1|\dots|e_k|e_{k+1}|f_1|\dots|f_k|\mathbb{J}_{2n}^T e_{k+1}].	
 \end{equation}
-It is easily checked that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and ortho-normal. We point out that the choice of orthogonalization routine generally depends on the application. In this paper we use the symplectic Gram-Schmidt (GS) process as the orthogonalization routine.
+It is easily checked that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and ortho-normal. We point out that the choice of orthogonalization routine generally depends on the application. In this paper we use the symplectic Gram-Schmidt (GS) process as the orthogonalization routine. However the isotropic Arnoldi method or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are among backward stable alternatives.
 
-Evaluation of the projection error is impractical for parametric problems. The loss in the Hamiltonian function can be used as a cheap surrogate to the projection error.
+Evaluation of the projection error is impractical for parameter-dependent problems. The loss in the Hamiltonian function can be used as a cheap surrogate to the projection error.
 \begin{equation} \label{eq:mor.16}
 	\omega^{k+1} = \underset{\omega \in \Omega}{\text{argmax } } | H(z(\omega)) - H(P^\text{symp}_{I,A}(z(\omega))) |.
 \end{equation}
 Here $\Omega\subset \mathbb R^{d}$ is a closed and bounded set of parameters that the original Hamiltonian system depends on. It is shown in \cite{doi:10.1137/17M1111991} that the loss in the Hamiltonian is constant in time. Therefore, $\omega^{k+1}$ can be identified prior to time integration.
 
-We summarized the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in algorithm \ref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to the symplectic inverse of the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more detail on the generation and properties of a symplectic basis. In section \ref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
+We summarized the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in \Cref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to the symplectic inverse of the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more detail on the generation and properties of a symplectic basis. In \Cref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
 
 \begin{algorithm} 
 \caption{The greedy algorithm for generation of a $\mathbb J_{2n}$-symplectic basis} \label{alg:1}
