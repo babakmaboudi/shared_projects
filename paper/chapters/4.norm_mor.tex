@@ -184,16 +184,17 @@ We now discuss how to ensure $X^{1/2} (\tilde A^+)^T$ to be a basis for the nonl
 \end{algorithm}
 
 \subsection{Offline/online decomposition} \label{sec:normmor.4}
-Model-reduction becomes particularly useful in multi-query settings. For the purpose of most efficient computation, it is important to delineate high dimensional ($\mathcal{O}(n)$) computations from low dimensional ($\mathcal{O}(k)$) ones in the implementation phase. Time intensive high dimensional quantities are computed only once for the given problem in offline phase and cheaper low dimensional computations can be performed in the online phase. This segregation or compartmentalization of quantities according to their computational cost is referred to as offline/online decomposition.
+Model order reduction becomes particularly useful for parameter dependent problems or in multi-query settings. For the purpose of most efficient computation, it is important to delineate high dimensional ($\mathcal{O}(n)$) computations from low dimensional ($\mathcal{O}(k)$) ones in the implementation phase. Time intensive high dimensional quantities are computed only once for a given problem in the offline phase and cheaper low dimensional computations can be performed in the online phase. This segregation or compartmentalization of quantities, according to their computational cost, is referred to as the offline/online decomposition.
 
 More precisely, one can decompose the computations into following stages:
-\paragraph{Offline stage:} Quantities in this stage are computed only once for use in the next stage.
+\paragraph{Offline stage:} Quantities in this stage are computed only once and then used in the online stage.
 \begin{enumerate}
-\item Generate weighted snapshots matrix $X^{1/2}S$ and basis $U$ of nonlinear snapshots $\{\nabla_zf(z(t_i))\}_{i=1}^N$ by solving the high dimensional system \cref{eq:mor.8}.
-\item Generate greedy $J_{2n}$-symplectic basis and basis for nonlinearity using \Cref{alg:2,alg:3}, respectively.
+\item Generate the weighted snapshots $\{ X^{1/2} z(t_i) \}_{i=1}^N$ and the weighted snapshots of the nonlinear term $\{X^{-1/2}. \nabla_zf(z(t_i))\}_{i=1}^N$
+%\item Generate weighted snapshots matrix $X^{1/2}S$ and basis $U$ of nonlinear snapshots $\{\nabla_zf(z(t_i))\}_{i=1}^N$ by solving the high dimensional system \cref{eq:mor.8}.
+\item Generate a $J_{2n}$-symplectic basis for the solution snapshots and the snapshots of the nonlinear terms according \Cref{alg:2,alg:3}, respectively.
 \item Assemble the reduced order model \cref{eq:mor.12}.
 \end{enumerate}
 
-\paragraph{Online stage:} Reduced model \cref{eq:mor.12} is simulated for multiple parameter sets and desired output is saved in this stage.
+\paragraph{Online stage:} Reduced model \cref{eq:mor.12} is simulated for multiple parameter sets and desired output is extracted in this stage.
 
 We use this decomposition to perform experiments in the next section.
