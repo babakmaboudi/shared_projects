@@ -57,7 +57,8 @@
 \colorlet{codebackground}{black!25!white!25}
 
 % additional useful packages
-\usepackage[draft]{todonotes}
+\usepackage[disable]{todonotes}
+%\usepackage{showlabels}
 
 \newcommand\bs{\symbol{'134}} % print backslash in typewriter OT1/T1
 \newcommand{\preamble}[2][\small]{\textcolor{texpreamble}{#1\texttt{#2 \emph{\% <- Preamble}}}}
@@ -113,13 +114,16 @@
 \begin{tcbverbatimwrite}{tmp_\jobname_header.tex}
 \title{Sympletic Model-Reduction with a Weighted Inner Product%
   \thanks{%
-\funding{Ashish Bhatt gratefully acknowledges the support of DFG grant number HA5821/5-1.}} }
+\funding{Ashish Bhatt and Bernard Haasdonk gratefully acknowledges the support of DFG grant number HA5821/5-1.}} }
 
 \author{Babak Maboudi Afkham%
   \thanks{Institute of Mathematics (MATH), School of Basic Sciences (FSB), Ecole Polytechnique F\'ed\'erale de Lausanne, 1015 Lausanne, Switzerland (\email{babak.maboudi@epfl.ch}, \email{jan.hesthaven@epfl.ch}).}%
   \and
   Ashish Bhatt%
-  \thanks{University of Stuttgart, IANS, Pfaffenwaldring 57, 70569 Stuttgart, Germany (\email{ashish.bhatt@mathematik.uni-stuttgart.de}).}
+  \thanks{University of Stuttgart, IANS, Pfaffenwaldring 57, 70569 Stuttgart, Germany (\email{[ashish.bhatt,haasdonk]@mathematik.uni-stuttgart.de}).}
+  \and
+  Bernard Haasdonk%
+  \footnotemark[3]
   \and
   Jan S. Hesthaven%
   \footnotemark[2]
@@ -127,7 +131,7 @@
 
 % Custom SIAM macro to insert headers
 \headers{Sympletic Model-Reduction with a Weighted Inner Product}
-{Babak Maboudi Afkham, Ashish Bhatt, and Jan S. Hesthaven}
+{B. M. Afkham, A. Bhatt, B. Haasdonk, and J. S. Hesthaven}
 \end{tcbverbatimwrite}
 \input{tmp_\jobname_header.tex}
 
@@ -155,11 +159,11 @@ In the recent years, a considerable attention has been geared toward preserving 
 \end{abstract}
 
 \begin{keywords}
-   
+Weighted structure-preserving MOR, Hamiltonian system, Greedy reduced basis, Symplectic DEIM
 \end{keywords}
 
 \begin{AMS}
-	
+78M34, 34C20, 35B30, 37K05, 65P10, 37J25
 \end{AMS}
 \end{tcbverbatimwrite}
 \input{tmp_\jobname_abstract.tex}
