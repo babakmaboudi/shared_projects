@@ -3,9 +3,10 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib import pylab as plt
-from mshr import *
+import mshr
+import dolfin as dlf
+from math import pi, sin, cos, sqrt
 
-import numpy as np
 import scipy.linalg as scla
 
 def clamped_boundary(x, on_boundary):
@@ -22,7 +23,7 @@ class Wave:
 		# physical parameters
 		self.L = 1
 		self.W = 0.2
-		self.w = self.L/100
+		self.w = self.L/40 # vary crack width
 		self.mu = 1
 		self.rho = 1
 		self.delta = self.W/self.L
@@ -39,12 +40,36 @@ class Wave:
 		#define mesh
 		#self.mesh = BoxMesh(Point(0, 0, 0), Point(self.L, self.W, self.W), 10, 3, 3)
 		
-		b1 = Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
-		b2 = Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
-		geometry = b1 - b2
+		# Parameters
+		R = self.W/4
+		r = 0.08
+		t = self.W
+		x = self.W/2+R*cos(float(t) / 180 * pi)
+		y = self.W/2
+		z = R*sin(t)
+		
+		# Create geometry
+		s1 = mshr.Sphere(Point(x+self.L-3/2*self.W, y, z), r)
+		s2 = mshr.Sphere(Point(x, y, z), r)
+
+		b1 = mshr.Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
+		b2 = mshr.Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
+		geometry1 = b1 - s1 -s2
+		geometry2 = b1 - b2
 		
 		# Create and store mesh
-		self.mesh = generate_mesh(geometry,10)
+		self.mesh = mshr.generate_mesh(geometry1,10) # use geometry1 or geometry2
+		#cell_markers = CellFunction("bool", mesh)
+		#cell_markers.set_all(False)
+		#for cell in cells(mesh):
+			#p = cell.midpoint()
+			#if p.x() > (self.L/2-2*self.w) and p.x() < (self.L/2-2*self.w):
+				#cell_markers[cell] = True
+		
+		## refining mesh
+		#mesh = LocalMeshCoarsening(mesh, cell_markers)
+		#self.mesh = mesh
+		
 		File('results/cracked_beam.pvd') << self.mesh
 		
 		#define function space
@@ -72,6 +97,7 @@ class Wave:
 
 		#define the mass and stiffness matrices
 		M = np.matrix( self.Aq.array() )
+		print(M.shape)
 		self.M_inv = np.linalg.inv(M)
 		self.K = np.matrix( Kq.array() )
 
