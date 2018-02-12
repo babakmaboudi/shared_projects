@@ -70,7 +70,7 @@ class Mor:
 		self.P = self.A*self.A_plus
 
 	def greedy(self,MAX_ITER):
-		idx = np.random.random_sample(100)
+		idx = np.random.random_sample(1000)
 		idx = idx*self.ns
 		idx = np.floor(idx)
 		idx = np.squeeze(np.asarray(idx))
@@ -78,7 +78,7 @@ class Mor:
 
 		snaps = np.concatenate([self.snap_Q,self.snap_P],0)
 		snaps = snaps[:,idx]
-		ns = 100
+		ns = 1000
 
 		snaps = self.X*snaps
 

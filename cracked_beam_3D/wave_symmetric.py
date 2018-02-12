@@ -4,6 +4,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib import pylab as plt
 import mshr as mshr
+import warnings
 
 import numpy as np
 import scipy.linalg as scla
@@ -16,7 +17,7 @@ def epsilon(u):
 
 def sigma(u,lambda_,mu,d):
     return lambda_*nabla_div(u)*Identity(d) + 2*mu*epsilon(u)
-
+    
 class Wave:
 	def __init__( self ):
 		# physical parameters
@@ -32,36 +33,36 @@ class Wave:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 1000
-		self.dt = 0.00006
+		self.MAX_ITER = 4000
+		self.dt = 0.0001
 
 	def initiate_fem( self ):
 		#define mesh
-		#self.mesh= Mesh('mesh.xml')
+		self.mesh= Mesh('meshes/cracked_beam.xml')
 #		self.mesh = refine(self.mesh)
 
-		# Parameters
-		R = self.W/4
-		r = 0.08
-		t = self.W
-		x = self.W/2+R*cos(float(t) / 180 * pi)
-		y = self.W/2
-		z = R*sin(t)
+		## Parameters
+		#R = self.W/4
+		#r = 0.08
+		#t = self.W
+		#x = self.W/2+R*cos(float(t) / 180 * pi)
+		#y = self.W/2
+		#z = R*sin(t)
 		
-		# Create geometry
-		s1 = mshr.Sphere(Point(x+self.L-3/2*self.W, y, z), r)
-		s2 = mshr.Sphere(Point(x, y, z), r)
+		## Create geometry
+		#s1 = mshr.Sphere(Point(x+self.L-3/2*self.W, y, z), r)
+		#s2 = mshr.Sphere(Point(x, y, z), r)
 
-		b1 = mshr.Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
-		b2 = mshr.Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
-		geometry = b1 - s1 -s2
-		#geometry2 = b1 - b2
+		#b1 = mshr.Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
+		#b2 = mshr.Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
+		#geometry = b1 - s1 -s2
+		##geometry2 = b1 - b2
 		
-		# Create and store mesh
-		self.mesh = mshr.generate_mesh(geometry,10) # use geometry1 or geometry2
+		## Create and store mesh
+		#self.mesh = mshr.generate_mesh(geometry,10) # use geometry1 or geometry2
 		
-		File('results/cracked_beam.pvd') << self.mesh
-		File('results/cracked_beam.xml') << self.mesh
+		#File('results/cracked_beam.pvd') << self.mesh
+		#File('results/cracked_beam.xml') << self.mesh
 		
 		#define function space
 		self.V = VectorFunctionSpace(self.mesh, 'P', 1)
@@ -121,12 +122,14 @@ class Wave:
 			q0 = q0 + self.dt/2*self.M_inv*p0
 			p0 = p0 + self.dt*self.K*q0 + self.dt*self.cp
 			q0 = q0 + self.dt/2*self.M_inv*p0
+			#with warnings.catch_warnings():
+				#warnings.simplefilter("error", category=RuntimeWarning)
 
 			f.vector().set_local( q0 )
 
-			if np.mod(i,10) == 0:
-				self.snap_Q = np.concatenate((self.snap_Q,q0),1)
-				self.snap_P = np.concatenate((self.snap_P,p0),1)
+			#if np.mod(i,10) == 0:
+			self.snap_Q = np.concatenate((self.snap_Q,q0),1)
+			self.snap_P = np.concatenate((self.snap_P,p0),1)
 
 			if np.mod(i,125) == 0:
 				vtkfile << (f,i*self.dt)
@@ -134,7 +137,7 @@ class Wave:
 		print( np.linalg.cond(self.M_inv) )
 		print( np.linalg.cond(self.K) )
 		print( N )
-
+		
 	def generate_X_matrix( self ):
 		q = TrialFunction(self.V)
 		f = Function(self.V)

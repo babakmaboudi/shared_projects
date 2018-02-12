@@ -39,8 +39,8 @@ class Wave_Reduced:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 1000
-		self.dt = 0.00006
+		self.MAX_ITER = 4000
+		self.dt = 0.0001
 
 		#load reduced basis
 		self.Phi = np.load( "RB.dat" )
@@ -53,28 +53,29 @@ class Wave_Reduced:
 		self.K = np.int_( self.Phi.shape[1]/2 );
 
 	def initiate_fem( self ):
-		# Parameters
-		R = self.W/4
-		r = 0.08
-		t = self.W
-		x = self.W/2+R*cos(float(t) / 180 * pi)
-		y = self.W/2
-		z = R*sin(t)
+		## Parameters
+		#R = self.W/4
+		#r = 0.08
+		#t = self.W
+		#x = self.W/2+R*cos(float(t) / 180 * pi)
+		#y = self.W/2
+		#z = R*sin(t)
 		
-		# Create geometry
-		s1 = mshr.Sphere(Point(x+self.L-3/2*self.W, y, z), r)
-		s2 = mshr.Sphere(Point(x, y, z), r)
+		## Create geometry
+		#s1 = mshr.Sphere(Point(x+self.L-3/2*self.W, y, z), r)
+		#s2 = mshr.Sphere(Point(x, y, z), r)
 
-		b1 = mshr.Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
-		b2 = mshr.Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
-		geometry = b1 - s1 -s2
+		#b1 = mshr.Box(Point(0, 0, 0), Point(self.L, self.W, self.W))
+		#b2 = mshr.Box(Point(self.L/2-self.w, 0, self.W/2), Point(self.L/2+self.w, self.W, self.W))
+		#geometry = b1 - s1 -s2
 		#geometry2 = b1 - b2
 		
 		# Create and store mesh
-		self.mesh = mshr.generate_mesh(geometry,10) # use geometry1 or geometry2
+		#self.mesh = mshr.generate_mesh(geometry,10) # use geometry1 or geometry2
+		self.mesh= Mesh('meshes/cracked_beam.xml')
 		
-		File('results/cracked_beam.pvd') << self.mesh
-		File('results/cracked_beam.xml') << self.mesh
+		#File('results/cracked_beam.pvd') << self.mesh
+		#File('results/cracked_beam.xml') << self.mesh
 		
 		#define function space
 		self.V = VectorFunctionSpace(self.mesh, 'P', 1)
@@ -173,6 +174,8 @@ class Wave_Reduced:
 		L = inv_factor*( np.eye(K) + self.dt/2*self.Lr )
 
 		c_factor = self.dt*inv_factor*self.f_termr
+		
+		self.snap_x0 = np.zeros(x0.shape)
 
 		for i in range(0,self.MAX_ITER):
 			print(i)
@@ -182,8 +185,9 @@ class Wave_Reduced:
 			print( self.compute_energy( x0 ) )
 			full = self.Phi*np.linalg.inv(self.TJJ)*x0
 			f.vector().set_local( full[0:self.N,:] )
-			if np.mod(i,10) == 0:
-				vtkfile << (f,i*self.dt)
+			#if np.mod(i,10) == 0:
+			self.snap_x0 = np.concatenate((self.snap_x0,x0),1)
+			vtkfile << (f,i*self.dt)
 
 	def symplectic_euler( self ):
 		vtkfile = File('results_reduced/solution.pvd')
@@ -375,5 +379,29 @@ class Wave_Reduced:
 		return E
 
 	def save_snapshots( self ):
-		self.snap_Q.dump("snap_Q150.dat")
-		self.snap_P.dump("snap_P150.dat")
+		self.snap_x0.dump("snap_x0.dat")
+		#self.snap_Q.dump("snap_Q150.dat")
+		#self.snap_P.dump("snap_P150.dat")
+		
+	def compute_error(self):
+		Phi = np.matrix(np.load( "RB.dat" ))
+		X = np.matrix(np.load( "X_mat.dat" ))
+		
+		z = np.concatenate((np.matrix(np.load("snap_Q.dat")),np.matrix(np.load("snap_P.dat"))),0)
+		y = np.matrix(np.load("snap_x0.dat"))
+		
+		self.l2err = np.linalg.norm(z - Phi*y, axis=0)
+		self.werr = np.linalg.norm(X*(z - Phi*y), axis=0)
+		
+		plt.figure(1)
+		plt.subplot(211)
+		plt.plot(self.l2err)
+
+		plt.subplot(212)
+		plt.plot(self.werr)
+		plt.show()
+		#print(self.l2err.shape)
+		#plt.plot(self.werr)
+		#plt.show()
+		#,range(0,self.MAX_ITER),self.werr)
+		
