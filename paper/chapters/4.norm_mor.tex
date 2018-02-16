@@ -120,16 +120,16 @@ Alternatively we can use the loss in the Hamiltonian function in (\ref{eq:mor.16
 
 \begin{algorithm} 
 \caption{The greedy algorithm for generation of a $J_{2n}$-symplectic basis} \label{alg:2}
-{\bf Input:} Tolerated projection error $\delta$, initial condition $ z_0$, the snapshots $\{\tilde z(t_i)\}_{i=1}^{N} = \{X^{1/2} z(t_i)\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
+{\bf Input:} Tolerated projection error $\delta$, initial condition $ z_0$, the snapshots $\mathcal Z = \{X^{1/2} z(t_i)\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
 \begin{enumerate}
 \item $T \leftarrow X^{-1/2}\mathbb J_{2n}^T X^{1/2}$
-\item $t^1 \leftarrow t=0$
-\item $e_1 \leftarrow X^{1/2}z_0$
+\item $z_1 = z(0)$
+\item $e_1 \leftarrow z_1/ \| z_1 \|_X$
 \item $\tilde A \leftarrow [e_1|Te_1]$
 \item $k \leftarrow 1$
-\item \textbf{while} $\| \tilde z(t) - P^\text{symp}_{X,\tilde A}( \tilde z(t) ) \|_2 > \delta$ for all $t \in [0,T]$
-\item \hspace{0.5cm} $t^{k+1} := \underset{t\in [0,T]}{\text{argmax }} \| \tilde z(t) - P^\text{symp}_{X,\tilde A}( \tilde z(t) ) \|_2$
-\item \hspace{0.5cm} $J_{2n}$-orthogonalize $ \tilde z(t^{k+1})$ to obtain $e_{k+1}$
+\item \textbf{while} $\| z - P^\text{symp}_{X,\tilde A}( z ) \|_2 > \delta$ for all $z \in \mathcal Z$
+\item \hspace{0.5cm} $z_{k+1} := \underset{z\in \mathcal Z}{\text{argmax }} \| z - P^\text{symp}_{X,\tilde A}( z ) \|_2$
+\item \hspace{0.5cm} $J_{2n}$-orthogonalize $z_{k+1}$ to obtain $e_{k+1}$
 \item \hspace{0.5cm} $\tilde A \leftarrow [e_1|\dots |e_{k+1} | Te_1|\dots| Te_{k+1}]$
 \item \hspace{0.5cm} $k \leftarrow k+1$
 \item \textbf{end while}
@@ -146,7 +146,7 @@ The evaluation of the nonlinear term in (\ref{eq:normmor.8}) still retains a com
 \begin{equation} \label{eq:normmor.15}
 	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1}\mathcal  P^T \nabla_z f(Ay).
 \end{equation}
-Here $U$ is a basis constructed from the nonlinear snapshots $\{\nabla_z f(z(t_i))\}_{i=1}^N$, and $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in \cref{sec:mor.2}, for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not retain a Hamiltonian form. Since $(\tilde A^+ X^{1/2}) A = I_{2k}$ applying the chain rule on (\ref{eq:normmor.15}) yields
+Here $U$ is a basis constructed from the nonlinear snapshots $\{\nabla_z f(z(t_i))\}_{i=1}^N$, and $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in \Cref{sec:mor.2}, for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not retain a Hamiltonian form. Since $(\tilde A^+ X^{1/2}) A = I_{2k}$ applying the chain rule on (\ref{eq:normmor.15}) yields
 \begin{equation} \label{eq:normmor.16}
 	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1} \mathcal P^T (\tilde A^+ X^{1/2})^T \nabla_y f(Ay).
 \end{equation}
@@ -167,13 +167,13 @@ We now discuss how to ensure that $X^{1/2} (\tilde A^+)^T$ is a basis for the no
 
 \begin{algorithm} 
 \caption{Generation of a basis for nonlinear terms} \label{alg:3}
-{\bf Input:} Tolerated projection error $\delta$, $J_{2n}$-symplectic basis $\tilde A$ of size $2k$, the snapshots $\{\tilde z(t_i)\}_{i=1}^{N} = \{X^{-1/2} \nabla_zf(z(t_i))\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
+{\bf Input:} Tolerated projection error $\delta$, $J_{2n}$-symplectic basis $\tilde A$ of size $2k$, the snapshots $\mathcal G = \{X^{-1/2} \nabla_zf(z(t_i))\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
 \begin{enumerate}
 \item $T \leftarrow X^{1/2}\mathbb J_{2n}^T X^{-1/2}$
 \item compute $(\tilde A^+)^T$
-\item \textbf{while} $\| \tilde z(t) - P^\text{symp}_{X^{-1},(\tilde A^+)^T}( \tilde z(t) ) \|_2 > \delta$ for all $t \in [0,T]$
-\item \hspace{0.5cm} $t^{k+1} := \underset{t\in [0,T]}{\text{argmax }} \| \tilde z(t) - P^\text{symp}_{X^{-1},(\tilde A^+)^T}( \tilde z(t) ) \|_2$
-\item \hspace{0.5cm} $J_{2n}^{-1}$-orthogonalize $ \tilde z(t^{k+1})$ to obtain $e_{k+1}$
+\item \textbf{while} $\| g - P^\text{symp}_{X^{-1},(\tilde A^+)^T}( g ) \|_2 > \delta$ for all $g \in \mathcal G$
+\item \hspace{0.5cm} $g_{k+1} := \underset{g\in \mathcal G}{\text{argmax }} \| g - P^\text{symp}_{X^{-1},(\tilde A^+)^T}( g ) \|_2$
+\item \hspace{0.5cm} $J_{2n}^{-1}$-orthogonalize $ g_{k+1}$ to obtain $e_{k+1}$
 \item \hspace{0.5cm} $(\tilde A^+)^T \leftarrow [e_1|\dots |e_{k+1} | Te_1|\dots| Te_{k+1}]$
 \item \hspace{0.5cm} $k \leftarrow k+1$
 \item \textbf{end while}
