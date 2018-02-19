@@ -11,9 +11,9 @@ Consider a Hamiltonian system of the form (\ref{eq:mor.8}) together with the wei
 \end{equation}
 It is easy to show that $P$ is idempotent if and only if
 \begin{equation} \label{eq:normmor.2}
-	\mathbb J_{2k}^T A^T X \mathbb J_{2n} X A = I_{2k}.
+	\mathbb J_{2k}^T A^T X \mathbb J_{2n} X A = I_{2k},
 \end{equation}
-In which case $P$ is a projection operator onto colspan$(A)$. Suppose that $S$ is the snapshot matrix containing the time samples $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We seek to find the basis $A$ That minimizes the collective projection error of snapshots with respect to the $X$-norm,
+in which case $P$ is a projection operator onto colspan$(A)$. Suppose that $S$ is the snapshot matrix containing the time samples $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We seek to find the basis $A$ That minimizes the collective projection error of snapshots with respect to the $X$-norm,
 \begin{equation} \label{eq:normmor.3}
 \begin{aligned}
 & \underset{A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
@@ -150,7 +150,7 @@ Here $U$ is a basis constructed from the nonlinear snapshots $\{\nabla_z f(z(t_i
 \begin{equation} \label{eq:normmor.16}
 	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1} \mathcal P^T (\tilde A^+ X^{1/2})^T \nabla_y f(Ay).
 \end{equation}
-If we require $U = X^{1/2} (\tilde A^+)^T$ then the complex expression in (\ref{eq:normmor.16}) reduces to
+Since we are free to choose the basis $U$, we require $U = X^{1/2} (\tilde A^+)^T$ so that the complex expression in (\ref{eq:normmor.16}) reduces to
 \begin{equation} \label{eq:normmor.17}
 	\dot y = J_{2k} A^TLAy + J_{2k} \nabla_y f(Ay),
 \end{equation}
@@ -163,7 +163,7 @@ and hence we recover the Hamiltonian structure. This yields the reduced system
 \end{aligned}
 \right.
 \end{equation}
-We now discuss how to ensure that $X^{1/2} (\tilde A^+)^T$ is a basis for the nonlinear snapshots. Note that if $z \in \text{span}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{span}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. \Cref{thm:2} suggests that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). Note that \Cref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We summarized the process of generating a basis for the nonlinear terms in \Cref{alg:3}.
+We now discuss how to ensure that $X^{1/2} (\tilde A^+)^T$ is a basis, generally non-minimal, for the nonlinear snapshots. Note that if $z \in \text{span}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{span}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. \Cref{thm:2} suggests that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). Note that \Cref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We summarized the process of generating a basis for the nonlinear terms in \Cref{alg:3}.
 
 \begin{algorithm} 
 \caption{Generation of a basis for nonlinear terms} \label{alg:3}
@@ -194,4 +194,4 @@ More precisely, one can decompose the computations into the following stages:
 \item Generate a $J_{2n}$-symplectic basis for the solution snapshots and the snapshots of the nonlinear terms, following \Cref{alg:2,alg:3}, respectively.
 \item Assemble the reduced order model \cref{eq:mor.12}.
 \end{enumerate}
-\emph{Online stage:} the reduced model \cref{eq:mor.12} is solved for multiple parameter sets and the output is extracted.
+\emph{Online stage:} The reduced model \cref{eq:mor.12} is solved for multiple parameter sets and the output is extracted.
