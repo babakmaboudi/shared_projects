@@ -21,7 +21,7 @@ Suppose that $x$ is well approximated by a low dimensional linear subspace with 
 \end{equation}
 where $y$ are the expansion coefficients of $x$ in the basis $V$. Note that projection of $x$ onto colspan$(V)$ depends on the inner product and the norm defined on (\ref{eq:mor.1}). We define the weighted inner product
 \begin{equation} \label{eq:mor.3}
-	<x,y>_X = x^TXy,\quad \text{for all } x,y \in \mathbb R^m,
+	\left\langle x,y \right\rangle_X = x^TXy,\quad \text{for all } x,y \in \mathbb R^m,
 \end{equation}
 for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$ and refer to $\|\cdot \|_X$ as the $X$-norm associated to this inner product. If we choose $V$ to be an orthonormal basis with respect to the $X$-norm ($V^TXV=I_k$), then the operator
 \begin{equation} \label{eq:mor.4}
@@ -29,7 +29,7 @@ for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$ an
 \end{equation}
 becomes idempotent, i.e. $P_{X,V}$ is a projection operator onto colspan$(V)$.
 
-Now suppose that $\{x(t_i)\}_{i=1}^N$ is a collection of $N$ solutions to (\ref{eq:mor.1}) at time instances $t_1,\dots,t_N$. We seek $V$ such that it minimizes the collective projection error of the samples onto colspan$(V)$ which corresponds to the minimization problem
+Now suppose that the \emph{snapshot matrix} $S=\{x(t_i)\}_{i=1}^N$ is a collection of $N$ solutions to (\ref{eq:mor.1}) at time instances $t_1,\dots,t_N$. We seek $V$ such that it minimizes the collective projection error of the samples onto colspan$(V)$ which corresponds to the minimization problem
 \begin{equation} \label{eq:mor.5}
 \begin{aligned}
 & \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
@@ -47,7 +47,7 @@ Note that the solution to (\ref{eq:mor.5}) is known as the proper orthogonal dec
 & & \tilde V^T\tilde V = I_k.
 \end{aligned}
 \end{equation}
-where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, $S$ is the matrix of samples $\{x(t_i)\}_{i=1}^N$ in its columns, referred to as the \emph{snapshot matrix}, and $X^{1/2}$ is the matrix square root of $X$. According to Schmidt-Mirsky-Eckart-Young theorem \cite{Markovsky:2011:LRA:2103589} the solution $\tilde V$ to the minimization (\ref{eq:mor.6}) is the truncated singular value decomposition (SVD) of $\tilde S$. The basis $V$ then is $V = X^{-1/2}\tilde V$. The reduced model of (\ref{eq:mor.1}), using the basis $V$ and the projection $P_{X,V}$, is
+where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, and $X^{1/2}$ is the matrix square root of $X$. According to Schmidt-Mirsky-Eckart-Young theorem \cite{Markovsky:2011:LRA:2103589} the solution $\tilde V$ to the minimization (\ref{eq:mor.6}) is the truncated singular value decomposition (SVD) of $\tilde S$. The basis $V$ then is $V = X^{-1/2}\tilde V$. The reduced model of (\ref{eq:mor.1}), using the basis $V$ and the projection $P_{X,V}$, is
 \begin{equation} \label{eq:mor.7}
 	\left\{
 	\begin{aligned}
@@ -56,7 +56,9 @@ where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, $S$ is the matrix of sampl
 	\end{aligned}
 	\right.
 \end{equation}
-If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). Finding the matrix square root of $X$ can often be computationally exhaustive. In such cases, explicit use of $X^{1/2}$ can be avoided by finding the eigen decomposition of the \emph{Gramian} matrix $G = S^TXS$ \cite{quarteroni2015reduced,Haasdonk2017}.  We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced,Haasdonk2017} for further information regarding the development and the efficiency of reduced order models.
+If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). Finding the matrix square root of $X$ can often be computationally exhaustive. In such cases, explicit use of $X^{1/2}$ can be avoided by finding the eigen-decomposition of the \emph{Gramian} matrix $G = S^TXS$ \cite{quarteroni2015reduced,Haasdonk2017}.
+
+Besides RB methods, there exist other ways of basis generation e.g. greedy strategies, Krylov subspace method, balanced truncation method, Hankel-norm approximation method etc. \cite{antoulas2005approximation}. We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced,Haasdonk2017} for further information regarding the development and the efficiency of reduced order models. 
 
 \subsection{Symplectic MOR} \label{sec:mor.2}
 Conventional MOR methods, e.g. those introduced in \cref{sec:mor.1}, do no generally preserve the conservation law expressed in \cref{thm:1}. As mentioned earlier, this often results in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model order reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic MOR aims to construct a reduced system that conserves the geometric symmetry expressed in \Cref{thm:1} which helps with the stability of the reduced system.
@@ -123,7 +125,7 @@ MOR is specially useful in reducing parametric models that depend on a closed an
 \begin{equation} \label{eq:mor.16}
 	\omega_{k+1} = \underset{\omega \in \mathcal{S}}{\text{argmax } } | H(z(\omega)) - H(P^\text{symp}_{I,A}(z(\omega))) |,
 \end{equation}
-and then enriches the basis $A_{2k}$ as discussed above. It is shown in \cite{doi:10.1137/17M1111991} that the loss in the Hamiltonian is constant in time. Therefore, $\omega_{k+1}$ can be identified prior to time integration in the \emph{offline phase}.
+and then enriches the basis $A_{2k}$ as discussed above. It is shown in \cite{doi:10.1137/17M1111991} that the loss in the Hamiltonian is constant in time. Therefore, $\omega_{k+1}$ can be identified in the \emph{offline phase} before simulating the reduced order model.
 
 We summarize the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in \Cref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic basis for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to the symplectic inverse of the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more details. In \cref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
 
