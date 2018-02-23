@@ -111,7 +111,8 @@
 %% ------------------------------------------------------------------
 %% HEADING INFORMATION
 %% ------------------------------------------------------------------
-\begin{tcbverbatimwrite}{tmp_\jobname_header.tex}
+%\begin{tcbverbatimwrite}{tmp_\jobname_header.tex}
+\begin{tcbverbatimwrite}
 \title{Symplectic Model-Reduction with a Weighted Inner Product%
   \thanks{%
 \funding{Babak Maboudi Afkham is supported by the SNSF under the grant number P1ELP2\_175039. Ashish Bhatt and Bernard Haasdonk gratefully acknowledge the support of DFG grant number HA5821/5-1.}} }
@@ -133,7 +134,7 @@
 \headers{Sympletic Model-Reduction with a Weighted Inner Product}
 {B. M. Afkham, A. Bhatt, B. Haasdonk, and J. S. Hesthaven}
 \end{tcbverbatimwrite}
-\input{tmp_\jobname_header.tex}
+%\input{tmp_\jobname_header.tex}
 
 % Optional: Set up PDF title and authors
 \ifpdf
@@ -153,7 +154,8 @@
 %% ------------------------------------------------------------------
 %% ABSTRACT
 %% ------------------------------------------------------------------
-\begin{tcbverbatimwrite}{tmp_\jobname_abstract.tex}
+%\begin{tcbverbatimwrite}{tmp_\jobname_abstract.tex}
+\begin{tcbverbatimwrite}
 \begin{abstract}
 In the recent years, considerable attention has been paid to preserving structures and invariants in reduced basis methods, in order to enhance the stability and robustness of the reduced system. In the context of Hamiltonian systems, symplectic model reduction seeks to construct a reduced system that preserves the symplectic symmetry of Hamiltonian systems. However, symplectic methods are based on the standard Euclidean inner products and are not suitable for problems equipped with a more general inner product. In this paper we generalize symplectic model reduction method to allow for the norms and inner products that are most appropriate to the problem while preserving the symplectic symmetry of the Hamiltonian systems. To construct a reduced basis and accelerate the evaluation of nonlinear terms, a greedy generation of a symplectic basis is proposed. Furthermore, it is shown that the greedy approach yields a norm bounded reduced basis. The accuracy and the stability of this model reduction technique is illustrated through the development of reduced models for a vibrating elastic beam and the sine-Gordon equation.
 \end{abstract}
@@ -166,7 +168,7 @@ Structure Preserving, Weighted MOR, Hamiltonian Systems, Greedy Reduced Basis, S
 78M34, 34C20, 35B30, 37K05, 65P10, 37J25
 \end{AMS}
 \end{tcbverbatimwrite}
-\input{tmp_\jobname_abstract.tex}
+%\input{tmp_\jobname_abstract.tex}
 %% ------------------------------------------------------------------
 %% END HEADER
 %% ------------------------------------------------------------------
