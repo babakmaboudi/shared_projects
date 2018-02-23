@@ -92,7 +92,7 @@ Here $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}.
 \end{aligned}
 \right.
 \end{equation}
-\todo{z or y? Re: In the DEIM you need to work with the vector in z, I like to write $\nabla_z f(Ay)$, but Bernard didn't like it}
+\todo{z or y? Re: In the DEIM you need to work with the vector in z, I like to write $\nabla_z f(Ay)$, but Bernard didn't like it, AB: I think we need to change z back to Ay in the argument of f, it isn't correct otherwise.}
 Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in \Cref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system and the difference of the Hamiltonians of the two system \cref{eq:mor.8,eq:mor.12} is constant. Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
 
 \subsection{Greedy generation of a $\mathbb J_{2n}$-symplectic basis} \label{sec:mor.3}
@@ -109,17 +109,23 @@ Here $P^\text{symp}_{I,A} = AA^+$ is the symplectic projection operator with res
 
 Direct approaches to solve (\ref{eq:mor.13}) are often inefficient. Some SVD-type solutions to (\ref{eq:mor.13}) are proposed by \cite{doi:10.1137/140978922}. However, the form of the suggested basis, e.g. the block diagonal form, is not compatible with a general weight matrix $X$. 
 
-The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near optimal solution to (\ref{eq:mor.13}) in an iterative process. This method increases the overall accuracy of the basis by adding the best possible basis vectors at each iteration. Suppose that $A_{2k} = [e_1|\dots|e_k|f_1|\dots|f_k]$ is a $\mathbb J_{2n}$-symplectic basis. We assume that $A_{2k}$ is also an ortho-normal basis \cite{doi:10.1137/17M1111991}. The first step of the greedy methods is to find the snapshot $z_{k+1}$, that is worst approximated by the basis $A_{2k}$:
+The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near optimal solution to (\ref{eq:mor.13}) in an iterative process. This method increases the overall accuracy of the basis by adding the best possible basis vectors at each iteration. Suppose that $A_{2k} = [e_1|\dots|e_k|f_1|\dots|f_k]$, with $f_k = \mathbb J_{2n}^Te_k$ for all $k$, is a $\mathbb J_{2n}$-symplectic basis. We assume that $A_{2k}$ is also an ortho-normal basis \cite{doi:10.1137/17M1111991}. The first step of the greedy methods is to find the snapshot $z_{k+1}$, that is worst approximated by the basis $A_{2k}$:
 \begin{equation} \label{eq:mor.14}
 	z_{k+1} := \underset{z \in \{ z(t_i) \}_{i=1}^N}{\text{argmax } }\| z - P^\text{symp}_{I,A}(z) \|_2. 
 \end{equation}
-Note than if $z_{k+1}\neq 0$ then $z_{k+1}$ is not in colspan$(A)$. Then we obtain a non-trivial vector $e_{k+1}$ by $\mathbb J_{2n}$-orthogonalizing $z_{k+1}$ with respect to $A_{2k}$:
-$$\tilde{z} =z_{k+1} -\sum_{i=1}^k \Omega(z_{k+1},\mathbb J_{2n}^Te_i)e_i +\sum_{i=1}^k \Omega(z_{k+1},e_i)\mathbb J_{2n}^T e_i,~ e_{k+1} = \frac{\tilde{z}}{\|\tilde{z}\|_2}.$$
+Note than if $z_{k+1}\neq 0$ then $z_{k+1}$ is not in colspan$(A)$. Let us introduce the following notation
+\begin{align*}
+E_k &= [e_1|\dots|e_k], ~F_k = \mathbb J_{2n} E_k, \\
+\alpha_i &= -\Omega(z_{k+1},\mathbb J_{2n}^Te_i), ~\beta_i = \Omega(z_{k+1},e_i),\\
+\alpha &=\{\alpha_i\}_{i=1}^k, ~\beta = \{\beta\}_{i=1}^k.
+\end{align*}
+Then we obtain a non-trivial vector $e_{k+1}$ by $\mathbb J_{2n}$-orthogonalizing $z_{k+1}$ with respect to $A_{2k}$:
+$$\tilde{z} =z_{k+1} -E_k\alpha +F_k\beta,~ e_{k+1} = \frac{\tilde{z}}{\|\tilde{z}\|_2}.$$
 Since $\Omega(e_{k+1},\mathbb{J}_{2n}^T e_{k+1}) = \| e_{k+1} \|_2^2 \neq 0$ the enriched basis $A_{2k+2}$ reads
 \begin{equation} \label{eq:mor.15}
 	A_{2k+2} = [e_1|\dots|e_k|e_{k+1}|f_1|\dots|f_k|\mathbb{J}_{2n}^T e_{k+1}].	
 \end{equation}
-It is easily checked that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and orthonormal. We note that the choice of the orthogonalization routine generally depends on the application. In this paper we use the symplectic Gram-Schmidt (GS) process as the orthogonalization routine. However the isotropic Arnoldi method or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are backward stable alternatives.
+It is easily verified that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and orthonormal. We note that the choice of the orthogonalization routine generally depends on the application. In this paper we use the symplectic Gram-Schmidt (GS) process as the orthogonalization routine. However the isotropic Arnoldi method or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are backward stable alternatives.
 
 MOR is specially useful in reducing parametric models that depend on a closed and bounded parameter set $\mathcal{S} \subset R^{d}$ characterizing physical properties of the underlying system. The evaluation of the projection error is impractical for such problems. The loss in the Hamiltonian function can be used as a cheap surrogate to the projection error. Suppose that a $\mathbb J_{2n}$-symplectic basis $A_{2k}$ is given, then one selects a new parameter $\omega_{k+1} \in \mathcal{S}$ by greedy approach:
 \begin{equation} \label{eq:mor.16}

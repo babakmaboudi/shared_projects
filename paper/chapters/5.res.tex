@@ -173,7 +173,7 @@ One can verify that $u_{t} = \delta_v H$ and $v_{t} = - \delta_u H$, where $\del
 \begin{equation} \label{eq:res.14}
 	u(t,x) = 4 \text{arctan}\left( \exp \left( \pm \frac{x - x_0 - ct}{\sqrt{1-c^2}} \right) \right),
 \end{equation}
-where $x_0 \in \Gamma$ and the plus and minus signs correspond to the \emph{kink} and the \emph{anti-kink} solutions, respectively. Here $|c|<1$ is the arbitrary wave speed. We discretize the segment into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) and obtain
+where $x_0 \in \Gamma$ and the plus and minus signs correspond to the \emph{kink} and the \emph{anti-kink} solutions, respectively. Here c, $|c|<1$, is the arbitrary wave speed. We discretize the segment into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) and obtain
 \begin{equation} \label{eq:res.15}
 	\dot z = \mathbb J_{2n} L z + \mathbb J_{2n} g(z) + \mathbb J_{2n} c_b.
 \end{equation}
@@ -239,7 +239,7 @@ The error with respect to the $X$-norm between the solution of the original syst
 \end{tabular}
 \caption{Numerical results related to the sine-Gordon equation with efficient evaluation of the nonlinear terms. Here, ``DEIM'' indicates classical model reduction with the DEIM, ``s.+DEIM'' indicates symplectic model reduction with the DEIM and ``s.'' indicates symplectic model reduction with symplectic treatment of the nonlinear term. (a) error with respect to the Euclidean norm. (b) error with respect to the $X$-norm. (c) error in the Hamiltonian. }
 \end{figure}
-\todo[inline]{inconsistent line plots. Re: What is inconsistent exactly?}
+\todo[inline]{inconsistent line plots. Re: What is inconsistent exactly? AB: can we also plot sigular values here too? If not}
 
 \Cref{fig:3} shows the performance of the different model reduction methods, when an efficient method is adopted in evaluating the nonlinear term in (\ref{eq:res.15}). This figure compares the symplectic approaches against non-symplectic methods. For all simulations, the size of the reduced basis for (\ref{eq:res.15}) is chosen to be $k=100$. The size of the basis of the nonlinear term is then taken as $k_n=75$ and $k_n=100$. For symplectic methods, a basis for the nonlinear term is constructed according to \Cref{alg:3}, whereas for non-symplectic methods, the DEIM is applied. Note that for symplectic methods, the basis for the nonlinear term is added to the symplectic basis $A$. This means that the size of the reduced system is larger compared to the classical approach.
 
