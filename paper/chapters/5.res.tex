@@ -18,12 +18,13 @@ and
 	\sigma = \lambda (\nabla \cdot u) I + \mu(\nabla u + (\nabla u)^T).
 \end{equation}
 Here $u:\Gamma \to \mathbb{R}^3$ is the unknown displacement vector field, subscript $t$ denotes derivative with respect to time, $\sigma:\Gamma \to \mathbb{R}^{3\times 3}$ is the stress tensor, $f$ is the body force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for the material in $\Gamma$, $I$ is the identity tensor, $n$ is the outward unit normal vector at the boundary and $\tau:\partial \Gamma_\tau \to \mathbb R^3$ is the traction at a subset of the boundary $\partial \Gamma_\tau$ \cite{langtangen2017solving}. We refer to \Cref{fig:beam} for a snapshot of the elastic beam.
-\begin{figure}[htbp] \label{fig:beam}
-\includegraphics[width=\textwidth]{./figs/beam/beam.eps}
-\caption{A displaced rectangular elastic beam.}
-\end{figure}
 
-We define a vector valued function space as $V = \{ u \in L^2(\Gamma) : \| \nabla u \|_2 \in L^2 \text{ and } u = \vec 0 \text{ on } \partial \Gamma_\tau \}$, equipped with the standard $L^2$ inner product $(\cdot,\cdot):V\times V \to \mathbb R$, and seek the solution to (\ref{eq:res.1}). To derive the weak formulation of (\ref{eq:res.1}), we multiply it with the vector valued test function $v \in V$, integrate over $\Gamma$, and use integration by parts to get 
+%\begin{figure}[htbp] \label{fig:beam}
+%\includegraphics[width=\textwidth]{./figs/beam/beam.eps}
+%\caption{A displaced rectangular elastic beam.}
+%\end{figure}
+
+We define a vector valued function space as $V = \{ u \in L^2(\Gamma) : \| \nabla u \|_2 \in L^2 \text{, } u = \vec 0 \text{ on } \partial \Gamma_\tau \}$, equipped with the standard $L^2$ inner product $(\cdot,\cdot):V\times V \to \mathbb R$, and seek the solution to (\ref{eq:res.1}). To derive the weak formulation of (\ref{eq:res.1}), we multiply it with the vector valued test function $v \in V$, integrate over $\Gamma$, and use integration by parts to get 
 %\begin{equation}  \label{eq:res.3}
 %	\int_{\Gamma} u_{tt} \cdot v\ dx = \int_{\Gamma} (\nabla \cdot \sigma) \cdot v \ dx + \int_{\Gamma} f \cdot v \ dx.
 %\end{equation}
@@ -83,9 +84,8 @@ together with the Hamiltonian function $H(z) = \frac{1}{2} z^TLz + z^T \mathbb J
 \begin{tabular}{|l|l|}
 \hline
 Domain shape & box: $l_x = 1,\ l_y = 0.2,\ l_z = 0.2$ \\
-No. mesh points & $n_x = 10,\ n_y = 4,\ n_z = 4$ \\
 Time step-size & $\Delta t = 0.01$ \\
-Gravitational force & $g = (0,0,-0.4)^T$ \\
+Gravitational force & $f = (0,0,-0.4)^T$ \\
 Traction & $\tau = \vec 0$ \\
 Lam\'e parameters & $\lambda = 1.25$, $\mu = 1.0$ \\
 Degrees of freedom & $2N_{h} = 1650$ \\
@@ -93,10 +93,9 @@ Degrees of freedom & $2N_{h} = 1650$ \\
 \end{tabular}
 \end{center}
 \vspace{0.5cm}
-\todo[inline]{is $g =f$?, $2N_h \neq 6*n_x \times n_y \times n_z$.}
-We use the St\"ormer-Verlet scheme (\ref{eq:hamil.6}) to integrate (\ref{eq:res.10}) in time and generate the temporal snapshots. Projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$ are constructed following \cref{sec:mor.1,sec:mor.2,sec:mor.3}, respectively. After computing the transformation $J_{2k} = T \mathbb J_{2k} T^T$, \todo{X instead of T?} the reduced systems, obtained from $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$, are integrated in time using the St\"ormer-Verlet scheme. The reduced system obtained from $P_{X,V}$ is integrated using a second order implicit Runge-Kutta method \todo{change of integrator not desirable, introduces uncertainty in conclusion}. Note that the St\"ormer-Verlet scheme is not used since the canonical form of a Hamiltonian system is destroyed when $P_{X,V}$ is applied.
+We use the St\"ormer-Verlet scheme (\ref{eq:hamil.6}) to integrate (\ref{eq:res.10}) in time and generate the temporal snapshots. Projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$ are constructed following \cref{sec:mor.1,sec:mor.2,sec:mor.3}, respectively, with $\sigma = 5\times 10^{-4}, 2\times 10^{-4}$ and $1\times 10^{-4}$. In order to apply a symplectic time integrator, we first compute the transformation $J_{2k} = \mathcal T \mathbb J_{2k} \mathcal T^T$ using the symplectic GS method with complete pivoting. The reduced systems, obtained from $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$, are then integrated in time using the St\"ormer-Verlet scheme. The reduced system obtained from $P_{X,V}$ is integrated using a second order implicit Runge-Kutta method \todo{change of integrator not desirable, introduces uncertainty in conclusion. Re: The only other choice would be to use the mid-point. This is not desirable since mid-point is "a" symplectic integrator and not a general one.}. Note that the St\"ormer-Verlet scheme is not used since the canonical form of a Hamiltonian system is destroyed when $P_{X,V}$ is applied.
 
-\begin{figure} \label{fig:1}
+\begin{figure}[t] \label{fig:1}
 \begin{tabular}{cc}
 \includegraphics[width=0.45\textwidth]{./figs/beam/singulars} & \includegraphics[width=0.45\textwidth]{./figs/beam/energy} \\
 (a) & (b) \\
@@ -104,15 +103,55 @@ We use the St\"ormer-Verlet scheme (\ref{eq:hamil.6}) to integrate (\ref{eq:res.
 (c) & (d) \\
 \end{tabular}
 \caption{Numerical results related to the beam equation. (a) the decay of the singular values. (b) conservation of the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the $X$-norm.}
-\end{figure}\todo[inline]{all $A$'s stand for $\tilde{A}$ in this figure, this change will be made in next iteration because it is time consuming, non-weighted symplectic is better than the weighted one, also the text talks about the Euclidian inner product not the FEM inner product.}
+\end{figure}
 
-\Cref{fig:1}(a) shows the decay of the singular values of the temporal snapshots $S$ and $X^{1/2}S$, respectively. We notice that the decay of the two matrices are different and the decay saturates for $X^{1/2}S$.
+\Cref{fig:1}(a) shows the decay of the singular values of the temporal snapshots $S$ and $XS$, respectively. The difference in the decay indicates that the reduced systems constructed using $P_{I,A}^{\text{symp}}$ and $P_{X,\tilde A}^{\text{symp}}$ would have different sizes to achieve similar accuracy.
 
-\Cref{fig:1}(b) shows the conservation of the Hamiltonian for the methods discussed above. confirming that the symplectic methods preserve the Hamiltonian and the system energy. However, the Hamiltonian blows up for the reduced system constructed by the projection $P_{X,V}$. It is also noticeable that as the basis $V$ gets larger, the Hamiltonian blows up faster.
+\Cref{fig:1}(b) shows the conservation of the Hamiltonian for the methods discussed above. confirming that the symplectic methods preserve the Hamiltonian and the system energy. However, the Hamiltonian blows up for the reduced system constructed by the projection $P_{X,V}$.
 
-\Cref{fig:1}(c) shows the $L^2$ error between the projected systems and the full order system. We notice that the reduced system obtained by the non-symplectic method is unstable and the reduced system, constructed by $P_{X,V}$, is more unstable as $k$ increases. On the other hand, the symplectic methods yield a stable reduced system. Although the system, constructed by the projection $P^{\text{symp}}_{X,\tilde A}$, is not based on the $L^2$ projection, the error remains bounded with respect to the $L^2$ norm. 
+\Cref{fig:1}(c) shows the $L^2$ error between the projected systems and the full order system, defined as
+\begin{equation}
+	\| e \|_{L^2} = \sqrt{(e,e)} \approx \sqrt{ (q - \hat q)^T M (q-\hat q) },
+\end{equation}
+where $e\in V$ is the error function and $\hat q \in \mathbb R^{2n}$ is an approximation for $q$. We notice that the reduced system obtained by the non-symplectic method is unstable and the reduced system, constructed using $P_{X,V}$, is more unstable as $k$ increases. On the other hand, the symplectic methods yield a stable reduced system. Although the system, constructed by the projection $P^{\text{symp}}_{X,\tilde A}$, is not based on the $L^2$ projection, the error remains bounded with respect to the $L^2$ norm. 
 
-\Cref{fig:1}(d) also indicates that the classical model reduction method based on the projection $P_{X,V}$ does not yield a stable reduced system. However, the symplectic methods provide a stable reduced system. We observe that the original symplectic approach also provides an accurate solution with respect to the $X$-norm. Nevertheless, the relation between the two norms depends on the problem set up and the initial and the boundary conditions \cite{DEPARIS20094359}.
+We define the energy norm $\| \cdot \|_E : V \to \mathbb R$ as
+\begin{equation}
+	\| (u,\dot u) \|_E = \sqrt{ a(u,u) + (\dot u , \dot u) } \approx \| z \|_X
+\end{equation}
+\Cref{fig:1}(d) shows the MOR error with respect to the energy norm. We observe that the classical model reduction method based on the projection $P_{X,V}$ does not yield a stable reduced system. However, the symplectic methods provide a stable reduced system. We observe that the original symplectic approach also provides an accurate solution with respect to the energy norm. Nevertheless, the relation between the two norms depends on the problem set up and the initial and the boundary conditions \cite{DEPARIS20094359}.
+
+\subsection{Elastic beam with cavity} In this section we investigate the performance of the proposed method on a two dimensional elastic beam that contains a cavity. In this case a nonuniform triangulated mesh is desirable to balance the computational cost of a FEM discretization with the numerical error around the cavity. Figure \ref{?} shows the nonuniform mesh used in this section.
+System parameters are taken to be identical to those in \cref{sec:res.1}. Numerical parameters are summarized in the table below.
+\vspace{0.5cm}
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Time step-size & $\Delta t = 4\times 10^{-4}$ \\
+Degrees of freedom & $2N_{h} = 744$ \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{0.5cm}
+
+
+\begin{figure} \label{fig:1.1}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{./figs/beam_cracked/singulars} & \includegraphics[width=0.45\textwidth]{./figs/beam_cracked/energy} \\
+(a) & (b) \\
+\includegraphics[width=0.45\textwidth]{./figs/beam_cracked/l2} & \includegraphics[width=0.45\textwidth]{./figs/beam_cracked/energy_norm} \\
+(c) & (d) \\
+\end{tabular}
+\caption{Numerical results related to the beam with cavity. (a) the decay of the singular values. (b) conservation of the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the energy norm.}
+\end{figure}
+
+\Cref{fig:1.1}(a) shows the decay of the singular values for the snapshot matrix $S$ and $XS$. The divergence of the two curves indicates that to obtain the same accuracy in the reduced system, the basis constructed from $S$ and $XS$ would have different sizes.
+Projection operators $P_{X,A}$, $P_{I,A}^{\text{symp}}$ and $P_{X,\tilde A}^{\text{symp}}$ are constructed according to the \cref{sec:mor.1,sec:mor.2,sec:mor.3}. The truncation error is set to $\delta = 2.5\times 10^{-3}$, 
+$\delta = 1\times 10^{-3}$ and $\delta = 5\times 10^{-4}$ in \Cref{alg:1} and \Cref{alg:2}
+
+The $L^2$ error and the error in the energy norm are presented in \Cref{fig:1.1}(c) and \Cref{fig:1.1}(d), respectively. We notice that although the non-symplectic method is bounded, it contains larger error compared to the symplectic methods. Moreover, we notice that the error generated by the symplectic methods is consistently reduced under basis enrichment. It is observed that in the energy norm, the projection $P_{X,\tilde A}^{\text{symp}}$ provides a more accurate solution (compare to \Cref{fig:1}). This is because on a nonuniform mesh, the weight matrix $X$ associates higher weights to the elements that are subject to larger error. Therefore, we expect the reduced system constructed with the projection $P_{X,\tilde A}^{\text{symp}}$ to outperform the one constructed with $P_{I,A}^{\text{symp}}$ on a highly nonuniform mesh.
+
+\Cref{fig:1.1}(b) shows the error in the Hamiltonian. Comparing to \Cref{fig:1}, we notice that the energy norm helps with the boundedness of the non-symplectic method. However, the symplectic methods preserves the Hamiltonian at a higher accurately.
 
 \subsection{The sine-Gordon equation} \label{sec:res.2}
 The sine-Gordon equation arises in differential geometry and quantum physics \cite{Misumi2015}, as a nonlinear generalization of the linear wave equation of the form
@@ -154,7 +193,7 @@ Here $z = (q^T,p^T)^T$, $q(t) = (u(t,x_1),\dots,u(t,x_N))^T$, $p(t) = (v(t,x_1),
 \end{equation}
 where $D_x$ is the standard matrix differentiation operator. We may take $X = L$ as the weight matrix associated to (\ref{eq:res.15}). The discrete Hamiltonian, takes the form
 \begin{equation} \label{eq:res.17}
-	H_{\Delta x} = \Delta x \cdot \frac 1 2 \| p \|^2 + \Delta x \cdot \| D_x q \|^2 + \sum_{i=1}^{n} \Delta x \cdot ( 1 - \cos(q_i) ).
+	H_{\Delta x} = \Delta x \cdot \frac 1 2 \| p \|^2_2 + \Delta x \cdot \| D_x q \|^2_2 + \sum_{i=1}^{n} \Delta x \cdot ( 1 - \cos(q_i) ).
 \end{equation}
 The system parameters are given as
 \vspace{0.5cm}
@@ -178,16 +217,16 @@ The midpoint scheme (\ref{eq:hamil.7}) is used to integrate (\ref{eq:res.12}) in
 \includegraphics[width=0.45\textwidth]{./figs/sine/l2} & \includegraphics[width=0.45\textwidth]{./figs/sine/energy_norm} \\
 (c) & (d) \\
 \end{tabular}
-\caption{Numerical results related to the sine-Gordon equation. (a) the decay of the singular values. (b) error in the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the $X$-norm.}
+\caption{Numerical results related to the sine-Gordon equation. (a) the decay of the singular values. (b) error in the Hamiltonian. (c) error with respect to the $L^2$ norm. (d) error with respect to the energy norm.}
 \end{figure}
 
-\Cref{fig:2}(a) shows the decay of the singular values of matrices $S$ and $X^{1/2}S$. As in the previous section, we observe a saturation in the decay of the singular values of $X^{1/2}S$ compared to the singular values of $S$. This indicates that the reduced basis, based on a weighted inner product, should be chosen to be larger to provide an accuracy similar to based on the $L^2$-inner product. Put differently, unweighted reduced bases, when compared to the weighted ones, may be highly inaccurate in reproducing underlying physical properties of the system.
+\Cref{fig:2}(a) shows the decay of the singular values of matrices $S$ and $XS$. As in the previous section, we observe a saturation in the decay of the singular values of $XS$ compared to the singular values of $S$. This indicates that the reduced basis, based on a weighted inner product, should be chosen to be larger to provide an accuracy similar to based on the $L^2$-inner product. Put differently, unweighted reduced bases, when compared to the weighted ones, may be highly inaccurate in reproducing underlying physical properties of the system.
 
-\Cref{fig:2}(b) displays the error in the Hamiltonian. It is observed again that the symplectic approaches conserve the Hamiltonian. However, the classical approaches do not necessarily conserve the Hamiltonian. We point out that using the projection operator $P_{X,V}$ ensures the boundedness of the Hamiltonian. The contrary is observed when we apply the POD with respect to the $L^2$ inner-product, i.e. applying the projection operator $P_{I,V}$. This can be seen in the results presented in \cite{doi:10.1137/140978922}, where the unboundedness of the Hamiltonian is observed when $P_{I,V}$ is applied to the sine-Gordon equation. Nevertheless, only the symplectic model reduction consistently preserves the Hamiltonian.
+\Cref{fig:2}(b) displays the error in the Hamiltonian. It is observed again that the symplectic approaches conserve the Hamiltonian. However, the classical approaches do not necessarily conserve the Hamiltonian. We point out that using the projection operator $P_{X,V}$ ensures the boundedness of the Hamiltonian. The contrary is observed when we apply the POD with respect to the Euclidean inner-product, i.e. applying the projection operator $P_{I,V}$. This can be seen in the results presented in \cite{doi:10.1137/140978922}, where the unboundedness of the Hamiltonian is observed when $P_{I,V}$ is applied to the sine-Gordon equation. Nevertheless, only the symplectic model reduction consistently preserves the Hamiltonian.
 
-\Cref{fig:2}(c) shows the $L^2$ error between the solution of the projected systems and the original system. The behavior of the solution is investigated for $k=100$, $k=125$ and $k=150$. We observe that all systems which are projected with respect to the $X$-norm are bounded. As the results in \cite{doi:10.1137/140978922} suggest, the Euclidean inner-product does not necessarily yield a bounded reduced system. Moreover, we notice that the symplectic projection $P^{\text{symp}}_{X,\tilde A}$ results in a substantially more accurate reduced system compared to the reduced system yielded from $P_{X,V}$. This is because the overall behavior of the original system as the symplectic structure is translated correctly to the reduced system constructed with the symplectic projection.
+\Cref{fig:2}(c) shows the error with respect to the Euclidean inner-product between the solution of the projected systems and the original system. The behavior of the solution is investigated for $k=100$, $k=125$ and $k=150$. We observe that all systems which are projected with respect to the $X$-norm are bounded. As the results in \cite{doi:10.1137/140978922} suggest, the Euclidean inner-product does not necessarily yield a bounded reduced system. Moreover, we notice that the symplectic projection $P^{\text{symp}}_{X,\tilde A}$ results in a substantially more accurate reduced system compared to the reduced system yielded from $P_{X,V}$. This is because the overall behavior of the original system is translated correctly to the reduced system constructed with the symplectic projection.
 
-The error with respect to the $X$-norm between the solution of the original system and the projected systems are presented in \Cref{fig:2}(d). We see that the behavior of the $X$-norm error is similar to the $L^2$ norm, however the growth of the error is slower for methods based on a weighted inner product. Note that the connection between the error in the $L^2$-norm and the $X$-norm is problem dependent. We also observed that symplectic methods are substantially more accurate.
+The error with respect to the $X$-norm between the solution of the original system and the projected systems are presented in \Cref{fig:2}(d). We see that the behavior of the $X$-norm error is similar to the Euclidean norm, however the growth of the error is slower for methods based on a weighted inner product. Note that the connection between the error in the Euclidean norm and the $X$-norm is problem and discretization dependent. We also observed that symplectic methods are substantially more accurate.
 
 \begin{figure} \label{fig:3}
 \begin{tabular}{cc}
@@ -198,13 +237,13 @@ The error with respect to the $X$-norm between the solution of the original syst
 } \\
 \multicolumn{2}{c}{(c)} \\
 \end{tabular}
-\caption{Numerical results related to the sine-Gordon equation with efficient evaluation of the nonlinear terms. Here, ``c.+DEIM'' indicates classical model reduction with the DEIM, ``s.+DEIM'' indicates symplectic model reduction with the DEIM and ``s.'' indicates symplectic model reduction with symplectic treatment of the nonlinear term. (a) error with respect to the $L^2$ norm. (b) error with respect to the $X$-norm. (c) error in the Hamiltonian. }
+\caption{Numerical results related to the sine-Gordon equation with efficient evaluation of the nonlinear terms. Here, ``DEIM'' indicates classical model reduction with the DEIM, ``s.+DEIM'' indicates symplectic model reduction with the DEIM and ``s.'' indicates symplectic model reduction with symplectic treatment of the nonlinear term. (a) error with respect to the Euclidean norm. (b) error with respect to the $X$-norm. (c) error in the Hamiltonian. }
 \end{figure}
-\todo[inline]{inconsistent line plots.}
+\todo[inline]{inconsistent line plots. Re: What is inconsistent exactly?}
 
-\Cref{fig:3} shows the performance of the different model reduction methods, when an efficient method is adopted in evaluating the nonlinear term in (\ref{eq:res.15}). This figure compares the symplectic approaches against non-symplectic methods. For all simulations, the size of the reduced basis for (\ref{eq:res.15}) is kept as $k=100$. The size of the basis of the nonlinear term is then chosen as $k_n=75$ and $k_n=100$. For symplectic methods, a basis for the nonlinear term is constructed according to \Cref{alg:3}, whereas for non-symplectic methods, the DEIM is applied. Note that for symplectic methods, the basis for the nonlinear term is added to the symplectic basis $A$. This means that the size of the reduced system is larger compared to the classical approach.
+\Cref{fig:3} shows the performance of the different model reduction methods, when an efficient method is adopted in evaluating the nonlinear term in (\ref{eq:res.15}). This figure compares the symplectic approaches against non-symplectic methods. For all simulations, the size of the reduced basis for (\ref{eq:res.15}) is chosen to be $k=100$. The size of the basis of the nonlinear term is then taken as $k_n=75$ and $k_n=100$. For symplectic methods, a basis for the nonlinear term is constructed according to \Cref{alg:3}, whereas for non-symplectic methods, the DEIM is applied. Note that for symplectic methods, the basis for the nonlinear term is added to the symplectic basis $A$. This means that the size of the reduced system is larger compared to the classical approach.
 
-\Cref{fig:3}(a) and \Cref{fig:3}(b) show the error with respect to the $L^2$-norm and the $X$-norm between the solution of the projected systems compared to the solution of the original system, respectively. We observe that all solutions are bounded and the behavior of the error in the $L^2$-norm and the $X$-norm is similar. We observe that enriching the DEIM basis does not increase the overall accuracy of the system projected using $P_{X,V}$. Furthermore, applying the DEIM to a symplectic reduced system also destroys the symplectic nature of the reduced system, as suggested in \cref{sec:normmor.3}. Therefore, it is essential to adopt a symplectic approach to reduce the complexity of the evaluation of the nonlinear terms. We observe that the symplectic method presented in \cref{sec:normmor.3} provides not only an accurate approximation of the nonlinear term, but also preserves the symplectic structure of the reduced system. Moreover, enriching such a basis consistently increases the accuracy of the solution, as suggested in \Cref{fig:3}(a) and \Cref{fig:3}(b).
+\Cref{fig:3}(a) and \Cref{fig:3}(b) show the error with respect to the Euclidean norm and the $X$-norm between the solution of the projected systems compared to the solution of the original system, respectively. We observe that all solutions are bounded and the behavior of the error in the Euclidean norm and the $X$-norm is similar. We observe that enriching the DEIM basis does not increase the overall accuracy of the system projected using $P_{X,V}$. Furthermore, applying the DEIM to a symplectic reduced system also destroys the symplectic nature of the reduced system, as suggested in \cref{sec:normmor.3}. Therefore, it is essential to adopt a symplectic approach to reduce the complexity of the evaluation of the nonlinear terms. We observe that the symplectic method presented in \cref{sec:normmor.3} provides not only an accurate approximation of the nonlinear term, but also preserves the symplectic structure of the reduced system. Moreover, enriching such a basis consistently increases the accuracy of the solution, as suggested in \Cref{fig:3}(a) and \Cref{fig:3}(b).
 
 \Cref{fig:3}(b) shows the conservation of the Hamiltonian for different methods. It is again seen that applying the DEIM to a symplectic reduced system destroys the Hamiltonian structure, therefore the Hamiltonian is not preserved.
 
