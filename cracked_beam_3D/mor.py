@@ -8,7 +8,7 @@ class Mor:
 		self.snap_Q = np.load("snap_Q.dat")
 		self.snap_P = np.load("snap_P.dat")
 		self.X = np.load("X_mat.dat")
-#		self.X = np.load("X_mat_eye.dat")
+		#self.X = np.load("X_mat_eye.dat")
 		self.X = np.matrix(self.X)
 
 		self.X.dump("X_mat_red.dat")
@@ -69,8 +69,8 @@ class Mor:
 		self.A_plus = np.transpose(self.Jk)*np.transpose(self.A)*self.Jtn
 		self.P = self.A*self.A_plus
 
-	def greedy(self,MAX_ITER):
-		idx = np.random.random_sample(1000)
+	def greedy(self,MAX_ITER, sample_size):
+		idx = np.random.random_sample(self.ns)
 		idx = idx*self.ns
 		idx = np.floor(idx)
 		idx = np.squeeze(np.asarray(idx))
@@ -78,7 +78,7 @@ class Mor:
 
 		snaps = np.concatenate([self.snap_Q,self.snap_P],0)
 		snaps = snaps[:,idx]
-		ns = 1000
+		ns = self.ns
 
 		snaps = self.X*snaps
 

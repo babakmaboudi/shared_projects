@@ -39,7 +39,7 @@ class Wave_Reduced:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 4000
+		self.MAX_ITER = 8000
 		self.dt = 0.0001
 
 		#load reduced basis
@@ -72,7 +72,7 @@ class Wave_Reduced:
 		
 		# Create and store mesh
 		#self.mesh = mshr.generate_mesh(geometry,10) # use geometry1 or geometry2
-		self.mesh= Mesh('meshes/cracked_beam.xml')
+		self.mesh= Mesh('meshes/cracked_beam_size_field.xml')
 		
 		#File('results/cracked_beam.pvd') << self.mesh
 		#File('results/cracked_beam.xml') << self.mesh
@@ -176,18 +176,23 @@ class Wave_Reduced:
 		c_factor = self.dt*inv_factor*self.f_termr
 		
 		self.snap_x0 = np.zeros(x0.shape)
+		self.energy = self.compute_energy(x0)
 
 		for i in range(0,self.MAX_ITER):
 			print(i)
 
 			x0 = L*x0 + c_factor
 
-			print( self.compute_energy( x0 ) )
+			#print( self.compute_energy( x0 ) )
 			full = self.Phi*np.linalg.inv(self.TJJ)*x0
 			f.vector().set_local( full[0:self.N,:] )
-			#if np.mod(i,10) == 0:
-			self.snap_x0 = np.concatenate((self.snap_x0,x0),1)
-			vtkfile << (f,i*self.dt)
+			if np.mod(i,10) == 0:
+				self.snap_x0 = np.concatenate((self.snap_x0,x0),1)
+				Energy = self.compute_energy(x0)
+				self.energy = np.concatenate((self.energy,Energy),0)
+
+			if np.mod(i,125) == 0:
+				vtkfile << (f,i*self.dt)
 
 	def symplectic_euler( self ):
 		vtkfile = File('results_reduced/solution.pvd')
@@ -265,6 +270,10 @@ class Wave_Reduced:
 
 		self.snap_Q = np.zeros( self.cp.shape )
 		self.snap_P = np.zeros( self.cp.shape )
+		
+		x0 = np.concatenate((q0,p0),0)
+		self.snap_x0 = np.zeros(x0.shape)
+		self.energy = self.compute_energy(x0)
 
 		for i in range(0,self.MAX_ITER):
 			print(i)
@@ -272,43 +281,19 @@ class Wave_Reduced:
 #			q0 = q0 + self.dt/2*L11*q0 + self.dt/2*L12*p0 + self.dt/2*f1
 			q0 = if1*q0 + self.dt/2*if1*L11*q0 + + self.dt*if1*L12*p0 + self.dt*if1*f1
 			p0 = p0 + self.dt/2*L21*q0 + self.dt/2*L22*p0 + self.dt/2*f2
-			print(np.max(np.abs(q0)))
-			if np.mod(i,250) == 0:
-				x0 = np.concatenate((q0,p0),0)
-				full = self.Phi*np.linalg.inv(self.TJJ)*x0
-				f.vector().set_local( full[0:self.N,:] )
-				vtkfile << (f,i*self.dt)
-
-#			if(np.mod(i,100) == 0):
-#				x0 = np.concatenate((q0,p0),0)
-#				full = self.Phi*np.linalg.inv(self.TJJ)*x0
-#				self.snap_Q = np.concatenate( (self.snap_Q,full[0:self.N,:]) , 1 )
-#				self.snap_P = np.concatenate( (self.snap_P,full[self.N:2*self.N,:]) , 1 )
-
-
+			#print(np.max(np.abs(q0)))
+			#if np.mod(i,250) == 0:
+			x0 = np.concatenate((q0,p0),0)
+			full = self.Phi*np.linalg.inv(self.TJJ)*x0
+			f.vector().set_local( full[0:self.N,:] )
 			
+			if np.mod(i,10) == 0:
+				self.snap_x0 = np.concatenate((self.snap_x0,x0),1)
+				Energy = self.compute_energy(x0)
+				self.energy = np.concatenate((self.energy,Energy),0)
 
-
-
-#		q0 = np.zeros([N,1])
-#		p0 = np.zeros([N,1])
-#
-#		self.snap_Q = np.zeros( self.cp.shape )
-#		self.snap_P = np.zeros( self.cp.shape )
-#
-#		for i in range(0,self.MAX_ITER):
-#			print(i)
-#			q0 = q0 + self.dt/2*self.M_inv*p0
-#			p0 = p0 + self.dt*self.K*q0 + self.dt*self.cp
-#			q0 = q0 + self.dt/2*self.M_inv*p0
-#
-#			self.snap_Q = np.concatenate((self.snap_Q,q0),1)
-#			self.snap_P = np.concatenate((self.snap_P,p0),1)
-#
-#			f.vector().set_local( q0 )
-#			if np.mod(i,10) == 0:
-#				vtkfile << (f,i*self.dt)
-#
+			if np.mod(i,125) == 0:
+				vtkfile << (f,i*self.dt)
 
 	def compute_JJ_transformation(self,J):
 		N = int(J.shape[0]/2)
@@ -393,12 +378,21 @@ class Wave_Reduced:
 		self.l2err = np.linalg.norm(z - Phi*y, axis=0)
 		self.werr = np.linalg.norm(X*(z - Phi*y), axis=0)
 		
-		plt.figure(1)
-		plt.subplot(211)
+		self.l2err.dump("l2err.dat")
+		self.werr.dump("werr.dat")
+		self.energy.dump("energy.dat")
+		
+		fig = plt.figure(1)
+		plt.subplot(311)
 		plt.plot(self.l2err)
 
-		plt.subplot(212)
+		plt.subplot(312)
 		plt.plot(self.werr)
+		
+		plt.subplot(313)
+		plt.plot(self.energy)
+		fig.savefig('errors-energy',dpi = fig.dpi)
+		
 		plt.show()
 		#print(self.l2err.shape)
 		#plt.plot(self.werr)
