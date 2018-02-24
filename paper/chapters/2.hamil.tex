@@ -15,7 +15,7 @@ Let $(\mathbb R^{2n}, \Omega)$ be a symplectic linear vector space, with $\mathb
 \end{aligned}
 \right.
 \end{equation}
-Here $z\in \mathbb R^{2n}$ are the configuration coordinates and $J_{2n}$ is a constant, full-rank and skew-symmetric $2n\times 2n$ \emph{structure} matrix such that $\Omega(x,y) = x^TJ_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Note that there always exists a coordinate transformation $\tilde z = T^{-1} z$, with $T \in \mathbb R^{2n\times 2n}$, such that $J_{2n}$ takes the form of the \emph{standard} symplectic structure matrix
+Here $z\in \mathbb R^{2n}$ are the configuration coordinates and $J_{2n}$ is a constant, full-rank and skew-symmetric $2n\times 2n$ \emph{structure} matrix such that $\Omega(x,y) = x^TJ_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Note that there always exists a coordinate transformation $\tilde z = \mathcal T^{-1} z$, with $\mathcal T \in \mathbb R^{2n\times 2n}$, such that $J_{2n}$ takes the form of the \emph{standard} symplectic structure matrix
 \begin{equation} \label{eq:hamil.2}
 	\mathbb{J}_{2n} = 
 	\begin{pmatrix}
@@ -30,11 +30,11 @@ Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\time
 \cite{Marsden:2010:IMS:1965128} The Hamiltonian $H$ is a conserved quantity of the Hamiltonian system \eqref{eq:hamil.1} i.e. $H(z(t)) = H(z_0)$ for all $t \geq 0$.
 \end{theorem}
 
-Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). Indeed only transformations which preserve the symplectic form, \emph{symplectic transformations}, preserve the form of a Hamiltonian system \cite{Hairer:1250576}. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. A transformation $\alpha:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
+Under a general coordinate transformation, the equations of evolution of a Hamiltonian system might not take the form (\ref{eq:hamil.1}). Indeed only transformations which preserve the symplectic form, \emph{symplectic transformations}, preserve the form of a Hamiltonian system \cite{Hairer:1250576}. Suppose that $(\mathbb R^{2n},\Omega)$ and $(\mathbb R^{2k},\Lambda)$ are two symplectic linear vector spaces. A transformation $\mu:\mathbb R^{2n}\to\mathbb R^{2k}$ is a symplectic transformation if
 \begin{equation} \label{eq:hamil.3}
-	\Omega(x,y) = \Lambda(\alpha(x),\alpha(y)), \quad \text{for all } x,y\in\mathbb R^{2n}.
+	\Omega(x,y) = \Lambda(\mu(x),\mu(y)), \quad \text{for all } x,y\in\mathbb R^{2n}.
 \end{equation}
-In matrix notation, i.e. when we consider a set of basis vectors for $\mathbb R^{2n}$ and $\mathbb R^{2k}$, a linear symplectic transformation is of the form $\alpha(x) = Ax$ with $A\in \mathbb R^{2n\times 2k}$ such that
+In matrix notation, i.e. when we consider a set of basis vectors for $\mathbb R^{2n}$ and $\mathbb R^{2k}$, a linear symplectic transformation is of the form $\mu(x) = Ax$ with $A\in \mathbb R^{2n\times 2k}$ such that
 \begin{equation} \label{eq:hamil.4}
 	A^T J_{2n} A = J_{2k}.
 \end{equation}
