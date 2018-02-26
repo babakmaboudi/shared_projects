@@ -17,12 +17,15 @@ and
 \begin{equation}  \label{eq:res.2}
 	\sigma = \lambda (\nabla \cdot u) I + \mu(\nabla u + (\nabla u)^T).
 \end{equation}
-Here $u:\Gamma \to \mathbb{R}^3$ is the unknown displacement vector field, subscript $t$ denotes derivative with respect to time, $\sigma:\Gamma \to \mathbb{R}^{3\times 3}$ is the stress tensor, $f$ is the body force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for the material in $\Gamma$, $I$ is the identity tensor, $n$ is the outward unit normal vector at the boundary and $\tau:\partial \Gamma_\tau \to \mathbb R^3$ is the traction at a subset of the boundary $\partial \Gamma_\tau$ \cite{langtangen2017solving}. We refer to \Cref{fig:beam} for a snapshot of the elastic beam.
+Here $u:\Gamma \to \mathbb{R}^3$ is the unknown displacement vector field, subscript $t$ denotes derivative with respect to time, $\sigma:\Gamma \to \mathbb{R}^{3\times 3}$ is the stress tensor, $f$ is the body force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for the material in $\Gamma$, $I$ is the identity tensor, $n$ is the outward unit normal vector at the boundary and $\tau:\partial \Gamma_\tau \to \mathbb R^3$ is the traction at a subset of the boundary $\partial \Gamma_\tau$ \cite{langtangen2017solving}. We refer to \Cref{fig:0} for a snapshot of the elastic beam.
 
-%\begin{figure}[htbp] \label{fig:beam}
-%\includegraphics[width=\textwidth]{./figs/beam/beam.eps}
-%\caption{A displaced rectangular elastic beam.}
-%\end{figure}
+\begin{figure}[t] \label{fig:0}
+\begin{tabular}{cc}
+\includegraphics[width=0.45\textwidth]{./figs/beam2d.png} & \includegraphics[width=0.45\textwidth]{./figs/beam3d.png} \\
+(a) & (b)
+\end{tabular}
+\caption{(a) initial condition and a snapshot of the 2D beam with cavity. (b) initial condition and a snapshot of the 3D beam.}
+\end{figure}
 
 We define a vector valued function space as $V = \{ u \in L^2(\Gamma) : \| \nabla u \|_2 \in L^2 \text{, } u = \vec 0 \text{ on } \partial \Gamma_\tau \}$, equipped with the standard $L^2$ inner product $(\cdot,\cdot):V\times V \to \mathbb R$, and seek the solution to (\ref{eq:res.1}). To derive the weak formulation of (\ref{eq:res.1}), we multiply it with the vector valued test function $v \in V$, integrate over $\Gamma$, and use integration by parts to get 
 %\begin{equation}  \label{eq:res.3}
@@ -55,7 +58,7 @@ Any particular function $u_h$ can be expressed as $u_h = \sum_{i=1}^{N_h} q_i \p
 \begin{equation} \label{eq:res.9}
 	M\ddot q = -K q + g_{q}.
 \end{equation}
-where $q=(q_1,\dots,q_{N_h})^T$ are unknowns, \emph{mass matrix} $M\in \mathbb R^{N_h\times N_h}$ is given as $M_{i,j} = (\phi_i,\phi_j)$, \emph{stiffness matrix} $K\in \mathbb R^{N_h\times N_h}$ is given as $K_{i,j} = a(\phi_i,\phi_j)$ and $g_q=(b(v_1),\dots,b(v_{N_h}))^T$. Now introduce the canonical coordinate $p = M\dot q$ to recover the Hamiltonian system
+where $q=(q_1,\dots,q_{N_h})^T$ are unknowns, \emph{mass matrix} $M\in \mathbb R^{N_h\times N_h}$ is given as $M_{i,j} = (\phi_i,\phi_j)$, \emph{stiffness matrix} $K\in \mathbb R^{N_h\times N_h}$ is given as $K_{i,j} = a(\phi_j,\phi_i)$ and $g_q=(b(v_1),\dots,b(v_{N_h}))^T$. Now introduce the canonical coordinate $p = M\dot q$ to recover the Hamiltonian system
 \begin{equation} \label{eq:res.10}
 	\dot z = \mathbb J_{2N_h} Lz + g_{qp},
 \end{equation}
@@ -93,7 +96,7 @@ Degrees of freedom & $2N_{h} = 1650$ \\
 \end{tabular}
 \end{center}
 \vspace{0.5cm}
-We use the St\"ormer-Verlet scheme (\ref{eq:hamil.6}) to integrate (\ref{eq:res.10}) in time and generate the temporal snapshots. Projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$ are constructed following \cref{sec:mor.1,sec:mor.2,sec:mor.3}, respectively, with $\sigma = 5\times 10^{-4}, 2\times 10^{-4}$ and $1\times 10^{-4}$. In order to apply a symplectic time integrator, we first compute the transformation $J_{2k} = \mathcal T \mathbb J_{2k} \mathcal T^T$ using the symplectic GS method with complete pivoting. The reduced systems, obtained from $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$, are then integrated in time using the St\"ormer-Verlet scheme. The reduced system obtained from $P_{X,V}$ is integrated using a second order implicit Runge-Kutta method \todo{change of integrator not desirable, introduces uncertainty in conclusion. Re: The only other choice would be to use the mid-point. This is not desirable since mid-point is "a" symplectic integrator and not a general one.}. Note that the St\"ormer-Verlet scheme is not used since the canonical form of a Hamiltonian system is destroyed when $P_{X,V}$ is applied.
+Projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$ are constructed following \cref{sec:mor.1,sec:mor.2,sec:mor.3}, respectively, with $\sigma = 5\times 10^{-4}, 2\times 10^{-4}$ and $1\times 10^{-4}$. In order to apply a symplectic time integrator, we first compute the transformation $J_{2k} = \mathcal T \mathbb J_{2k} \mathcal T^T$ using the symplectic GS method with complete pivoting. The reduced systems, obtained from $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,\tilde A}$, are then integrated in time using the St\"ormer-Verlet scheme to generate the temporal snapshots. The reduced system obtained from $P_{X,V}$ is integrated using a second order implicit Runge-Kutta method. Note that the St\"ormer-Verlet scheme is not used since the canonical form of a Hamiltonian system is destroyed when $P_{X,V}$ is applied.
 
 \begin{figure}[t] \label{fig:1}
 \begin{tabular}{cc}
@@ -117,16 +120,17 @@ where $e\in V$ is the error function and $\hat q \in \mathbb R^{2n}$ is an appro
 
 We define the energy norm $\| \cdot \|_E : V \to \mathbb R$ as
 \begin{equation}
-	\| (u,\dot u) \|_E = \sqrt{ a(u,u) + (\dot u , \dot u) } \approx \| z \|_X
+	\| (u,\dot u) \|_E = \sqrt{ a(u,u) + (\dot u , \dot u) } \approx \| z \|_X.
 \end{equation}
-\Cref{fig:1}(d) shows the MOR error with respect to the energy norm. We observe that the classical model reduction method based on the projection $P_{X,V}$ does not yield a stable reduced system. However, the symplectic methods provide a stable reduced system. We observe that the original symplectic approach also provides an accurate solution with respect to the energy norm. Nevertheless, the relation between the two norms depends on the problem set up and the initial and the boundary conditions \cite{DEPARIS20094359}.
+\Cref{fig:1}(d) shows the MOR error with respect to the energy norm. We observe that the classical model reduction method based on the projection $P_{X,V}$ does not yield a stable reduced system. However, the symplectic methods provide a stable reduced system. We observe that the original symplectic approach also provides an accurate solution with respect to the energy norm. Nevertheless, the relation between the two norms depends on the problem set up and the choice of discretization \cite{DEPARIS20094359}.
 
-\subsection{Elastic beam with cavity} In this section we investigate the performance of the proposed method on a two dimensional elastic beam that contains a cavity. In this case a nonuniform triangulated mesh is desirable to balance the computational cost of a FEM discretization with the numerical error around the cavity. Figure \ref{?} shows the nonuniform mesh used in this section.
+\subsection{Elastic beam with cavity} In this section we investigate the performance of the proposed method on a two dimensional elastic beam that contains a cavity. In this case a nonuniform triangulated mesh is desirable to balance the computational cost of a FEM discretization with the numerical error around the cavity. \Cref{fig:0}(a) shows the nonuniform mesh used in this section.
 System parameters are taken to be identical to those in \cref{sec:res.1}. Numerical parameters are summarized in the table below.
 \vspace{0.5cm}
 \begin{center}
 \begin{tabular}{|l|l|}
 \hline
+cavity width & $l_c = 0.1$ \\
 Time step-size & $\Delta t = 4\times 10^{-4}$ \\
 Degrees of freedom & $2N_{h} = 744$ \\
 \hline
@@ -173,7 +177,7 @@ One can verify that $u_{t} = \delta_v H$ and $v_{t} = - \delta_u H$, where $\del
 \begin{equation} \label{eq:res.14}
 	u(t,x) = 4 \text{arctan}\left( \exp \left( \pm \frac{x - x_0 - ct}{\sqrt{1-c^2}} \right) \right),
 \end{equation}
-where $x_0 \in \Gamma$ and the plus and minus signs correspond to the \emph{kink} and the \emph{anti-kink} solutions, respectively. Here c, $|c|<1$, is the arbitrary wave speed. We discretize the segment into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) and obtain
+where $x_0 \in \Gamma$ and the plus and minus signs correspond to the \emph{kink} and the \emph{anti-kink} solutions, respectively. Here $c$, $|c|<1$, is the arbitrary wave speed. We discretize the segment into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) and obtain
 \begin{equation} \label{eq:res.15}
 	\dot z = \mathbb J_{2n} L z + \mathbb J_{2n} g(z) + \mathbb J_{2n} c_b.
 \end{equation}
@@ -239,7 +243,6 @@ The error with respect to the $X$-norm between the solution of the original syst
 \end{tabular}
 \caption{Numerical results related to the sine-Gordon equation with efficient evaluation of the nonlinear terms. Here, ``DEIM'' indicates classical model reduction with the DEIM, ``s.+DEIM'' indicates symplectic model reduction with the DEIM and ``s.'' indicates symplectic model reduction with symplectic treatment of the nonlinear term. (a) error with respect to the Euclidean norm. (b) error with respect to the $X$-norm. (c) error in the Hamiltonian. }
 \end{figure}
-\todo[inline]{inconsistent line plots. Re: What is inconsistent exactly? AB: can we also plot sigular values here too? If not}
 
 \Cref{fig:3} shows the performance of the different model reduction methods, when an efficient method is adopted in evaluating the nonlinear term in (\ref{eq:res.15}). This figure compares the symplectic approaches against non-symplectic methods. For all simulations, the size of the reduced basis for (\ref{eq:res.15}) is chosen to be $k=100$. The size of the basis of the nonlinear term is then taken as $k_n=75$ and $k_n=100$. For symplectic methods, a basis for the nonlinear term is constructed according to \Cref{alg:3}, whereas for non-symplectic methods, the DEIM is applied. Note that for symplectic methods, the basis for the nonlinear term is added to the symplectic basis $A$. This means that the size of the reduced system is larger compared to the classical approach.
 
