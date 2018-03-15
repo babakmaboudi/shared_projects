@@ -64,7 +64,7 @@ Finally, as $\nabla_z H(z) = Lz + \nabla_z f(z)$, the reduced system (\ref{eq:no
 \end{aligned}
 \right.
 \end{equation}
-where $J_{2k}=\tilde A^+ J_{2n} (\tilde A^+)^T$ is a skew-symmetric matrix. The system (\ref{eq:normmor.8}) is a generalized Hamiltonian system with the Hamiltonian defined as $\tilde H(y) = \frac 1 2 y^TA^TLAy + f(Ay)$. Therefore, a Poisson integrator preserves the symplectic symmetry associated with (\ref{eq:normmor.8}). 
+where $J_{2k}=\tilde A^+ J_{2n} (\tilde A^+)^T$ is a skew-symmetric matrix. The system (\ref{eq:normmor.8}) is a generalized Hamiltonian system with the Hamiltonian defined as $\mathcal H(y) = \frac 1 2 y^TA^TLAy + f(Ay)$. Therefore, a Poisson integrator preserves the symplectic symmetry associated with (\ref{eq:normmor.8}).
 
 We close this section by summarizing the properties of the symplectic inverse in the following theorem.
 \begin{theorem} \label{thm:2}
@@ -79,6 +79,18 @@ Let $A\in \mathbb R^{2n\times 2k}$ be a $J_{2n}$-symplectic basis where $J_{2n}\
 \begin{proof}
 It is straightforward to show all statements using the definition of a symplectic basis.
 \end{proof}
+
+\subsection{Stability Conservation} It is shown in \cite{doi:10.1137/140978922,doi:10.1137/17M1111991} that a Hamiltonian reduced system constructed by the projection $P^{\text{symp}}_{I,A}$ preserves the stability of stable equilibrium points of \cref{eq:mor.12}, and therefore, preserves the overall dynamics. In this section, we discuss that the stability of equilibrium points is also conserved using the projection operator $P^{\text{symp}}_{X,\tilde A}$.
+
+\begin{proposition} \label{prop:new1}
+\cite{bhatia2002stability} An equilibrium point $z_e\in \mathbb R^{2n}$ is Lyapunov stable if there exists a scalar function $W:\mathbb R^{2n} \to \mathbb R$ such that $\nabla W(z_e) = 0$, $\nabla^2 W(z_e)$ is positive definite, and that for any trajectory $z(t)$ defined in the neighborhood of $z_e$, we have $\frac{d}{dt} W(z(t))\leq 0$. Here $\nabla^2 W$ is the Hessian matrix of $W$, and $W$ is commonly referred to as a Lyapunov function.
+\end{proposition}
+
+It is shown in \cite{doi:10.1137/17M1111991} that the stable points of the Hamiltonian reduced system constructed using the projection $P^{\text{symp}}_{X,\tilde A}$ is Lyapunov stable. However, since the proof only requires the conservation of the Hamiltonian and the positive definiteness of $\mathcal H$, the proof also holds for generalized Hamiltonian reduced systems.
+
+\begin{theorem}
+\cite{doi:10.1137/17M1111991} Consider a Hamiltonian system of the form \cref{eq:mor.8} together with the reduced system \cref{eq:normmor.8}. Suppose that $z_e$ is an equilibrium point for \cref{eq:mor.8} and that $y_e = \tilde A ^+ X^{1/2} z_e$. If $H$ (or $-H$) is a Lyapunov function satisfying \cref{prop:new1}, then $z_e$ and $y_e$ are Lyapunov stable equilibrium points for \cref{eq:mor.8} and \cref{eq:normmor.8}, respectively.
+\end{theorem}
 
 \subsection{Greedy generation of a $J_{2n}$-symplectic basis} \label{sec:normmor.2}
 In this section we modify the greedy algorithm introduced in \cref{sec:mor.3} to construct a $J_{2n}$-symplectic basis. Ortho-normalization is an essential step in greedy approaches to basis generation \cite{hesthaven2015certified,quarteroni2015reduced}. Here, we summarize a variation of the GS orthogonalization process, known as the \emph{symplectic GS} process.
