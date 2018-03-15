@@ -29,7 +29,7 @@ for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$ an
 \end{equation}
 becomes idempotent, i.e. $P_{X,V}$ is a projection operator onto colspan$(V)$.
 
-Now suppose that the \emph{snapshot matrix} $S=[x(t_1),x(t_2),\ldots,x(t_N)]$ is a collection of $N$ solutions to (\ref{eq:mor.1}) at time instances $t_1,\dots,t_N$. We seek $V$ such that it minimizes the collective projection error of the samples onto colspan$(V)$ which corresponds to the minimization problem
+Now suppose that the \emph{snapshot matrix} $S=[x(t_1)|x(t_2)|\ldots|x(t_N)]$ is a collection of $N$ solutions to (\ref{eq:mor.1}) at time instances $t_1,\dots,t_N$. We seek $V$ such that it minimizes the collective projection error of the samples onto colspan$(V)$ which corresponds to the minimization problem
 \begin{equation} \label{eq:mor.5}
 \begin{aligned}
 & \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
@@ -41,12 +41,12 @@ Now suppose that the \emph{snapshot matrix} $S=[x(t_1),x(t_2),\ldots,x(t_N)]$ is
 Note that the solution to (\ref{eq:mor.5}) is known as the proper orthogonal decomposition (POD) \cite{hesthaven2015certified,quarteroni2015reduced,gubisch2017proper}. Following \cite{quarteroni2015reduced} the above minimization is equivalent to
 \begin{equation} \label{eq:mor.6}
 \begin{aligned}
-& \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
+& \underset{\tilde V\in \mathbb{R}^{m\times k}}{\text{minimize}}
 & & \| \tilde S - \tilde V \tilde V^T \tilde S \|_F^2, \\
 & \text{subject to}
 & & \tilde V^T\tilde V = I_k.
 \end{aligned}
-\end{equation} \todo{min $\tilde{V}$?}
+\end{equation}
 where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, and $X^{1/2}$ is the matrix square root of $X$. According to the Schmidt-Mirsky-Eckart-Young theorem \cite{Markovsky:2011:LRA:2103589} the solution $\tilde V$ to the minimization (\ref{eq:mor.6}) is the truncated singular value decomposition (SVD) of $\tilde S$. The basis $V$ then is $V = X^{-1/2}\tilde V$. The reduced model of (\ref{eq:mor.1}), using the basis $V$ and the projection $P_{X,V}$, is
 \begin{equation} \label{eq:mor.7}
 	\left\{
@@ -87,12 +87,11 @@ Here $\mathcal P \in \mathbb R^{2n\times r}$ is the interpolating index matrix \
 \begin{equation} \label{eq:mor.12}
 \left\{
 \begin{aligned}
-	\dot y(t) &= \mathbb J_{2k} A^T L A y + \mathbb J_{2k} (\mathcal P^T (A^+)^T)^{-1} \mathcal P^T \nabla_z f(z), \\
+	\dot y(t) &= \mathbb J_{2k} A^T L A y + \mathbb J_{2k} (A^+)^T(\mathcal P^T (A^+)^T)^{-1} \mathcal P^T \nabla_z f(Ay), \\
 	y(0) &= A^+ z_0.
 \end{aligned}
 \right.
 \end{equation}
-\todo{correct to me}
 Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in \Cref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system and the difference of the Hamiltonians of the two system \cref{eq:mor.8,eq:mor.12} is constant. Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
 
 \subsection{Greedy generation of a $\mathbb J_{2n}$-symplectic basis} \label{sec:mor.3}
