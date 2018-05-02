@@ -55,6 +55,16 @@ Since $(\mathbb J_{2k}^T A^T X \mathbb J_{2n} X) A = I_{2k}$, we may use the cha
 \begin{equation} \label{eq:normmor.7}
 	\nabla_z H(z) = ( \mathbb J_{2k}^T A^T X \mathbb J_{2n} X )^T \nabla_y H(Ay).
 \end{equation}
+\todo[inline]{Equation \cref{eq:normmor.7} is not quite correct because
+$$\nabla_z H(Ay) = \nabla_z H(z)|_{z=Ay} =?$$
+
+The other direction is clear because
+$$\nabla_y H(Ay) = \nabla_y H(z)|_{z=Ay} =\nabla_y z^T \nabla_z H(z)|_{z=Ay} = A^T \nabla_z H(Ay)$$
+by the virtue of the chain rule.
+
+In case of $X=I$, one can still derive \cref{eq:normmor.7} using
+$$\mathbb J_{2k}^T A^T \mathbb J_{2n} \mathbb{J}_{2n} =  \mathbb J_{2k} A^T.$$
+But this doesn't generalize to the more general case of non uniform weighting.}
 Finally, as $\nabla_z H(z) = Lz + \nabla_z f(z)$, the reduced system (\ref{eq:normmor.6}) becomes
 \begin{equation} \label{eq:normmor.8}
 \left\{
