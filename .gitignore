@@ -14,3 +14,10 @@
 *.pyc
 *.out
 *.thm
+*.pdf
+*.cpp
+*.h
+*.xml
+*.png
+*.orig
+*.bak

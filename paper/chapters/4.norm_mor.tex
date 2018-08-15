@@ -49,37 +49,37 @@ As (\ref{eq:mor.13}), direct approaches to solving (\ref{eq:normmor.5}) are impr
 
 Now suppose that a basis $A=X^{-1/2}\tilde A$, with $\tilde A$ solving (\ref{eq:normmor.5}), is available such that $z \approx Ay$ with $y\in \mathbb R^{2k}$, the expansion coefficients of $z$ in the basis of $A$. Using (\ref{eq:normmor.2}) we may write the reduced system to (\ref{eq:mor.8}) as
 \begin{equation} \label{eq:normmor.6}
-	\dot y = \mathbb J_{2k}^T A^T X \mathbb J_{2n} X \mathbb{J}_{2n} LAy + \mathbb J_{2k}^T A^T X \mathbb J_{2n} X \mathbb{J}_{2n} \nabla_z f(Ay).
+	\dot y = \mathbb J_{2k}^T A^T X \mathbb J_{2n} X \mathbb{J}_{2n} \nabla_z H(Ay).
 \end{equation}
 Since $(\mathbb J_{2k}^T A^T X \mathbb J_{2n} X) A = I_{2k}$, we may use the chain rule to write
 \begin{equation} \label{eq:normmor.7}
 	\nabla_z H(z) = ( \mathbb J_{2k}^T A^T X \mathbb J_{2n} X )^T \nabla_y H(Ay).
 \end{equation}
-\todo[inline]{Equation \cref{eq:normmor.7} is not quite correct because
-$$\nabla_z H(Ay) = \nabla_z H(z)|_{z=Ay} \stackrel{\text{?}}{=} A^{+T} \nabla_y H(Ay)$$
-is not valid. If it were true then
-$$\nabla_z H(Ay) = A^{+T} \nabla_y H(Ay) = A^{+T} A^T \nabla_z H(Ay) = (AA^+)^T \nabla_z H(Ay)$$
-which implies
-$$(I- (AA^+)^T) \nabla_z H(Ay) = 0,$$
-for all $Ay \in domain(\nabla_z H)$, which could only be true iff $AA^+ =I$ i.e. iff the projection is identity.
-
-The other direction is clear because
-$$\nabla_y H(Ay) = \nabla_y H(z)|_{z=Ay} =\nabla_y z^T \nabla_z H(z)|_{z=Ay} = A^T \nabla_z H(Ay)$$
-by the virtue of the chain rule.
-
-In case of $X=I$, one can still derive \cref{eq:normmor.7} using
-$$\mathbb J_{2k}^T A^T \mathbb J_{2n} \mathbb{J}_{2n} =  \mathbb J_{2k} A^T.$$
-But this doesn't generalize to the more general case of non uniform weighting.}
-Finally, as $\nabla_z H(z) = Lz + \nabla_z f(z)$, the reduced system (\ref{eq:normmor.6}) becomes
+%\todo[inline]{Equation \cref{eq:normmor.7} is not quite correct because
+%$$\nabla_z H(Ay) = \nabla_z H(z)|_{z=Ay} \stackrel{\text{?}}{=} A^{+T} \nabla_y H(Ay)$$
+%is not valid. If it were true then
+%$$\nabla_z H(Ay) = A^{+T} \nabla_y H(Ay) = A^{+T} A^T \nabla_z H(Ay) = (AA^+)^T \nabla_z H(Ay)$$
+%which implies
+%$$(I- (AA^+)^T) \nabla_z H(Ay) = 0,$$
+%for all $Ay \in domain(\nabla_z H)$, which could only be true iff $AA^+ =I$ i.e. iff the projection is identity.
+%
+%The other direction is clear because
+%$$\nabla_y H(Ay) = \nabla_y H(z)|_{z=Ay} =\nabla_y z^T \nabla_z H(z)|_{z=Ay} = A^T \nabla_z H(Ay)$$
+%by the virtue of the chain rule.
+%
+%In case of $X=I$, one can still derive \cref{eq:normmor.7} using
+%$$\mathbb J_{2k}^T A^T \mathbb J_{2n} \mathbb{J}_{2n} =  \mathbb J_{2k} A^T.$$
+%But this doesn't generalize to the more general case of non uniform weighting.}
+Therefore the reduced system (\ref{eq:normmor.6}) becomes
 \begin{equation} \label{eq:normmor.8}
 \left\{
 \begin{aligned}
-	\dot y(t) &= J_{2k} A^T L A y + J_{2k} \nabla_y f(Ay), \\
+	\dot y(t) &= J_{2k} \nabla_y H(Ay), \\
 	y(0) &= \mathbb J_{2k}^T A^T X \mathbb J_{2n} X z_0,
 \end{aligned}
 \right.
 \end{equation}
-where $J_{2k}=\tilde A^+ J_{2n} (\tilde A^+)^T$ is a skew-symmetric matrix. The system (\ref{eq:normmor.8}) is a generalized Hamiltonian system with the Hamiltonian defined as $\mathcal H(y) = \frac 1 2 y^TA^TLAy + f(Ay)$. Therefore, a Poisson integrator preserves the symplectic symmetry associated with (\ref{eq:normmor.8}).
+where $J_{2k}=\tilde A^+ J_{2n} (\tilde A^+)^T$ is a skew-symmetric matrix. The system (\ref{eq:normmor.8}) is a generalized Hamiltonian system with the Hamiltonian defined as $\mathcal H(y) = H(Ay)$. Therefore, a Poisson integrator preserves the symplectic symmetry associated with (\ref{eq:normmor.8}).
 
 We close this section by summarizing the properties of the symplectic inverse in the following theorem.
 \begin{theorem} \label{thm:2}
@@ -184,26 +184,26 @@ It is shown in \cite{doi:10.1137/17M1111991} that under natural assumptions on t
 \subsection{Efficient evaluation of nonlinear terms} \label{sec:normmor.3}
 The evaluation of the nonlinear term in (\ref{eq:normmor.8}) still retains a computational complexity proportional to the size of the full order system (\ref{eq:mor.8}). To overcome this, we take an approach similar to \cref{sec:mor.2}. The DEIM approximation of the nonlinear term in (\ref{eq:normmor.8}) yields
 \begin{equation} \label{eq:normmor.15}
-	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1}\mathcal  P^T \nabla_z f(Ay).
+	\dot y = \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1}\mathcal  P^T \nabla_z H(Ay).
 \end{equation}
-Here $U$ is a basis constructed from the nonlinear snapshots $\{\nabla_z f(z(t_i))\}_{i=1}^N$, and $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in \cref{sec:mor.2}, for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not retain a Hamiltonian form. Since $(\tilde A^+ X^{1/2}) A = I_{2k}$ applying the chain rule on (\ref{eq:normmor.15}) yields
+Here $U$ is a basis constructed from the nonlinear snapshots $\{\nabla_z H(z(t_i))\}_{i=1}^N$, and $\mathcal P$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. As discussed in \cref{sec:mor.2}, for a general choice of $U$, the reduced system (\ref{eq:normmor.8}) does not retain a Hamiltonian form. Since $(\tilde A^+ X^{1/2}) A = I_{2k}$ applying the chain rule on (\ref{eq:normmor.15}) yields
 \begin{equation} \label{eq:normmor.16}
-	\dot y = J_{2k} A^TLAy + \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1} \mathcal P^T (\tilde A^+ X^{1/2})^T \nabla_y f(Ay).
+	\dot y = \tilde A ^+ X^{1/2} \mathbb J_{2n} U (\mathcal P^TU)^{-1} \mathcal P^T (\tilde A^+ X^{1/2})^T \nabla_y H(Ay).
 \end{equation}
 Freedom in the choice of the basis $U$ allows us to require $U = X^{1/2} (\tilde A^+)^T$. This reduces the complex expression in (\ref{eq:normmor.16}) to
 \begin{equation} \label{eq:normmor.17}
-	\dot y = J_{2k} A^TLAy + J_{2k} \nabla_y f(Ay),
+	\dot y = J_{2k} \nabla_y H(Ay),
 \end{equation}
 and hence we recover the Hamiltonian structure. The reduced system then yields
 \begin{equation} \label{eq:normmor.18}
 \left\{
 \begin{aligned}
-	\dot y(t) &= J_{2k} A^TLAy + J_{2k} (\mathcal P^TX \mathbb J_{2n} X A \mathbb J_{2k})^{-1} \mathcal P^T \nabla_z f(z), \\
+	\dot y(t) &= J_{2k} (\mathcal P^TX \mathbb J_{2n} X A \mathbb J_{2k})^{-1} \mathcal P^T \nabla_z H(z), \\
 	y(0) &= \mathbb J_{2k}^T A^T X J X z_0.
 \end{aligned}
 \right.
 \end{equation}
-We now discuss how to ensure that $X^{1/2} (\tilde A^+)^T$ is a basis for the nonlinear snapshots. Note that if $z \in \text{colspan}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{colspan}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. \Cref{thm:2} suggests that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z f(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). \Cref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We note that greedy approaches to basis generation do not generally result in a minimal basis.
+We now discuss how to ensure that $X^{1/2} (\tilde A^+)^T$ is a basis for the nonlinear snapshots. Note that if $z \in \text{colspan}\left(X^{1/2} (\tilde A^+)^T\right)$ then $X^{-1/2} z \in \text{colspan}\left(( \tilde A^+)^T \right)$. Therefore, it is sufficient to require $(\tilde A^+)^T$ to be a basis for $\{X^{-1/2} \nabla_z H(z(t_i))\}_{i=1}^N$. \Cref{thm:2} suggests that $(\tilde A^+)^T$ is a $J_{2n}^{-1}$-symplectic basis and that the transformation between $\tilde A$ and $(\tilde A^+)^T $ does not affect the symplectic feature of the bases. Consequently, from $A$ we may compute $(\tilde A^+)^T$ and enrich it with snapshots $\{X^{-1/2} \nabla_z H(z(t_i))\}_{i=1}^N$. Once $(\tilde A^+)^T$ represents the nonlinear term with the desired accuracy, we may compute $\tilde A= \left( \left( ( \tilde A^+ )^T \right)^+ \right)^T$ to obtain the reduced basis for (\ref{eq:normmor.18}). \Cref{thm:2} implies that $(\tilde A^+)^T$ is ortho-normal with respect to the $X^{-1}$-norm. This affects the ortho-normalization process. We note that greedy approaches to basis generation do not generally result in a minimal basis.
 
 As discussed in \cref{sec:normmor.2} it is desirable to eliminate the computation of $X^{\pm 1/2}$. Having $z \in \text{colspan}\left(X^{1/2} (\tilde A^+)^T\right)$ implies that $X^{-1} z \in \text{colspan}(\mathbb J_{2n}^T X A \mathbb J_{2n})$. Note that \Cref{alg:2} constructs a $\mathbb J_{2n}$-symplectic matrix $XA$ and $\mathbb J_{2n}^T X A \mathbb J_{2n}$ is the symplectic inverse of $XA$ with respect to the standard symplectic matrix $\mathbb J_{2n}$. Given $e$ as a candidate for enriching $X^{1/2} (\tilde A^+)^T$ we may instead enrich $\mathbb J_{2n}^T X A \mathbb J_{2n}$ with $\hat e$, that solves $X \hat e = e$.
 
@@ -211,7 +211,7 @@ Since  $\mathbb J_{2n}^T X A \mathbb J_{2n}$ is $\mathbb J_{2n}$-symplectic the 
 
 \begin{algorithm} 
 \caption{Generation of a basis for nonlinear terms} \label{alg:3}
-{\bf Input:} Tolerated projection error $\delta$, $\mathbb J_{2n}$-symplectic basis $B = X A$ of size $2k$, the snapshots $\mathcal G = \{ \nabla_zf(z(t_i))\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
+{\bf Input:} Tolerated projection error $\delta$, $\mathbb J_{2n}$-symplectic basis $B = X A$ of size $2k$, the snapshots $\mathcal G = \{ \nabla_zH(z(t_i))\}_{i=1}^{N}$, full rank matrix $X=X^T>0$
 \begin{enumerate}
 \item $Q \leftarrow \mathbb J_{2n}^T X A \mathbb J_{2n}A^T$
 \item compute $(B^+)^T = \mathbb J_{2n}^T B \mathbb J_{2n} = [e_1|\dots |e_{k} | \mathbb J_{2n}^Te_1|\dots| \mathbb J_{2n}^Te_{k}]$
@@ -234,7 +234,7 @@ Model order reduction becomes particularly useful for parameter dependent proble
 More precisely, one can decompose the computations into the following stages:
 \emph{Offline stage:} Quantities in this stage are computed only once and then used in the online stage.
 \begin{enumerate}
-\item Generate the weighted snapshots $\{ X z(t_i) \}_{i=1}^N$ and the snapshots of the nonlinear term $\{\nabla_zf(z(t_i))\}_{i=1}^N$
+\item Generate the weighted snapshots $\{ X z(t_i) \}_{i=1}^N$ and the snapshots of the nonlinear term $\{\nabla_zH(z(t_i))\}_{i=1}^N$
 \item Generate a $J_{2n}$-symplectic basis for the solution snapshots and the snapshots of the nonlinear terms, following \Cref{alg:2,alg:3}, respectively.
 \item Assemble the reduced order model \cref{eq:normmor.18}.
 \end{enumerate}
