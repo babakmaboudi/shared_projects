@@ -38,9 +38,9 @@ Here $\tilde S = X^{1/2} S$, $\tilde A = X^{1/2} A$, and $\tilde A^+ = \mathbb J
 \begin{equation} \label{eq:normmor.5}
 \begin{aligned}
 & \underset{\tilde A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
-& & \| \tilde S - P^\text{symp}_{X,\tilde A}(\tilde S) \|_F, \\
+& & \| \tilde S - P^\text{symp}_{X,\tilde A}(\tilde S) \|_F^2, \\
 & \text{subject to}
-& & \tilde A^T J_{2n} \tilde A = \mathbb J_{2k}.
+& & \tilde A^T J_{2n} \tilde A = \mathbb J_{2k},
 \end{aligned}
 \end{equation}
 where $P^\text{symp}_{X,\tilde A} = \tilde A \tilde A^+$ is the symplectic projection with respect to the $X$-norm onto the colspan($\tilde A$). At first glance, the minimization (\ref{eq:normmor.5}) might look similar to (\ref{eq:mor.13}). However, since $\tilde A$ is $J_{2n}$-symplectic, and the projection operator depends on $X$, we need to seek an alternative approach to find a near optimal solution to (\ref{eq:normmor.5}). 
@@ -94,6 +94,19 @@ Let $A\in \mathbb R^{2n\times 2k}$ be a $J_{2n}$-symplectic basis where $J_{2n}\
 \begin{proof}
 It is straightforward to show all statements using the definition of a symplectic basis.
 \end{proof}
+
+\begin{rem}
+A common feature of \cref{eq:mor.13,eq:normmor.5} is that they minimize the symplectic projection errors. They are distinguished by the choice of norm they minimize the symplectic projection errors in. Another possibility for symplectic MOR lies somewhere between these two choices, i.e.,
+\begin{equation} \label{eq:normmor.wsmor}
+\begin{aligned}
+& \underset{ A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
+& & \| \tilde S - P^\text{symp}_{I, A}(\tilde S) \|_F^2, \\
+& \text{subject to}
+& & A^T \mathbb J_{2n} A = \mathbb J_{2k}.
+\end{aligned}
+\end{equation}
+In other words, we apply the weights on the snapshots and the symplectic projection error is still minimized in the Euclidean norm. This construction is arguably simpler than the construction of \cref{eq:normmor.5}.
+\end{rem}
 
 \subsection{Stability Conservation} It is shown in \cite{doi:10.1137/140978922,doi:10.1137/17M1111991} that a Hamiltonian reduced system constructed by the projection $P^{\text{symp}}_{I,A}$ preserves the stability of stable equilibrium points of \cref{eq:mor.12}, and therefore, preserves the overall dynamics. In this section, we discuss that the stability of equilibrium points is also conserved using the projection operator $P^{\text{symp}}_{X,\tilde A}$.
 

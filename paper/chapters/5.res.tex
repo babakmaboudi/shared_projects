@@ -46,8 +46,8 @@ with Sym$(\nabla v) = (\nabla v + (\nabla v)^T)/2$. The variational form associa
 where
 \begin{equation} \label{eq:res.7}
 \begin{aligned}
-	a(u,v) &= \int_{\Gamma} \sigma : \text{Sym}(\nabla v) \ dx, ~
-	b(v) &= \int_{\partial \Gamma_\tau} \tau \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx.
+	a(u,v) = \int_{\Gamma} \sigma : \text{Sym}(\nabla v) ~ dx, ~
+	b(v) = \int_{\partial \Gamma_\tau} \tau \cdot v ~ ds +  \int_{\Gamma} f \cdot v \ dx.
 \end{aligned}
 \end{equation}
 To obtain the FEM discretization of (\ref{eq:res.6}), we triangulate the domain $\Gamma$ and define vector valued piece-wise linear basis functions $\{\phi_i\}_{i=1}^{N_h}$, referred to as the \emph{hat functions}. We define the FEM space $V_h$, an approximation of $V$, as the span of those basis functions. Projecting (\ref{eq:res.6}) onto $V_h$ yields the discretized weak form
@@ -172,7 +172,7 @@ The sine-Gordon equation arises in differential geometry and quantum physics \ci
 \end{equation}
 Here $\Gamma = [0,l]$ is a line segment and $u,v: \Gamma \to \mathbb R$ are scalar functions. The Hamiltonian associated with (\ref{eq:res.12}) is
 \begin{equation} \label{eq:res.13}
-	H(q,p) = \int_{\Gamma} \frac 1 2 v^2 + \frac 1 2 u_x^2 + 1 - \cos(u) \ dx.
+	H(q,p) = \int_{\Gamma} \frac 1 2 p^2 + \frac 1 2 q_x^2 + 1 - \cos(q) \ dx.
 \end{equation}
 One can verify that $u_{t} = \delta_v H$ and $v_{t} = - \delta_u H$, where $\delta_v,\delta_u$ are standard variational derivatives. The sine-Gordon equation admits the soliton solution
 \begin{equation} \label{eq:res.14}

@@ -1,5 +1,6 @@
 \section{Model order reduction}
 \label{sec:mor}
+Hamiltonian systems are a special case of port-Hamiltonian systems where energy of the system is bounded by the work done on the system instead of being constant. Structure-preserving reduction methods , based on POD and optimal subspaces, and hyper-reduction methods for nonlinear port-Hamiltonian systems are introduced in \cite{chaturantabut2016structure}, where they also derive a priori error bounds. The present work has similar intentions and builds on \cite{doi:10.1137/140978922,doi:10.1137/17M1111991} to hyper-reduce a Hamiltonian system in a weighted norm, which could be more attractive in certain applications.
 
 In this section we summarize the fundamentals of MOR and discuss the conventional approach to MOR with a weighted inner product. We then recall the main results from \cite{doi:10.1137/17M1111991} regarding symplectic MOR. In \cref{sec:normmor} we shall combine the two concepts to introduce the symplectic MOR of Hamiltonian systems with respect to a weighted inner product.
 
@@ -21,11 +22,11 @@ Suppose that $x$ is well approximated by a low dimensional linear subspace with 
 \end{equation}
 where $y \in \mathbb R^k$ are the expansion coefficients of $x$ in the basis $V$. Note that projection of $x$ onto colspan$(V)$ depends on the inner product and the norm defined on (\ref{eq:mor.1}). We define the weighted inner product
 \begin{equation} \label{eq:mor.3}
-	\left\langle x,y \right\rangle_X = x^TXy,\quad \text{for all } x,y \in \mathbb R^m,
+	\left\langle \zeta,\eta \right\rangle_X = \zeta^TX \eta,\quad \text{for all } \zeta,\eta \in \mathbb R^m,
 \end{equation}
 for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$ and refer to $\|\cdot \|_X$ as the $X$-norm associated to this inner product. If we choose $V$ to be an orthonormal basis with respect to the $X$-norm ($V^TXV=I_k$), then the operator
 \begin{equation} \label{eq:mor.4}
-	P_{X,V}(x) = VV^TXx, \quad \text{for all } x\in \mathbb R^{m}
+	P_{X,V}(\zeta) = VV^TX\zeta, \quad \text{for all } \zeta \in \mathbb R^{m}
 \end{equation}
 becomes idempotent, i.e. $P_{X,V}$ is a projection operator onto colspan$(V)$.
 
@@ -61,8 +62,6 @@ If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7
 Besides RB methods, there exist other ways of basis generation e.g. greedy strategies, the Krylov subspace method, balanced truncation, Hankel-norm approximation etc. \cite{antoulas2005approximation}. We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced,Haasdonk2017} for further information regarding the development and the efficiency of reduced order models. 
 
 \subsection{Symplectic MOR} \label{sec:mor.2}
-Hamiltonian systems are a special case of port-Hamiltonian systems where energy of the system is bounded by the work done on the system instead of being constant. Structure-preserving reduction methods , based on POD and optimal subspaces, and hyper-reduction methods for nonlinear port-Hamiltonian systems are introduced in \cite{chaturantabut2016structure}, where they also derive a priori error bounds. The present work has similar intentions and builds on \cite{doi:10.1137/140978922,doi:10.1137/17M1111991} to hyper-reduce a Hamiltonian system minimizing a weighted norm, which could be more attractive in certain applications.
-
 Conventional MOR methods, e.g. those introduced in \cref{sec:mor.1}, do no generally preserve the conservation laws expressed in \cref{thm:1}. As mentioned earlier, this often results in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model order reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic MOR aims to construct a reduced system that conserves the geometric symmetry expressed in \Cref{thm:1} which helps with the stability of the reduced system.
 Consider a Hamiltonian system \cref{eq:hamil.1} with the standard structure matrix
 \begin{equation} \label{eq:mor.8}
