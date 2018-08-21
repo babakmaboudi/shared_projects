@@ -1,11 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.linalg as la
 
 class Mor:
-	def __init__( self ):
+	def __init__( self, weight_flag ):
 		self.snap_Q = np.load("snap_Q.dat")
 		self.snap_P = np.load("snap_P.dat")
-		self.X = np.load("X_mat.dat")
+		
+		if weight_flag == 0:
+			print('weighted symplectic MOR')
+			self.X = np.load("X_mat.dat")
+		else:
+			print('symplectic MOR with weighted snapshots')
+			self.N = self.snap_Q.shape[0]
+			self.X = np.identity(2*self.N)
+			
 #		self.X = np.load("X_mat_eye.dat")
 		self.X = np.matrix(self.X)
 
@@ -66,7 +75,7 @@ class Mor:
 		self.A_plus = np.transpose(self.Jk)*np.transpose(self.A)*self.Jtn
 		self.P = self.A*self.A_plus
 
-	def greedy(self,MAX_ITER):
+	def greedy(self,MAX_ITER, weight_flag):
 		idx = np.random.random_sample(500)
 		idx = idx*self.ns
 		idx = np.floor(idx)
@@ -77,8 +86,13 @@ class Mor:
 		snaps = snaps[:,idx]
 		ns = 500
 
-		snaps = self.X*snaps
-
+		if weight_flag == 0: # 0 == weighted norm, else Euclidean norm
+			print('weighted symplectic MOR')
+			snaps = self.X*snaps
+		else:
+			print('symplectic MOR with weighted snapshots')
+			snaps = la.sqrtm(np.matrix(np.load("X_mat.dat")))*snaps
+			
 		E = np.matrix(snaps[:,1]).reshape([2*self.N,1])
 #		E = E/np.linalg.norm(E)
 #		F = self.Jtn_inv*E

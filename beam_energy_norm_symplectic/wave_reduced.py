@@ -37,7 +37,7 @@ class Wave_Reduced:
 		self.g = self.gamma
 
 		# numerical parameters
-		self.MAX_ITER = 3000
+		self.MAX_ITER = 1000
 		self.dt = 0.01
 
 		#load reduced basis
@@ -111,7 +111,7 @@ class Wave_Reduced:
 		vp0 = np.zeros(self.cp.shape)
 
 		vtkfile = File('results/solution.pvd')
-		f = Function(self.V)
+		self.f = Function(self.V)
 
 		self.snap_Q = np.zeros( self.cp.shape )
 		self.snap_P = np.zeros( self.cp.shape )
@@ -126,13 +126,13 @@ class Wave_Reduced:
 			self.snap_Q = np.concatenate( (self.snap_Q,vq0) , 1 )
 			self.snap_P = np.concatenate( (self.snap_P,vp0) , 1 )
 		
-			f.vector().set_local( vq0 )
+			self.f.vector().set_local( vq0 )
 			if np.mod(i,10) == 0:
-				vtkfile << (f,i*self.dt)
+				vtkfile << (self.f,i*self.dt)
 
 	def mid_point( self ):
 		vtkfile = File('results_reduced/solution.pvd')
-		f = Function(self.V)
+		self.f = Function(self.V)
 
 		K = self.f_termr.shape[0]
 		x0 = np.zeros([K,1])
@@ -159,9 +159,9 @@ class Wave_Reduced:
 
 			print(np.linalg.norm(x0))
 			full = self.Phi*x0
-			f.vector().set_local( full[0:self.N,:] )
+			self.f.vector().set_local( full[0:self.N,:] )
 			if np.mod(i,10) == 0:
-				vtkfile << (f,i*self.dt)
+				vtkfile << (self.f,i*self.dt)
 
 	def generate_X_matrix( self ):
 		q = TrialFunction(self.V)
@@ -204,3 +204,23 @@ class Wave_Reduced:
 		self.snap_Q.dump("snap_Q.dat")
 		self.snap_P.dump("snap_P.dat")
 
+	def energy_wave( self,q_vec,p_vec ):
+		q = Function( self.V )
+		q.vector().set_local( q_vec )
+		p = Function( self.V )
+		p.vector().set_local( p_vec )
+		
+		energy = 0.5*inner(p,p)*dx + 0.5*inner(sigma(q,self.lambda_,self.mu,self.d),epsilon(q))*dx + inner( self.f,q )*dx
+		E = assemble(energy)
+		return E
+	      
+	def compute_energy( self ):
+		print('Computing the System Energy...')
+		E_wave = np.zeros([self.MAX_ITER,1])
+		
+		for i in range(0,self.MAX_ITER):
+			E_wave[i] = self.energy_wave(self.snap_Q[:,i],self.snap_P[:,i])
+		print(E_wave)
+			
+		plt.plot(E_wave)
+		plt.show()
