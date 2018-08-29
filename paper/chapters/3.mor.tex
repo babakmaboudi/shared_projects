@@ -72,7 +72,7 @@ Consider a Hamiltonian system \cref{eq:hamil.1} with the standard structure matr
 \end{aligned}
 \right.
 \end{equation}
-Here $z\in \mathbb R^{2n}$ is the state vector and $f:\mathbb R^{2n}\to\mathbb R$ is sufficiently smooth function. Suppose that the solution to (\ref{eq:mor.8}) is well approximated by a low dimensional symplectic subspace. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis containing the basis vectors $A=[e_1|\dots|e_k|f_1|\dots|f_k]$, such that $z \approx Ay$ with $y \in \mathbb{R}^{2k}$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ := \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
+Here $z\in \mathcal Z$ is the state vector, $\mathcal Z$ is a symplectic linear vector space with the canonical basis $Z =\{ e_i,f_i \}_{i=1}^n$ \cite{Marsden:2010:IMS:1965128}, and $f:\mathbb R^{2n}\to\mathbb R$ is sufficiently smooth function. Suppose that the solution to (\ref{eq:mor.8}) is well approximated by a low dimensional symplectic subspace \cite{Marsden:2010:IMS:1965128}. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis containing the basis vectors $A=[\tilde e_1|\dots|\tilde e_k|\tilde f_1|\dots|\tilde f_k]$, such that $z \approx Ay$ with $y \in \mathbb{R}^{2k}$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ := \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
 \begin{equation} \label{eq:mor.9}
 	\dot y = \mathbb J_{2n} (A^+)^T \nabla_y H(Ay).
 \end{equation}
