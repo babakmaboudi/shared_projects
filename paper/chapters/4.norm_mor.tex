@@ -5,7 +5,7 @@ In this section we combine the concept of model reduction with a weighted inner 
 \subsection{Generalization of the symplectic projection} \label{sec:normmor.1}
 As discussed in \cref{sec:mor.1}, the error analysis of methods for solving partial differential equations often requires the use of a weighted inner product. This is particularly important when dealing with Hamiltonian systems, where the system energy induces a norm that is fundamental to the dynamics of the system.
    
-Consider a Hamiltonian system of the form (\ref{eq:mor.8}) defined on a symplectic linear vector space $\mathcal Z$ together with the weighted inner product defined in (\ref{eq:mor.3}) with $m=2n$. Furthermore, let $Z = \{ e_i,f_i \}_{i=1}^n$ be a canonical basis for $\mathcal Z$. Note that $Z$ is not, in general, orthonormal with respect to $<,>_X$. Now consider the basis, $\tilde Z = \{ X^{-1/2}e_i,X^{-1/2}f_i \}_{i=1}^{n}$. It easily verified that $\tilde Z$ is orthonormal with respect to $<,>_{X}$, and also symplectic with respect to the symplectic form $\Omega_{J_{2n}}(a,b) = a^T J_{2n} b $, with $J_{2n} = X^{1/2} \mathbb J_{2n}X^{1/2}$. In this basis, the Hamiltonian system \eqref{eq:mor.8} takes the form
+Consider a Hamiltonian system of the form (\ref{eq:mor.8}) defined on a symplectic linear vector space $\mathcal Z$ together with the weighted inner product defined in (\ref{eq:mor.3}) with $m=2n$. Furthermore, let $Z = \{ e_i,f_i \}_{i=1}^n$ be a canonical basis for $\mathcal Z$. Note that $Z$ is not, in general, orthonormal with respect to $<,>_X$. To exploit numerical properties of $<,>_X$ we construct the basis $\tilde Z = \{ X^{-1/2}e_i,X^{-1/2}f_i \}_{i=1}^{n}$ for $\mathcal Z$. It easily verified that $\tilde Z$ is orthonormal with respect to $<,>_{X}$, and also symplectic with respect to the symplectic form $\Omega_{J_{2n}}(a,b) = a^T J_{2n} b $, with $J_{2n} = X^{1/2} \mathbb J_{2n}X^{1/2}$. In this basis, the Hamiltonian system \eqref{eq:mor.8} takes the form
 \begin{equation} \label{p1.eq:nommor.0.1}
 	\left\{
 	\begin{aligned}
@@ -14,7 +14,7 @@ Consider a Hamiltonian system of the form (\ref{eq:mor.8}) defined on a symplect
 	\end{aligned}
 	\right.	
 \end{equation}
-where $\tilde z$ is the expansion coefficients of $z$ in the basis of $\tilde Z$, and $J_{2n}^{-1} = X^{-1/2} \mathbb J_{2n}^T X^{-1/2}$. 
+where $\tilde z$ is the expansion coefficients of $z$ in the basis of $\tilde Z$, and $J_{2n}^{-1} = X^{-1/2} \mathbb J_{2n}^T X^{-1/2}$. This is a Hamiltonian system in a non-canonical coordinate system. Therefore, the symplectic MOR cannot directly be applied. 
 
 \begin{definition}
 A matrix $\tilde A\in \mathbb R^{2n\times 2k}$ is called \emph{$J_{2n}$-symplectic}, if it transforms $J_{2n}$ into the standard symplectic matrix $\mathbb J_{2k}$, i.e.,
