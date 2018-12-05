@@ -112,6 +112,8 @@ Let $S$ be the snapshot matrix of the Hamiltonian system \eqref{p1.eq:nommor.0.1
 & & \mathbb J_{2k}^T A^T X \mathbb J_{2n} X A = I_{2k}.
 \end{aligned}
 \end{equation}
+\todo{wrong underset}
+
 Here, the constraint ensures that $P_{X,A}^{\text{symp}}$ is a projection operator, see \eqref{p1.eq:nommor.0.12}. It follows
 \begin{equation} \label{eq:normmor.4}
 \begin{aligned}
@@ -232,6 +234,7 @@ where $P_{X,A}^{\text{symp}}$ is defined in \eqref{p1.eq:nommor.0.11}. Alternati
 {\bf Output:} The reduced basis $A$
 \end{algorithm}
 It is shown in \cite{doi:10.1137/17M1111991} that under natural assumptions on the solution manifold of (\ref{eq:mor.8}), the original greedy method for symplectic basis generation converges exponentially fast. We expect the generalized greedy method, equipped with the error function (\ref{eq:normmor.14}), to converge as fast, since the $X$-norm is topologically equivalent to the standard Euclidean norm \cite{friedman1970foundations}, for a full rank matrix $X$.
+\todo{A unknown to P}
 
 \subsection{Efficient evaluation of nonlinear terms} \label{sec:normmor.3}
 The evaluation of the nonlinear term in \eqref{p1.eq:nommor.0.9} still retains a computational complexity proportional to the size of the full order system (\ref{eq:mor.8}). To overcome this, we take an approach similar to \cref{sec:mor.2}. The DEIM approximation of the nonlinear term in \eqref{p1.eq:nommor.0.11}, with a Hamiltonian of the form $\nabla_z H(z) = L + g(z)$ yields
