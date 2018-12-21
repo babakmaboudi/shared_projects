@@ -47,13 +47,14 @@ $$\partial_z \phi_{t,H}(z)^T \mathbb J_{2n} \partial_z \phi_{t,H}(z) = \mathbb J
 \end{theorem}
 
 Preservation of phase space area or volume is a consequence of both, a Hamiltonian system with the standard symplectic structure and a symplectic transformation. Therefore, it is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation laws expressed in  \Cref{thm:1}. Conventional numerical time integrators, e.g. general Runge-Kutta methods, do not generally preserve the symplectic symmetry of Hamiltonian systems which often result in an unphysical behavior of the solution over long time-integration. The \emph{St\"ormer-Verlet} scheme is an example of a second order symplectic time-integrator given as
+\editA{
 \begin{equation} \label{eq:hamil.6}
 	\begin{aligned}
-	q_{m+1/2} &= q_m + \frac{\Delta t} 2 ~ \nabla_p \tilde H(p_m,q_{m+1/2}), \\
-	p_{m+1} &= p_m - \frac{\Delta t} 2  ~ \left( \nabla_q \tilde H(p_m,q_{m+1/2}) + \nabla_{q} \tilde H(p_{m+1},q_{m+1/2}) \right), \\
-	q_{m+1} &= q_{m+1/2} + \frac{\Delta t} 2  ~  \nabla_p \tilde H(p_{m+1},q_{m+1/2}).
+	q_{m+1/2} &= q_m + \frac{\Delta t} 2 ~ \nabla_p  H(q_{m+1/2},p_m), \\
+	p_{m+1} &= p_m - \frac{\Delta t} 2  ~ \left( \nabla_q  H(q_{m+1/2},p_m) + \nabla_{q}  H(q_{m+1/2},p_{m+1}) \right), \\
+	q_{m+1} &= q_{m+1/2} + \frac{\Delta t} 2  ~  \nabla_p  H(q_{m+1/2},p_{m+1}).
 	\end{aligned}
 \end{equation}
-Here, $\tilde z = (q^T,p^T)^T$, $\tilde H(\tilde z) = H(\mathcal T^{-1}z)$, $\Delta t$ denotes a uniform time step-size, and $q_m \approx q(m\Delta t)$ and $p_m \approx p(m\Delta t)$, $m \in \mathbb{N} \cup \{ 0\}$, are approximate numerical solutions. For \cref{eq:hamil.1} is an example of such integrators.
+Here, $ z = (q^T,p^T)^T$, $ H(z) = H(q,p)$, $\Delta t$} denotes a uniform time step-size, and $q_m \approx q(m\Delta t)$ and $p_m \approx p(m\Delta t)$, $m \in \mathbb{N} \cup \{ 0\}$, are approximate numerical solutions.
 
 Note that \Cref{thm:1} is also valid for a Hamiltonian system in a transformed coordinate system, associated with a skew-symmetric and full rank structure matrix $J_{2n}$. Such Hamiltonian systems also carry symmetries, e.g., the symmetry expressed in \Cref{thm:1} or the preservation of the phase space volume \cite{Hairer:1250576}. However, to ensure a robust and long time-integration, geometric numerical integration of Hamiltonian systems that exploits such symmetries is preferred and better established in a canonical coordinate systems \cite{Hairer:1250576,bhatt2017structure}.  For more on the construction and the applications of symplectic and geometric numerical integrators, we refer the reader to \cite{Hairer:1250576,bhatt2017structure}.
