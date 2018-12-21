@@ -72,7 +72,7 @@ Consider a Hamiltonian system \cref{eq:hamil.1} with the standard structure matr
 \end{aligned}
 \right.
 \end{equation}
-Here $z\in \mathcal Z$ is the state vector, $\mathcal Z$ is a symplectic linear vector space with the canonical basis\todo{define canonical basis} $Z =\{ e_i,f_i \}_{i=1}^n$\todo{unused notation} \cite{Marsden:2010:IMS:1965128}, and $H:\mathbb R^{2n}\to\mathbb R$ is sufficiently smooth function. Suppose that the solution to (\ref{eq:mor.8}) is well approximated by a low dimensional symplectic subspace \cite{Marsden:2010:IMS:1965128}. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis containing the basis vectors $A=[\tilde e_1|\dots|\tilde e_k|\tilde f_1|\dots|\tilde f_k]$\todo{unused notation}, such that $z \approx Ay$ with $y \in \mathbb{R}^{2k}$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ := \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
+Here $z\in \mathcal Z$ is the state vector, $\mathcal Z$ is a symplectic linear vector space with \editA{a canonical basis \todo{define canonical basis}} \cite{Marsden:2010:IMS:1965128}, and $H:\mathbb R^{2n}\to\mathbb R$ is sufficiently smooth function. Suppose that the solution to (\ref{eq:mor.8}) is well approximated by a low dimensional symplectic subspace \cite{Marsden:2010:IMS:1965128}. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis such that $z \approx Ay$ with $y \in \mathbb{R}^{2k}$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ := \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
 \editA{\begin{equation} \label{eq:mor.9}
 	\dot y = A^+ \mathbb J_{2n} (A^+)^T \nabla_y H(Ay).
 \end{equation}}
@@ -80,7 +80,7 @@ We refer the reader to \cite{doi:10.1137/17M1111991} for the details of the deri
 \begin{equation} \label{eq:mor.10}
 	\dot y(t) = \mathbb J_{2k} \nabla_y H(Ay)
 \end{equation}
-with the Hamiltonian $\mathcal H(y) = H(Ay)$\todo{unused notation}.
+with the Hamiltonian $H(Ay)$.
 
 To reduce the complexity of evaluating the nonlinear term in (\ref{eq:mor.10}), we may apply the discrete empirical interpolation method (DEIM) \cite{barrault2004empirical,Chaturantabut:2010cz,wirtz2014posteriori}. Assuming that $\nabla_z H(z)$ lies near a low dimensional subspace with a basis matrix $U\in \mathbb R^{2n\times r}$ the DEIM approximation reads
 \begin{equation} \label{eq:mor.11}
@@ -111,7 +111,7 @@ Here $P^\text{symp}_{I,A} = AA^+$ is the symplectic projection operator with res
 
 Direct approaches to solve (\ref{eq:mor.13}) are often inefficient. Some SVD-type solutions to (\ref{eq:mor.13}) are proposed by \cite{doi:10.1137/140978922}. However, the form of the suggested basis, e.g. the block diagonal form suggested in \cite{doi:10.1137/140978922}, is not compatible with a general weight matrix $X$. 
 
-The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near optimal solution to (\ref{eq:mor.13}) in an iterative process. This method increases the overall accuracy of the basis by adding the best possible basis vectors at each iteration. Suppose that $A_{2k} = [e_1|\dots|e_k|\mathbb J_{2n}^T e_1|\dots|\mathbb J_{2n}^T e_k]$ \todo{I suggest we get rid of the transpose, that will improve readability and simplify the rest of this paragraph without affecting the outcome} is a $\mathbb J_{2n}$-symplectic and orthonormal basis \cite{doi:10.1137/17M1111991}. The first step of the greedy method is to find the snapshot $z_{k+1}$, that is worst approximated by the basis $A_{2k}$:
+The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near optimal solution to (\ref{eq:mor.13}) in an iterative process. This method increases the overall accuracy of the basis by adding the best possible basis vectors at each iteration. Suppose that $A_{2k} = [e_1|\dots|e_k|\mathbb J_{2n}^T e_1|\dots|\mathbb J_{2n}^T e_k]$ \todo{I suggest we get rid of the transpose, that will improve readability and simplify the rest of this paragraph without affecting the outcome. Although this has deep ramifications later on in the paper.} is a $\mathbb J_{2n}$-symplectic and orthonormal basis \cite{doi:10.1137/17M1111991}. The first step of the greedy method is to find the snapshot $z_{k+1}$, that is worst approximated by the basis $A_{2k}$:
 \begin{equation} \label{eq:mor.14}
 	z_{k+1} := \underset{z \in S}{\text{argmax } }\| z - P^\text{symp}_{I,A_{2k}}(z) \|_2.
 \end{equation}
@@ -119,11 +119,11 @@ Note that if $z_{k+1}\neq 0$ then $z_{k+1}$ is not in colspan$(A_{2k})$. Then we
 \begin{equation} \label{eq:mor.14.1}
 	\tilde z = z_{k+1} \editA{+} A_{2k}\alpha, \quad e_{k+1} = \frac{\tilde z}{\|\tilde z \|_2}.
 \end{equation}
-Here, \editA{$\alpha = \{\alpha_i\}_{i=1}^{2k}$} are the expansion coefficients of the projection of $z$ onto colspan$(A_{2k})$ such that $\alpha_i = -\Omega(z_{k+1},\mathbb J_{2n}^Te_i)$\todo{should this be $+\Omega$ ?} for $i\leq k$ and $\alpha_i = \Omega(z_{k+1},e_i)$ for $i>k$. Since $\Omega(e_{k+1},\mathbb{J}_{2n}^T e_{k+1}) = \| e_{k+1} \|_2^2 \neq 0$ the enriched basis $A_{2k+2}$ reads
+Here, \editA{$\alpha = \{\alpha_i\}_{i=1}^{2k}$} are the expansion coefficients of the projection of $z$ onto colspan$(A_{2k})$ such that $\alpha_i = -\Omega(z_{k+1},\mathbb J_{2n}^Te_i)$ for $i\leq k$ and $\alpha_i = \Omega(z_{k+1},e_i)$ for $i>k$. Since $\Omega(e_{k+1},\mathbb{J}_{2n}^T e_{k+1}) = \| e_{k+1} \|_2^2 \neq 0$ the enriched basis $A_{2k+2}$ reads
 \begin{equation} \label{eq:mor.15}
 	A_{2k+2} = [e_1|\dots|e_k|e_{k+1}|\mathbb J_{2n}^Te_1|\dots|\mathbb J_{2n}^Te_{k+1}].	
 \end{equation}
-It is easily verified that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and orthonormal. This enrichment continues until the given tolerance is satisfied. We note that the choice of the orthogonalization routine generally depends on the application. In this paper we use the symplectic \editA{stable} Gram-Schmidt (GS) process as the orthogonalization routine. However the isotropic Arnoldi method \todo{this is the same as symplectic stable Gram-Schmidt} or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are backward stable alternatives.
+It is easily verified that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and orthonormal. This enrichment continues until the given tolerance is satisfied. We note that the choice of the orthogonalization routine generally depends on the application. In this paper we use the symplectic \editA{stable} Gram-Schmidt (GS) process as the orthogonalization routine. However the \todo{this is the same as symplectic stable Gram-Schmidt}{isotropic Arnoldi method} or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are backward stable alternatives.
 
 MOR is specially useful in reducing parametric models that depend on a closed and bounded parameter set $\mathcal{S} \subset \mathbb R^{d}$ characterizing physical properties of the underlying system. The evaluation of the projection error is impractical for such problems. The loss in the Hamiltonian can be used as a cheap surrogate to the projection error. Suppose that a $\mathbb J_{2n}$-symplectic basis $A_{2k}$ is given, then one selects a new parameter $\omega_{k+1} \in \mathcal{S}$ by greedy approach:
 \begin{equation} \label{eq:mor.16}
