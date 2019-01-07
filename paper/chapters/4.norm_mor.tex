@@ -271,29 +271,29 @@ It is shown in \cite{doi:10.1137/17M1111991} that under natural assumptions on t
 \subsection{Efficient evaluation of nonlinear terms} \label{sec:normmor.3}
 The evaluation of the nonlinear term in \eqref{p1.eq:nommor.0.9} still retains a computational complexity proportional to the size of the full order system (\ref{eq:mor.8}). To overcome this, we take an approach similar to \cref{sec:mor.2}. 
 
-\editA{We use a $J_{2n}$-symplectic reduced basis $\tilde A$, such that $y \approx \tilde{A} \bar z$, to construct a reduced Hamiltonian system from \eqref{p1.eq:nommor.0.1} as
+\editA{We use a $J_{2n}$-symplectic reduced basis $\tilde A$, such that $\bar z \approx \tilde{A} y$, to construct a reduced Hamiltonian system from \eqref{p1.eq:nommor.0.1} as
 \begin{equation}
 \begin{aligned}
-	\dot y &= \tilde A^+ J_{2n}^{-1} \nabla_{\bar z} H_X(\tilde A y).
+	\dot y &= \tilde A^+ J_{2n}^{-1} \nabla_{\bar z} H_X(\bar z).
 \end{aligned}
 \end{equation}
-To accelerate the evaluation of the nonlinear term, we apply the DEIM on $\nabla_{\bar z} H_X(\tilde A y)$ to obtain
+To accelerate the evaluation of the nonlinear term, we apply the DEIM on $\nabla_{\bar z} H_X(\bar z)$ to obtain
 \begin{equation} \label{eq:normmor.14.1}
-	\dot y = \tilde A^+ J_{2n}^{-1} U (P^TU)^{-1} P^T \nabla_{\bar z} H_X(\tilde A y).
+	\dot y = \tilde A^+ J_{2n}^{-1} U (P^TU)^{-1} P^T \nabla_{\bar z} H_X(\bar z).
 \end{equation}
-Here $U$ is a basis for the nonlinear snapshots, and $P$ is the interpolating index matrix (see \cite{barrault2004empirical,Chaturantabut:2010cz,wirtz2014posteriori}). For a general choice of $U$, the reduced system \eqref{eq:normmor.14.2} does not maintain a Hamiltonian form. Note that $\nabla_{\bar z} H_X(\tilde A y) = (\tilde A^+)^T \nabla_{ y} H_X(\tilde A y)$. Substituting this into \eqref{eq:normmor.14.1} yields
+Here $U$ is a basis for the nonlinear snapshots, and $P$ is the interpolating index matrix (see \cite{barrault2004empirical,Chaturantabut:2010cz,wirtz2014posteriori}). For a general choice of $U$, the reduced system \eqref{eq:normmor.14.2} does not maintain a Hamiltonian form. Note that $\nabla_{\bar z} H_X(\bar z) = (\tilde A^+)^T \nabla_{ y} H_X(\bar z)$. Substituting this into \eqref{eq:normmor.14.1} yields
 \begin{equation} \label{eq:normmor.14.2}
-	\dot y = \tilde A^+ J_{2n}^{-1} U (P^TU)^{-1} P^T (\tilde A^+)^T \nabla_{ y} H_X(\tilde A y).
+	\dot y = \tilde A^+ J_{2n}^{-1} U (P^TU)^{-1} P^T (\tilde A^+)^T \nabla_{ y} H_X(\bar z).
 \end{equation}
 Freedom in the choice of the basis $U$ allows us to require $U = (\tilde A^+)^T$ which reduces the expression in (\ref{eq:normmor.14.2}) to
 \begin{equation} \label{eq:normmor.14.3}
-	\dot y = -\mathbb J_{2k} \nabla_{ y} H_X(\tilde A y).
+	\dot y = -\mathbb J_{2k} \nabla_{ y} H_X(\bar z).
 \end{equation}
-This is a Hamiltonian function identified by the reduced Hamiltonian $-\nabla_{ y} H_X(\tilde A y)$. The reduced system yields
+This is a Hamiltonian function identified by the reduced Hamiltonian $-H_X(\bar z)$. The reduced system yields
 \begin{equation} \label{eq:normmor.14.4}
 \left\{
 \begin{aligned}
-	\dot y(t) &= - \mathbb J_{2k} ( P^T \mathbb J_{2n}^T \tilde A \mathbb J_{2k}  )^{-1} P^T \nabla_{\bar z} H_X(\tilde A y), \\
+	\dot y(t) &= - \mathbb J_{2k} ( P^T \mathbb J_{2n}^T \tilde A \mathbb J_{2k}  )^{-1} P^T \nabla_{\bar z} H_X(\bar z), \\
 	y(0) &= \mathbb J_{2k}^T A^T X \mathbb J_{2n} z_0.
 \end{aligned}
 \right.
