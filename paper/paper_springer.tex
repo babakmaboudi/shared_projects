@@ -1,0 +1,172 @@
+%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals.          Springer Heidelberg 2010/09/16
+%
+% Copy it to a new file with a new name and use it as the basis
+% for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+
+%
+\RequirePackage{fix-cm}
+
+\makeatletter
+\def\cl@chapter{}
+\makeatother
+
+%
+%\documentclass{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+%\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+\usepackage{graphicx}
+%
+% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+\usepackage{braket,amsfonts}
+
+%% Used in table example below
+\usepackage{array}
+
+%% Used in table and figure examples below
+\usepackage[caption=false]{subfig}
+%% Used for papers with subtables created with the subfig package
+%\captionsetup[subtable]{position=bottom}
+%\captionsetup[table]{position=bottom}
+
+%% Used for PgfPlots example, shown in the "Figures" section below.
+\usepackage{pgfplots}
+
+\usepackage{enumerate}
+
+%% Algorithm style, could alternatively use algpseudocode
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+
+%% For figures
+\usepackage{graphicx,epstopdf}
+
+%% For creating math operators
+\usepackage{amsopn}
+\DeclareMathOperator{\Range}{Range}
+
+% additional useful packages
+\usepackage[disable]{todonotes}
+%\usepackage{showlabels}
+\usepackage{autonum}
+
+\usepackage{cleveref}
+\Crefname{table}{Algorithm}{Algorithms}
+
+\usepackage{caption}
+
+\makeatletter \let\cl@chapter\relax \makeatother
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+\newcommand{\edit}[1]{{\color{red} #1}}
+\newcommand{\editA}[1]{{\color{blue} #1}}
+
+\newcommand\bs{\symbol{'134}} % print backslash in typewriter OT1/T1
+\newcommand{\preamble}[2][\small]{\textcolor{texpreamble}{#1\texttt{#2 \emph{\% <- Preamble}}}}
+
+\spnewtheorem{rem}{Remark}[section]{\bf}{\it}
+%\spnewtheorem{algorithm}{Algorithm}[section]{\bf}{\rm}
+%
+% Insert the name of "your journal" with
+\journalname{Advances in Computational Mathematics}
+%
+
+
+\begin{document}
+
+\title{Symplectic Model-Reduction with a Weighted Inner Product\thanks{Babak Maboudi Afkham is supported by the SNSF under the grant number P1ELP2\_175039. Ashish Bhatt and Bernard Haasdonk gratefully acknowledge the support of DFG grant number HA5821/5-1.}
+}
+
+%\titlerunning{Short form of title}        % if too long for running head
+
+\author{Babak Maboudi Afkham \and
+        Ashish Bhatt \and
+        Bernard Haasdonk \and
+        Jan S. Hesthaven
+}
+
+%\authorrunning{Short form of author list} % if too long for running head
+
+\institute{B.M. Afkham, J.S. Hesthaven \at
+              Institute of Mathematics (MATH), School of Basic Sciences (FSB), \\
+              Ecole Polytechnique F\'ed\'erale de Lausanne, 1015 Lausanne, Switzerland \\
+              \email{[babak.maboudi,jan.hesthaven]@epfl.ch}.
+           \and
+           A. Bhatt \at
+              2nd floor Science Block, \\
+			  IIT (ISM) Dhanbad, \\
+              Dhanbad, India, 826004 \\
+              \email{ashishbhatt@iitism.ac.in}
+           \and
+           B. Haasdonk \at
+              Pfaffenwaldring 57,\\
+              FB Math, University of Stuttgart,\\
+              70569 Stuttgart, Germany \\
+              \email{haasdonk@mathematik.uni-stuttgart.de}
+}
+
+\date{Received: date / Accepted: date}
+% The correct dates will be entered by the editor
+
+
+\maketitle
+
+\begin{abstract}
+In the recent years, considerable attention has been paid to preserving 
+structures and invariants in reduced basis methods, in order to enhance the 
+stability and robustness of the reduced system. In the context of Hamiltonian 
+systems, symplectic model reduction seeks to construct a reduced system that 
+preserves the symplectic symmetry of Hamiltonian systems. However, symplectic 
+methods are based on the standard Euclidean inner products and are not suitable 
+for problems equipped with a more general inner product. In this paper we 
+generalize symplectic model reduction to allow for the norms and inner products 
+that are most appropriate to the problem while preserving the symplectic 
+symmetry of the Hamiltonian systems. To construct a reduced basis and 
+accelerate the evaluation of nonlinear terms, a greedy generation of a 
+symplectic basis is proposed. Furthermore, it is shown that the greedy approach 
+yields a norm bounded reduced basis. The accuracy and the stability of this 
+model reduction technique is illustrated through the development of reduced 
+models for a vibrating elastic beam and the sine-Gordon equation.
+\keywords{Structure Preserving \and Weighted MOR \and Hamiltonian Systems \and Greedy Reduced Basis \and
+Symplectic DEIM}
+% \PACS{PACS code1 \and PACS code2 \and more}
+\subclass{78M34 \and 34C20 \and 35B30 \and 37K05 \and 65P10 \and 37J25}
+\end{abstract}
+
+\input{./chapters/1.intro.tex}
+\input{./chapters/2.hamil.tex}
+\input{./chapters/3.mor.tex}
+\input{./chapters/4.norm_mor.tex}
+\input{./chapters/5.res.tex}
+\input{./chapters/6.conc.tex}
+
+%\begin{acknowledgements}
+%If you'd like to thank anyone, place your comments here
+%and remove the percent signs.
+%\end{acknowledgements}
+
+% BibTeX users please use one of
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+\bibliographystyle{spmpsci}      % mathematics and physical sciences
+%\bibliographystyle{spphys}       % APS-like style for physics
+\bibliography{references}   % name your BibTeX data base
+
+\end{document}
+% end of file template.tex
+

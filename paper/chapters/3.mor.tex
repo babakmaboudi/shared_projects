@@ -6,57 +6,57 @@ In this section we summarize the fundamentals of MOR and discuss the conventiona
 
 \subsection{Model-reduction with a weighted inner product} \label{sec:mor.1}
 Consider a dynamical system of the form
-\begin{equation} \label{eq:mor.1}
+\begin{eqnarray} \label{eq:mor.1}
 \left\{
 \begin{aligned}
 	\dot x(t) &= f(t,x), \\
 	x(0) &= x_0.
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 where $x\in \mathbb R^{m}$ and $f:\mathbb R \times \mathbb R^{m} \to \mathbb R^{m}$ is some continuous function. In this paper we assume that the time $t$ is the only parameter on which the solution vector $x$ depends. Nevertheless, it is straightforward to generalize the findings of this paper to the case of parametric MOR, where $x$ depends on a larger set of parameters that belong to a closed and bounded subset.
 
 Suppose that $x$ is well approximated by a low dimensional linear subspace with the basis matrix $V=[v_1|\dots|v_k]\in \mathbb R^{m\times k}$, $v_i\in \mathbb R^{m}$ for $i=1,\dots,k$. The approximate solution to (\ref{eq:mor.1}) in this basis reads
-\begin{equation} \label{eq:mor.2}
+\begin{eqnarray} \label{eq:mor.2}
 	x \approx Vy,
-\end{equation}
+\end{eqnarray}
 where $y \in \mathbb R^k$ are the expansion coefficients of $x$ in the basis $V$. Note that projection of $x$ onto colspan$(V)$ depends on the inner product and the norm defined on (\ref{eq:mor.1}). We define the weighted inner product
-\begin{equation} \label{eq:mor.3}
+\begin{eqnarray} \label{eq:mor.3}
 	\left\langle \zeta,\eta \right\rangle_X = \zeta^TX \eta,\quad \text{for all } \zeta,\eta \in \mathbb R^m,
-\end{equation}
+\end{eqnarray}
 for some symmetric and positive-definite matrix $X\in \mathbb{R}^{m\times m}$ and refer to $\|\cdot \|_X$ as the $X$-norm associated to this inner product. If we choose $V$ to be an orthonormal basis with respect to the $X$-norm ($V^TXV=I_k$), then the operator
-\begin{equation} \label{eq:mor.4}
+\begin{eqnarray} \label{eq:mor.4}
 	P_{X,V}(\zeta) = VV^TX\zeta, \quad \text{for all } \zeta \in \mathbb R^{m}
-\end{equation}
+\end{eqnarray}
 becomes idempotent, i.e. $P_{X,V}$ is a projection operator onto colspan$(V)$.
 
 Now suppose that the \emph{snapshot matrix} $S=[x(t_1)|x(t_2)|\ldots|x(t_N)]$ is a collection of $N$ solutions to (\ref{eq:mor.1}) at time instances $t_1,\dots,t_N$. We seek a $V$ which minimizes the collective projection error of the samples onto colspan$(V)$. This corresponds to the minimization problem
-\begin{equation} \label{eq:mor.5}
+\begin{eqnarray} \label{eq:mor.5}
 \begin{aligned}
 & \underset{V\in \mathbb{R}^{m\times k}}{\text{minimize}}
 & & \sum_{i=1}^N \| x(t_i) - P_{X,V}( x(t_i) ) \|_X^2, \\
 & \text{subject to}
 & & V^TXV = I_k.
 \end{aligned}
-\end{equation}
+\end{eqnarray}
 Note that the solution to (\ref{eq:mor.5}) is known as the proper orthogonal decomposition (POD) \cite{hesthaven2015certified,quarteroni2015reduced,gubisch2017proper}. Following \cite{quarteroni2015reduced} the above minimization is equivalent to
-\begin{equation} \label{eq:mor.6}
+\begin{eqnarray} \label{eq:mor.6}
 \begin{aligned}
 & \underset{\tilde V\in \mathbb{R}^{m\times k}}{\text{minimize}}
 & & \| \tilde S - \tilde V \tilde V^T \tilde S \|_F^2, \\
 & \text{subject to}
 & & \tilde V^T\tilde V = I_k.
 \end{aligned}
-\end{equation}
+\end{eqnarray}
 where $\tilde V = X^{1/2} V$, $\tilde S = X^{1/2} S$, and $X^{1/2}$ is the matrix square root of $X$. According to the Schmidt-Mirsky-Eckart-Young theorem \cite{Markovsky:2011:LRA:2103589} the solution $\tilde V$ to the minimization (\ref{eq:mor.6}) is the truncated singular value decomposition (SVD) of $\tilde S$. The basis $V$ then is $V = X^{-1/2}\tilde V$. The reduced model of (\ref{eq:mor.1}), using the basis $V$ and the projection $P_{X,V}$, is
-\begin{equation} \label{eq:mor.7}
+\begin{eqnarray} \label{eq:mor.7}
 	\left\{
 	\begin{aligned}
 	\dot y(t) &= V^TX f(t,Vy), \\
 	y(0) &= V^TX x_0.
 	\end{aligned}
 	\right.
-\end{equation}
+\end{eqnarray}
 If $k$ can be chosen such that $k \ll m$, then the reduced system (\ref{eq:mor.7}) can potentially be evaluated significantly faster than the full order system (\ref{eq:mor.1}). Finding the matrix square root of $X$ can often be computationally exhaustive. In such cases, explicit use of $X^{1/2}$ can be avoided by finding the eigen-decomposition of the \emph{Gramian} matrix $G = S^TXS$ \cite{quarteroni2015reduced,Haasdonk2017}.
 
 Besides RB methods, there exist other ways of basis generation e.g. greedy strategies, the Krylov subspace method, balanced truncation, Hankel-norm approximation etc. \cite{antoulas2005approximation}. We refer the reader to \cite{hesthaven2015certified,quarteroni2015reduced,Haasdonk2017} for further information regarding the development and the efficiency of reduced order models. 
@@ -64,98 +64,99 @@ Besides RB methods, there exist other ways of basis generation e.g. greedy strat
 \subsection{Symplectic MOR} \label{sec:mor.2}
 Conventional MOR methods, e.g. those introduced in \cref{sec:mor.1}, do no generally preserve the conservation laws expressed in \cref{thm:1}. As mentioned earlier, this often results in the lack of robustness in the reduced system over long time-integration. In this section we summarize the main findings of \cite{doi:10.1137/17M1111991} regarding symplectic model order reduction of Hamiltonian systems with respect to the standard Euclidean inner product. Symplectic MOR aims to construct a reduced system that conserves the geometric symmetry expressed in \Cref{thm:1} which helps with the stability of the reduced system.
 Consider a Hamiltonian system \cref{eq:hamil.1} with the standard structure matrix
-\begin{equation} \label{eq:mor.8}
+\begin{eqnarray} \label{eq:mor.8}
 \left\{
 \begin{aligned}
 	\dot z(t) &= \mathbb J_{2n} \nabla_z H(z), \\
 	z(0) &= z_0.
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 Here $z\in \mathcal Z$ is the state vector, $\mathcal Z$ is a symplectic linear vector space with \editA{a canonical basis} \cite{Marsden:2010:IMS:1965128}, and $H:\mathbb R^{2n}\to\mathbb R$ is sufficiently smooth function. Suppose that the solution to (\ref{eq:mor.8}) is well approximated by a low dimensional symplectic subspace \cite{Marsden:2010:IMS:1965128}. Let $A\in \mathbb{R}^{2n\times 2k}$ be a $\mathbb{J}_{2n}$-symplectic basis such that $z \approx Ay$ with $y \in \mathbb{R}^{2k}$ the expansion coefficients of $z$ in this basis. Using the symplectic inverse $A^+ := \mathbb J_{2k}^T A^T \mathbb J_{2n}$ we can construct the reduced system
-\editA{\begin{equation} \label{eq:mor.9}
+\editA{\begin{eqnarray} \label{eq:mor.9}
 	\dot y = A^+ \mathbb J_{2n} (A^+)^T \nabla_y H(Ay).
-\end{equation}}
+\end{eqnarray}}
 We refer the reader to \cite{doi:10.1137/17M1111991} for the details of the derivation. It is shown in \cite{doi:10.1137/140978922} that $(A^+)^T$ is also $\mathbb J_{2n}$-symplectic, therefore $A^+ \mathbb J_{2n} (A^+)^T = \mathbb J_{2k}$ and (\ref{eq:mor.9}) reduces to the Hamiltonian system
-\begin{equation} \label{eq:mor.10}
+\begin{eqnarray} \label{eq:mor.10}
 	\dot y(t) = \mathbb J_{2k} \nabla_y H(Ay)
-\end{equation}
+\end{eqnarray}
 with the Hamiltonian $H(Ay)$.
 
 To reduce the complexity of evaluating the nonlinear term in (\ref{eq:mor.10}), we may apply the discrete empirical interpolation method (DEIM) \cite{barrault2004empirical,Chaturantabut:2010cz,wirtz2014posteriori}. Assuming that $\nabla_z H(z)$ lies near a low dimensional subspace with a basis matrix $U\in \mathbb R^{2n\times r}$ the DEIM approximation reads
-\begin{equation} \label{eq:mor.11}
+\begin{eqnarray} \label{eq:mor.11}
 	\editA{\nabla_z H(z)} \approx U (\mathcal P^T U)^{-1} \mathcal P^T \nabla_z H(z).
-\end{equation}
+\end{eqnarray}
 Here $\mathcal P \in \mathbb R^{2n\times r}$ is the interpolating index matrix \cite{Chaturantabut:2010cz}. For a general choice of $U$ the approximation in (\ref{eq:mor.11}) destroys the Hamiltonian structure, if inserted in (\ref{eq:mor.8}). It is shown in \cite{doi:10.1137/17M1111991} that by taking $U = (A^+)^T$ we can recover the Hamiltonian structure in (\ref{eq:mor.10}). Therefore, the reduced system to (\ref{eq:mor.8}) becomes
-\begin{equation} \label{eq:mor.12}
+\begin{eqnarray} \label{eq:mor.12}
 \left\{
 \begin{aligned}
 	\dot y(t) &= \mathbb J_{2k} (A^+)^T(\mathcal P^T (A^+)^T)^{-1} \mathcal P^T (A^+)^T \nabla_y H(Ay), \\
 	y(0) &= A^+ z_0.
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 Note that the Hamiltonian formulation of (\ref{eq:mor.12}) allows us to integrate it using a symplectic integrator. This conserves the symmetry expressed in \Cref{thm:1} at the level of the reduced system. It is also shown in \cite{doi:10.1137/17M1111991,doi:10.1137/140978922} that the stability of the critical points of (\ref{eq:mor.8}) is preserved in the reduced system and the difference of the Hamiltonians of the two system \cref{eq:mor.8,eq:mor.12} is constant. Therefore, the overall behavior (\ref{eq:mor.12}) is close to the full order Hamiltonian system (\ref{eq:mor.8}). In the next subsection we discuss methods for generating a $\mathbb J_{2n}$-symplectic basis $A$.
 
 \subsection{Greedy generation of a $\mathbb J_{2n}$-symplectic basis} \label{sec:mor.3}
 Suppose that $S \in \mathbb R^{2n\times N}$ is the snapshot matrix containing the time instances $\{z(t_i)\}_{i=1}^N$ of the solution to (\ref{eq:mor.8}). We seek the $\mathbb J_{2n}$-symplectic basis $A$ such that the collective symplectic projection error of samples in $S$ onto colspan$(A)$ is minimized.
-\begin{equation} \label{eq:mor.13}
+\begin{eqnarray} \label{eq:mor.13}
 \begin{aligned}
 & \underset{A\in \mathbb{R}^{2n\times 2k}}{\text{minimize}}
 & & \| S - P^\text{symp}_{I,A}(S) \|_F^2, \\
 & \text{subject to}
 & & A^T\mathbb J_{2n}A = \mathbb J_{2k}.
 \end{aligned}
-\end{equation}
+\end{eqnarray}
 Here $P^\text{symp}_{I,A} = AA^+$ is the symplectic projection operator with respect to the standard Euclidean inner product onto colspan$(A)$. Note that $P^\text{symp}_{I,A} \circ P^\text{symp}_{I,A} = P^\text{symp}_{I,A}$ \cite{doi:10.1137/140978922,doi:10.1137/17M1111991}.
 
 Direct approaches to solve (\ref{eq:mor.13}) are often inefficient. Some SVD-type solutions to (\ref{eq:mor.13}) are proposed by \cite{doi:10.1137/140978922}. However, the form of the suggested basis, e.g. the block diagonal form suggested in \cite{doi:10.1137/140978922}, is not compatible with a general weight matrix $X$. 
 
 The greedy generation of a $\mathbb J_{2n}$-symplectic basis aims to find a near optimal solution to (\ref{eq:mor.13}) in an iterative process. This method increases the overall accuracy of the basis by adding the best possible basis vectors at each iteration. Suppose that $A_{2k} = [e_1|\dots|e_k|\mathbb J_{2n}^T e_1|\dots|\mathbb J_{2n}^T e_k]$ \todo{I suggest we get rid of the transpose, that will improve readability and simplify the rest of this paragraph without affecting the outcome. Although this has deep ramifications later on in the paper, this choice is more compatible with the symplectic form $\Omega$ and cures many peculiarities that afflict this write-up. RES: My suggestion is to keep it for the next iteration} is a $\mathbb J_{2n}$-symplectic and orthonormal basis \cite{doi:10.1137/17M1111991}. The first step of the greedy method is to find the snapshot $z_{k+1}$, that is worst approximated by the basis $A_{2k}$:
-\begin{equation} \label{eq:mor.14}
+\begin{eqnarray} \label{eq:mor.14}
 	z_{k+1} := \underset{z \in S}{\text{argmax } }\| z - P^\text{symp}_{I,A_{2k}}(z) \|_2.
-\end{equation}
+\end{eqnarray}
 Note that if $z_{k+1}\neq 0$ then $z_{k+1}$ is not in colspan$(A_{2k})$. Then we obtain a non-trivial vector $e_{k+1}$ by $\mathbb J_{2n}$-orthogonalizing $z_{k+1}$ with respect to $A_{2k}$:
-\begin{equation} \label{eq:mor.14.1}
+\begin{eqnarray} \label{eq:mor.14.1}
 	\tilde z = z_{k+1} \editA{+} A_{2k}\alpha, \quad e_{k+1} = \frac{\tilde z}{\|\tilde z \|_2}.
-\end{equation}
+\end{eqnarray}
 Here, \editA{$\alpha = \{\alpha_i\}_{i=1}^{2k}$} are the expansion coefficients of the projection of $z$ onto colspan$(A_{2k})$ such that $\alpha_i = -\Omega(z_{k+1},\mathbb J_{2n}^Te_i)$ for $i\leq k$ and $\alpha_i = \Omega(z_{k+1},e_i)$ for $i>k$. Since $\Omega(e_{k+1},\mathbb{J}_{2n}^T e_{k+1}) = \| e_{k+1} \|_2^2 \neq 0$ the enriched basis $A_{2k+2}$ reads
-\begin{equation} \label{eq:mor.15}
+\begin{eqnarray} \label{eq:mor.15}
 	A_{2k+2} = [e_1|\dots|e_k|e_{k+1}|\mathbb J_{2n}^Te_1|\dots|\mathbb J_{2n}^Te_{k+1}].	
-\end{equation}
+\end{eqnarray}
 It is easily verified that $A_{2k+2}$ is $\mathbb J_{2n}$-symplectic and orthonormal. This enrichment continues until the given tolerance is satisfied. We note that the choice of the orthogonalization routine generally depends on the application. In this paper we use the symplectic \editA{stable} Gram-Schmidt (GS) process as the orthogonalization routine. However the \todo{this is the same as symplectic stable Gram-Schmidt}{isotropic Arnoldi method. RES: Please fix it since you know better the literature} or the isotropic Lanczos method \cite{doi:10.1137/S1064827500366434} are backward stable alternatives.
 
 MOR is specially useful in reducing parametric models that depend on a closed and bounded parameter set $\mathcal{S} \subset \mathbb R^{d}$ characterizing physical properties of the underlying system. The evaluation of the projection error is impractical for such problems. The loss in the Hamiltonian can be used as a cheap surrogate to the projection error. Suppose that a $\mathbb J_{2n}$-symplectic basis $A_{2k}$ is given, then one selects a new parameter $\omega_{k+1} \in \mathcal{S}$ by greedy approach:
-\begin{equation} \label{eq:mor.16}
+\begin{eqnarray} \label{eq:mor.16}
 	\omega_{k+1} = \underset{\omega \in \mathcal{S}}{\text{argmax } } | H(z(\omega)) - H(P^\text{symp}_{I,A}(z(\omega))) |,
-\end{equation}
+\end{eqnarray}
 and then enriches the basis $A_{2k}$ as discussed above. It is shown in \cite{doi:10.1137/17M1111991} that the loss in the Hamiltonian is constant in time. Therefore, $\omega_{k+1}$ can be identified in the \emph{offline phase} before simulating the reduced order model. Note that the relation between the projection error \cref{eq:mor.14} and the error in the Hamiltonian \cref{eq:mor.16} is still unknown.
 
 We summarize the greedy algorithm for generating a $\mathbb J_{2n}$-symplectic basis in \Cref{alg:1}. The first loop constructs a $\mathbb J_{2n}$-symplectic basis for the Hamiltonian system (\ref{eq:mor.8}), and the second loop adds the nonlinear snapshots to the symplectic inverse of the basis. We refer the reader to \cite{doi:10.1137/17M1111991} for more details. In \cref{sec:normmor} we will show how this algorithm can be generalized to support any weighted inner product.
 
-\begin{algorithm} 
-\caption{The greedy algorithm for generation of a $\mathbb J_{2n}$-symplectic basis} \label{alg:1}
-{\bf Input:} Projection error tolerance $\delta$, initial condition $ z_0$, snapshots $\mathcal Z = \{ z(t_i) \}_{i=1}^{N}$ and $\mathcal G = \{ \nabla_z H(z(t_i)) \}_{i=1}^{N}$
-\begin{enumerate}
-%\item $t^1 \leftarrow t=0$
-\item $e_1 \leftarrow \frac{z_0}{\|z_0\|_2}$
-\item $A \leftarrow [e_1|\mathbb J^T_{2n}e_1]$
-\item $k \leftarrow 1$
-\item \textbf{while} $\| z - P^\text{symp}_{I,A}( z ) \|_2 > \delta$ for any $z\in \mathcal Z$
-\item \hspace{0.5cm} $z_{k+1} := \underset{z\in \mathcal Z}{\text{argmax }} \| z - P^\text{symp}_{I,A}( z ) \|_2$
-\item \hspace{0.5cm} $\mathbb J_{2n}$-orthogonalize $ z_{k+1}$ to obtain $e_{k+1}$
-\item \hspace{0.5cm} $A \leftarrow [e_1|\dots |e_{k+1} | \mathbb J^T_{2n}e_1|\dots,\mathbb J^T_{2n}e_{k+1}]$
-\item \hspace{0.5cm} $k \leftarrow k+1$
-\item \textbf{end while}
-\item compute $(A^+)^T=[e'_1|\dots|e'_k|\mathbb J^T_{2n}e'_1|\dots|\mathbb J^T_{2n}e'_k]$
-\item \textbf{while} $\| g - P^\text{symp}_{I,(A^+)^T}(g) \|_2 > \delta$ for all $g \in \mathcal G$
-\item \hspace{0.5cm} $g_{k+1} := \underset{g \in \mathcal G}{\text{argmax }} \| g - P^\text{symp}_{I,(A^+)^T}(g) \|_2$
-\item \hspace{0.5cm} $\mathbb J_{2n}$-orthogonalize $g_{k+1}$ to obtain $e'_{k+1}$
-\item \hspace{0.5cm} $(A^+)^T \leftarrow [e'_1|\dots |e'_{k+1} | \mathbb J^T_{2n}e'_1|\dots|\mathbb J^T_{2n}e'_{k+1}]$
-\item \hspace{0.5cm} $k \leftarrow k+1$
-\item \textbf{end while}
-\item $A \leftarrow \left( \left( \left( A^+\right) ^T \right ) ^+ \right)^T$
-\end{enumerate}
-\vspace{0.5cm}
-{\bf Output:} $\mathbb J_{2n}$-symplectic basis $A$.
-\end{algorithm}
+\begin{table}
+\captionsetup{name=Algorithm,type=table}
+\caption{The greedy algorithm for generation of a $\mathbb J_{2n}$-symplectic basis} 
+\begin{tabular}{l l}
+\multicolumn{2}{l}{{\bf Input:} Projection error tolerance $\delta$, initial condition $ z_0$,}\\
+\multicolumn{2}{l}{snapshots $\mathcal Z = \{ z(t_i) \}_{i=1}^{N}$, and $\mathcal G = \{ \nabla_z H(z(t_i)) \}_{i=1}^{N}$} \\
+1 & $e_1 \leftarrow \frac{z_0}{\|z_0\|_2}$ \\
+2 & $A \leftarrow [e_1|\mathbb J^T_{2n}e_1]$
+\\ 3 & $k \leftarrow 1$
+\\ 4 & \textbf{while} $\| z - P^\text{symp}_{I,A}( z ) \|_2 > \delta$ for any $z\in \mathcal Z$
+\\ 5 & \hspace{0.5cm} $z_{k+1} := \underset{z\in \mathcal Z}{\text{argmax }} \| z - P^\text{symp}_{I,A}( z ) \|_2$
+\\ 6 & \hspace{0.5cm} $\mathbb J_{2n}$-orthogonalize $ z_{k+1}$ to obtain $e_{k+1}$
+\\ 7 & \hspace{0.5cm} $A \leftarrow [e_1|\dots |e_{k+1} | \mathbb J^T_{2n}e_1|\dots,\mathbb J^T_{2n}e_{k+1}]$
+\\ 8 & \hspace{0.5cm} $k \leftarrow k+1$
+\\ 9 & \textbf{end while}
+\\ 10 & compute $(A^+)^T=[e'_1|\dots|e'_k|\mathbb J^T_{2n}e'_1|\dots|\mathbb J^T_{2n}e'_k]$
+\\ 11 & \textbf{while} $\| g - P^\text{symp}_{I,(A^+)^T}(g) \|_2 > \delta$ for all $g \in \mathcal G$
+\\ 12 & \hspace{0.5cm} $g_{k+1} := \underset{g \in \mathcal G}{\text{argmax }} \| g - P^\text{symp}_{I,(A^+)^T}(g) \|_2$
+\\ 13 & \hspace{0.5cm} $\mathbb J_{2n}$-orthogonalize $g_{k+1}$ to obtain $e'_{k+1}$
+\\ 14 & \hspace{0.5cm} $(A^+)^T \leftarrow [e'_1|\dots |e'_{k+1} | \mathbb J^T_{2n}e'_1|\dots|\mathbb J^T_{2n}e'_{k+1}]$
+\\ 15 & \hspace{0.5cm} $k \leftarrow k+1$
+\\ 16 & \textbf{end while}
+\\ 17 & $A \leftarrow \left( \left( \left( A^+\right) ^T \right ) ^+ \right)^T$
+\\ \multicolumn{2}{l}{{\bf Output:} $\mathbb J_{2n}$-symplectic basis $A$.}
+\end{tabular}
+\label{alg:1}
+\end{table}

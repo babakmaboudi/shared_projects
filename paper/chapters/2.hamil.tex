@@ -2,45 +2,45 @@
 \label{sec:hamil}
 
 Let $(\mathcal Z, \Omega)$ be a symplectic linear vector space \cite{Marsden:2010:IMS:1965128}, with $\mathcal Z \subset \mathbb R^{2n}$ the configuration space and $\Omega:\mathbb R^{2n}\times\mathbb R^{2n} \to \mathbb R$ a closed, skew-symmetric and non-degenerate 2-form on $\mathcal Z$. \edit{We call $\{e_i,f_i\}_{i=1}^{n}$ a \emph{canonical basis} for $\mathcal{Z}$ if $\{e_i,f_i\}_{i=1}^{n}$ forms a basis for $\mathcal Z$ and
-\begin{equation}
+\begin{eqnarray}
 	\Omega(e_i,e_j) = \Omega(e_i,e_j) = 0,\quad \text{and} \quad \Omega(e_i,f_j) = \delta_{i,j},\quad 1\leq i,j \leq n,
-\end{equation}
+\end{eqnarray}
 where $\delta_{i,j}$ is the Kronecker delta function.} Given a smooth function $H:\mathbb R^{2n} \to \mathbb R$, the so called \emph{Hamiltonian}, the \emph{Hamiltonian system} of evolution reads
-\begin{equation} \label{eq:hamil.1}
+\begin{eqnarray}\label{eq:hamil.1}
 \left\{
 \begin{aligned}
 	& \dot z = \mathbb J_{2n} \nabla_z H(z),  \\
 	&  z(0) = z_0.
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 Here $z\in \mathcal Z$ \edit{is the state vector} and $\mathbb J_{2n}$ is the \emph{symplectic} or \emph{canonical} matrix
-\begin{equation} \label{eq:hamil.2}
+\begin{eqnarray} \label{eq:hamil.2}
 	\mathbb{J}_{2n} = 
 	\begin{pmatrix}
 	0_n & I_n \\
 	-I_n & 0_n
 	\end{pmatrix},
-\end{equation}
+\end{eqnarray}
 such that $\Omega(x,y) = x^T\mathbb J_{2n}y$, for all state vectors $x,y\in \mathbb R^{2n}$ \cite{Marsden:2010:IMS:1965128}. Here $0_n$ and $I_n$ are the zero matrix and the identity matrix of size $n\times n$, respectively.
 
 A general coordinate transformation does not in general preserve canonical properties of a Hamiltonian system (\ref{eq:hamil.1}). Indeed only transformations which preserve the symplectic form, \emph{symplectic transformations}, preserve the form of a Hamiltonian system \cite{Hairer:1250576}.
 
 Suppose that $(\mathcal Z,\Omega)$ and $(\mathcal Y,\Lambda)$, with $\mathcal Z \subset \mathbb R^{2n}$ and $\mathcal Y \subset \mathbb R^{2n}$, are two symplectic linear vector spaces with a canonical basis. A transformation $\mu:\mathcal Z\to\mathcal Y$ is symplectic if
-\begin{equation} \label{eq:hamil.3}
+\begin{eqnarray} \label{eq:hamil.3}
 	\Omega(x,y) = \Lambda(\mu_z(z)x,\mu_z(z)y), \quad \text{for all } x,y\in\mathcal Z,
-\end{equation}
+\end{eqnarray}
 where subscript $z$ denotes the gradient. Therefore symplectic 2-forms of a pair of vectors and their images under a symplectic transformation are equal. It is straightforward to see that a linear transformation $\mu(x) = Ax$, with $A\in \mathbb R^{2n\times 2k}$ and $\Omega = \Lambda$, is symplectic if
-\begin{equation} \label{eq:hamil.4}
+\begin{eqnarray} \label{eq:hamil.4}
 	A^T \mathbb J_{2n} A = \mathbb J_{2k}.
-\end{equation}
+\end{eqnarray}
 
 %We are interested in a class of symplectic transformations that transform a symplectic structure $J_{2n}$ into the standard symplectic structure $\mathbb J_{2k}$.
 %\begin{definition} \label{def:symp-mat}
 %Let $J_{2n}\in \mathbb R^{2n\times 2n}$ be a full-rank skew-symmetric structure matrix. A matrix $A\in\mathbb R^{2n\times 2k}$ is $J_{2n}$-symplectic if
-%\begin{equation} \label{eq:hamil.5}
+%\begin{eqnarray} \label{eq:hamil.5}
 %A^T J_{2n} A = \mathbb{J}_{2k}.
-%\end{equation}
+%\end{eqnarray}
 %\end{definition}
 %Note that in the literature \cite{Marsden:2010:IMS:1965128,Hairer:1250576}, symplectic transformations refer to $\mathbb{J}_{2n}$-symplectic matrices, in contrast to \Cref{def:symp-mat}.
 
@@ -52,13 +52,13 @@ $$\partial_z \phi_{t,H}(z)^T \mathbb J_{2n} \partial_z \phi_{t,H}(z) = \mathbb J
 
 Preservation of phase space area or volume is a consequence of both, a Hamiltonian system with the standard symplectic structure and a symplectic transformation. Therefore, it is natural to expect a numerical integrator that solves (\ref{eq:hamil.1}) to also satisfy the conservation laws expressed in  \Cref{thm:1}. Conventional numerical time integrators, e.g. general Runge-Kutta methods, do not generally preserve the symplectic symmetry of Hamiltonian systems which often result in an unphysical behavior of the solution over long time-integration. The \emph{St\"ormer-Verlet} scheme is an example of a second order symplectic time-integrator given as
 \editA{
-\begin{equation} \label{eq:hamil.6}
+\begin{eqnarray} \label{eq:hamil.6}
 	\begin{aligned}
 	q_{m+1/2} &= q_m + \frac{\Delta t} 2 ~ \nabla_p  H(q_{m+1/2},p_m), \\
 	p_{m+1} &= p_m - \frac{\Delta t} 2  ~ \left( \nabla_q  H(q_{m+1/2},p_m) + \nabla_{q}  H(q_{m+1/2},p_{m+1}) \right), \\
 	q_{m+1} &= q_{m+1/2} + \frac{\Delta t} 2  ~  \nabla_p  H(q_{m+1/2},p_{m+1}).
 	\end{aligned}
-\end{equation}
+\end{eqnarray}
 Here, $ z = (q^T,p^T)^T$, $ H(z) = H(q,p)$, $\Delta t$} denotes a uniform time step-size, and $q_m \approx q(m\Delta t)$ and $p_m \approx p(m\Delta t)$, $m \in \mathbb{N} \cup \{ 0\}$, are approximate numerical solutions.
 
 Note that \Cref{thm:1} is also valid for a Hamiltonian system in a transformed coordinate system, associated with a skew-symmetric and full rank structure matrix $J_{2n}$. Such Hamiltonian systems also carry symmetries, e.g., the symmetry expressed in \Cref{thm:1} or the preservation of the phase space volume \cite{Hairer:1250576}. However, to ensure a robust and long time-integration, geometric numerical integration of Hamiltonian systems that exploits such symmetries is preferred and better established in a canonical coordinate systems \cite{Hairer:1250576,bhatt2017structure}.  For more on the construction and the applications of symplectic and geometric numerical integrators, we refer the reader to \cite{Hairer:1250576,bhatt2017structure}.

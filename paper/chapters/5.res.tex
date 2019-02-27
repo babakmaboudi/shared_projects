@@ -3,7 +3,7 @@ Let us now discuss the performance of the symplectic model reduction with a weig
 
 \subsection{The elastic beam equation} \label{sec:res.1}
 Consider the equations governing small deformations of a clamped elastic body $\Gamma\subset \mathbb R^{3}$ as 
-\begin{equation} \label{eq:res.1}
+\begin{eqnarray} \label{eq:res.1}
 \left\{
 \begin{aligned}
 	u_{tt}(t,x) &= \nabla \cdot \sigma + f, \quad & x\in \Gamma, \\
@@ -12,11 +12,11 @@ Consider the equations governing small deformations of a clamped elastic body $\
 	u(t,x) &= \vec 0, & x \in\partial \Gamma \backslash \partial \Gamma_\tau,
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 and
-\begin{equation}  \label{eq:res.2}
+\begin{eqnarray}  \label{eq:res.2}
 	\sigma = \lambda (\nabla \cdot u) I + \mu(\nabla u + (\nabla u)^T).
-\end{equation}
+\end{eqnarray}
 Here $u:\Gamma \to \mathbb{R}^3$ is the unknown displacement vector field, subscript $t$ denotes derivative with respect to time, $\sigma:\Gamma \to \mathbb{R}^{3\times 3}$ is the stress tensor, $f$ is the body force per unit volume, $\lambda$ and $\mu$ are Lam\'e's elasticity parameters for the material in $\Gamma$, $I$ is the identity tensor, $n$ is the outward unit normal vector at the boundary and $\tau:\partial \Gamma_\tau \to \mathbb R^3$ is the traction at a subset of the boundary $\partial \Gamma_\tau$ \cite{langtangen2017solving}. We refer to \Cref{fig:0}(a) for a snapshot of the elastic beam.
 
 \begin{figure}[t] \label{fig:0}
@@ -28,42 +28,42 @@ Here $u:\Gamma \to \mathbb{R}^3$ is the unknown displacement vector field, subsc
 \end{figure}
 
 We define a vector valued function space as $V = \{ u \in (L^2(\Gamma))^3 : \| \nabla u_i \|_2 \in L^2 \text{, } i=1,2,3\text{, } u = \vec 0 \text{ on } \partial \Gamma_\tau \}$, equipped with the standard $L^2$ inner product $(\cdot,\cdot):V\times V \to \mathbb R$, and seek the solution to (\ref{eq:res.1}). To derive the weak formulation of (\ref{eq:res.1}), we multiply it with the vector valued test function $v \in V$, integrate over $\Gamma$, and use integration by parts to get 
-%\begin{equation}  \label{eq:res.3}
+%\begin{eqnarray}  \label{eq:res.3}
 %	\int_{\Gamma} u_{tt} \cdot v\ dx = \int_{\Gamma} (\nabla \cdot \sigma) \cdot v \ dx + \int_{\Gamma} f \cdot v \ dx.
-%\end{equation}
+%\end{eqnarray}
 %We may integrate the first term on the right hand side by parts to obtain
-\begin{equation}  \label{eq:res.4}
+\begin{eqnarray}  \label{eq:res.4}
 	\int_{\Gamma} u_{tt} \cdot v\ dx = - \int_{\Gamma} \sigma : \nabla v \ dx+ \int_{\partial \Gamma_\tau} (\sigma \cdot n) \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx,
-\end{equation}
+\end{eqnarray}
 where $\sigma : \nabla v = \sum_{i,j}\sigma_{ij}(\nabla v)_{ji}$ is the tensor inner product. Note that the skew-symmetric part of $\nabla v$ vanishes over the product $\sigma : \nabla v$, since $\sigma$ is symmetric. By prescribing the boundary conditions to (\ref{eq:res.4}) we recover
-\begin{equation} \label{eq:res.5}
+\begin{eqnarray} \label{eq:res.5}
 	\int_{\Gamma} u_{tt} \cdot v\ dx = - \int_{\Gamma} \sigma : \text{Sym}(\nabla v) \ dx+ \int_{\partial \Gamma_\tau} \tau \cdot v\ ds +  \int_{\Gamma} f \cdot v \ dx,
-\end{equation}
+\end{eqnarray}
 with Sym$(\nabla v) = (\nabla v + (\nabla v)^T)/2$. The variational form associated to (\ref{eq:res.1}) is
-\begin{equation} \label{eq:res.6}
+\begin{eqnarray} \label{eq:res.6}
 	(u_{tt},v) = - a(u,v) + b(v), \quad u,v\in V,
-\end{equation}
+\end{eqnarray}
 where
-\begin{equation} \label{eq:res.7}
+\begin{eqnarray} \label{eq:res.7}
 \begin{aligned}
 	a(u,v) = \int_{\Gamma} \sigma : \text{Sym}(\nabla v) ~ dx, ~
 	b(v) = \int_{\partial \Gamma_\tau} \tau \cdot v ~ ds +  \int_{\Gamma} f \cdot v \ dx.
 \end{aligned}
-\end{equation}
+\end{eqnarray}
 To obtain the FEM discretization of (\ref{eq:res.6}), we triangulate the domain $\Gamma$ and define vector valued piece-wise linear basis functions $\{\phi_i\}_{i=1}^{N_h}$, referred to as the \emph{hat functions}. We define the FEM space $V_h$, an approximation of $V$, as the span of those basis functions. Projecting (\ref{eq:res.6}) onto $V_h$ yields the discretized weak form
-\begin{equation} \label{eq:res.8}
+\begin{eqnarray} \label{eq:res.8}
 	((u_h)_{tt},v_h) = - a(u_h,v_h) + b(v_h),\quad u_h,v_h\in V_h.
-\end{equation}
+\end{eqnarray}
 Any particular function $u_h$ can be expressed as $u_h = \sum_{i=1}^{N_h} q_i \phi_i$, where $q_i$, $i=1,\dots,N_h$, are the expansion coefficients. Therefore, by choosing test functions $v_h = \phi_i$, $i=1,\dots,N_h$, we obtain the ODE system
-\begin{equation} \label{eq:res.9}
+\begin{eqnarray} \label{eq:res.9}
 	M\ddot q = -K q + g_{q}.
-\end{equation}
+\end{eqnarray}
 where $q=(q_1,\dots,q_{N_h})^T$ are unknowns, the \emph{mass matrix} $M\in \mathbb R^{N_h\times N_h}$ is given as $M_{i,j} = (\phi_i,\phi_j)$, the \emph{stiffness matrix} $K\in \mathbb R^{N_h\times N_h}$ is given as $K_{i,j} = a(\phi_j,\phi_i)$ and $g_q=(b(v_1),\dots,b(v_{N_h}))^T$. Now introduce the canonical coordinate $p = M\dot q$ to recover the Hamiltonian system
-\begin{equation} \label{eq:res.10}
+\begin{eqnarray} \label{eq:res.10}
 	\dot z = \mathbb J_{2N_h} Lz + g_{qp},
-\end{equation}
+\end{eqnarray}
 where
-\begin{equation} \label{eq:res.11}
+\begin{eqnarray} \label{eq:res.11}
 	z = 
 	\begin{pmatrix}
 	q \\
@@ -79,7 +79,7 @@ where
 	0 \\
 	g_q
 	\end{pmatrix},
-\end{equation}
+\end{eqnarray}
 together with the Hamiltonian function $H(z) = \frac{1}{2} z^TLz + z^T \mathbb J_{2N_h}^T g_{qp}$. An appropriate FEM setup leads to a symmetric and positive-definite matrix $L$. Hence, it seems natural to take $X=L$, the energy matrix associated to (\ref{eq:res.10}). The system parameters are summarized in the table below. For further information regarding the problem, we refer to \cite{langtangen2017solving}.
 
 \vspace{0.5cm}
@@ -115,15 +115,15 @@ Projection operators $P_{X,V}$, $P^{\text{symp}}_{I,A}$ and $P^{\text{symp}}_{X,
 \Cref{fig:1}(b) shows the conservation of the Hamiltonian for the methods discussed above. This confirms that the symplectic methods preserve the Hamiltonian and the system energy. However, the Hamiltonian blows up for the reduced system constructed by the projection $P_{X,V}$.
 
 \Cref{fig:1}(c) shows the $L^2$ error between the projected systems and the full order system, defined as
-\begin{equation}
+\begin{eqnarray}
 	\| e \|_{L^2} = \sqrt{(e,e)} \approx \sqrt{ (q - \hat q)^T M (q-\hat q) },
-\end{equation}
+\end{eqnarray}
 where $e\in V$ is the error function and $\hat q \in \mathbb R^{2n}$ is an approximation for $q$. We notice that the reduced system obtained by the non-symplectic method is unstable and the reduced system, constructed using $P_{X,V}$, is more unstable as $k$ increases. On the other hand, the symplectic methods yield a stable reduced system. Although the system, constructed by the projection $P^{\text{symp}}_{X,\tilde A}$, is not based on the 2-norm projection, the error remains bounded with respect to the 2-norm. 
 
 We define the energy norm $\| \cdot \|_E : V \to \mathbb R$ as
-\begin{equation}
+\begin{eqnarray}
 	\| (u,\dot u) \|_E = \sqrt{ a(u,u) + (\dot u , \dot u) } \approx \| z \|_X.
-\end{equation}
+\end{eqnarray}
 \Cref{fig:1}(d) shows the MOR error with respect to the energy norm. We observe that the classical model reduction method based on the projection $P_{X,V}$ does not yield a stable reduced system. However, the symplectic methods provide a stable reduced system. We observe that the original symplectic approach also provides an accurate solution with respect to the energy norm. Nevertheless, the relation between the two norms depends on the problem set up and the choice of discretization \cite{DEPARIS20094359}.
 
 \subsection{Elastic beam with cavity}  \label{sec:res.1.1}
@@ -163,7 +163,7 @@ The 2-norm error and the error in the energy norm are presented in \Cref{fig:1.1
 
 \subsection{The sine-Gordon equation} \label{sec:res.2}
 The sine-Gordon equation arises in differential geometry and quantum physics \cite{Misumi2015}, as a nonlinear generalization of the linear wave equation of the form
-\begin{equation} \label{eq:res.12}
+\begin{eqnarray} \label{eq:res.12}
 \left\{
 \begin{aligned}
 	u_{t}(t,x) &= v, \quad x\in \Gamma,\\
@@ -172,21 +172,21 @@ The sine-Gordon equation arises in differential geometry and quantum physics \ci
 	u(t,l) &= 2\pi.
 \end{aligned}
 \right.
-\end{equation}
+\end{eqnarray}
 Here $\Gamma = [0,l]$ is a line segment and $u,v: \Gamma \to \mathbb R$ are scalar functions. The Hamiltonian associated with (\ref{eq:res.12}) is
-\begin{equation} \label{eq:res.13}
+\begin{eqnarray} \label{eq:res.13}
 	H(q,p) = \int_{\Gamma} \frac 1 2 p^2 + \frac 1 2 q_x^2 + 1 - \cos(q) \ dx.
-\end{equation}
+\end{eqnarray}
 One can verify that $u_{t} = \delta_v H$ and $v_{t} = - \delta_u H$, where $\delta_v,\delta_u$ are standard variational derivatives. The sine-Gordon equation admits the soliton solution
-\begin{equation} \label{eq:res.14}
+\begin{eqnarray} \label{eq:res.14}
 	u(t,x) = 4 \text{arctan}\left( \exp \left( \pm \frac{x - x_0 - ct}{\sqrt{1-c^2}} \right) \right),
-\end{equation}
+\end{eqnarray}
 where $x_0 \in \Gamma$ and the plus and minus signs correspond to the \emph{kink} and the \emph{anti-kink} solutions, respectively. Here $c$, $|c|<1$, is the arbitrary wave speed. We discretize the segment into $n$ equi-distant grid point $x_i = i\Delta x$, $i=1,\dots,n$. Furthermore, we use standard finite-differences schemes to discretize (\ref{eq:res.12}) and obtain
-\begin{equation} \label{eq:res.15}
+\begin{eqnarray} \label{eq:res.15}
 	\dot z = \mathbb J_{2n} L z + \mathbb J_{2n} g(z) + \mathbb J_{2n} c_b.
-\end{equation}
+\end{eqnarray}
 Here $z = (q^T,p^T)^T$, $q(t) = (u(t,x_1),\dots,u(t,x_N))^T$, $p(t) = (v(t,x_1),\dots,v(t,x_N))^T$, $c_b$ is the term corresponding to the boundary conditions and
-\begin{equation} \label{eq:res.16}
+\begin{eqnarray} \label{eq:res.16}
 	L = 
 	\begin{pmatrix}
 		D_x^TD_x & 0_N \\
@@ -198,11 +198,11 @@ Here $z = (q^T,p^T)^T$, $q(t) = (u(t,x_1),\dots,u(t,x_N))^T$, $p(t) = (v(t,x_1),
 	\sin(q) \\
 	\vec 0
 	\end{pmatrix},
-\end{equation}
+\end{eqnarray}
 where $D_x$ is the standard matrix differentiation operator. We may take $X = L$ as the weight matrix associated to (\ref{eq:res.15}). The discrete Hamiltonian, takes the form
-\begin{equation} \label{eq:res.17}
+\begin{eqnarray} \label{eq:res.17}
 	H_{\Delta x} = \Delta x \cdot \frac 1 2 \| p \|^2_2 + \Delta x \cdot \| D_x q \|^2_2 + \sum_{i=1}^{n} \Delta x \cdot ( 1 - \cos(q_i) ).
-\end{equation}
+\end{eqnarray}
 The system parameters are given as
 \vspace{0.5cm}
 \begin{center}
